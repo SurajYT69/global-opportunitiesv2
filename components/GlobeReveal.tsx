@@ -20,18 +20,57 @@
 import { useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+/* Geometry of the traced artwork lives in its own module because the
+   first-paint gate in app/homev2/page.tsx — a Server Component — has to build
+   the same numbers into CSS. See that file's header for why they must not be
+   written twice. */
+import {
+  GLOBE,
+  GLOBE_OFFSET_TRANSFORM,
+  LOCKUP,
+  LOCKUP_W,
+  MARK_W,
+} from "@/components/globe-reveal-geometry";
 
 gsap.registerPlugin(useGSAP);
 
-/* geometry of the traced artwork, in source units */
-const LOCKUP = { x: 200, y: 190, w: 1120, h: 530 }; // full wordmark viewBox
-const GLOBE = { x: 631, y: 270, w: 265, h: 235 };   // globe body bbox inside it
 const TF = "translate(0,1024) scale(0.1,-0.1)";
 const INTRO_KEY = "go-hero-intro-seen";
 
-/* wordmark width on screen; the globe box is derived from it */
-const LOCKUP_W = "min(62vw,760px)";
-const MARK_W = "calc(min(62vw,760px) * 0.23661)"; // 265 / 1120
+/* --- INTRO TIMING ---------------------------------------------------------
+   Phases are authored in WALL-CLOCK MILLISECONDS and converted to the master
+   tween's progress, never the other way round. The tween is eased
+   `power3.inOut`, so equal spans of `p` are nowhere near equal spans of time:
+   the previous windows started at p=0.22, which sounds like 22% but was 570ms
+   of a 1500ms sequence spent showing a motionless plate. Written as ms that is
+   obvious; written as p literals it was invisible, and it is why this sequence
+   could not be re-timed by changing `duration` alone.
+
+   `easeInOut3` MUST stay identical to the `ease` on the tween below. Change
+   one without the other and every phase silently re-times.
+   ---------------------------------------------------------------------- */
+const INTRO_MS = 3000;
+
+/** Phase windows, in ms from the intro's first frame. */
+const PHASE = {
+  /** navy window grid clears — film appears inside the globe */
+  winOut: [400, 700],
+  /** white globe + wordmark clear — overlaps into `grow`, deliberately */
+  markOut: [620, 980],
+  /** ellipse centre walks from the glyph slot to the viewport centre */
+  travel: [400, 2050],
+  /** ellipse scales to full bleed. The moment worth watching. */
+  grow: [400, 2250],
+  /** headline + CTAs arrive */
+  copyIn: [2250, INTRO_MS],
+} as const;
+
+/** GSAP's `power3.inOut` in closed form — mirrors the tween's ease exactly. */
+const easeInOut3 = (t: number) =>
+  t < 0.5 ? 4 * t * t * t : 1 - 4 * (1 - t) ** 3;
+
+/** wall-clock ms -> the master tween's eased progress `p`. */
+const atMs = (ms: number) => easeInOut3(ms / INTRO_MS);
 
 type Props = {
   /** mp4 for the hero film. Omit to run from the poster alone. */
@@ -68,17 +107,24 @@ export default function GlobeReveal({
     () => {
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      /* Dev only: never let the once-per-session gate latch, so the intro
-         replays on every reload. The key is CLEARED rather than merely
-         ignored, because sticky-nav-v2 reads the same key to decide whether
-         to hold the masthead wordmark — ignoring it here would replay the
-         globe while the corner logo popped in immediately.
-         `process.env.NODE_ENV` is inlined at build time, so the whole branch
-         is dead-code-eliminated from the production bundle. */
-      const dev = process.env.NODE_ENV === "development";
-      if (dev) sessionStorage.removeItem(INTRO_KEY);
+      /* THE ONCE-PER-SESSION GATE IS OFF BY CLIENT DIRECTION (2026-08-04).
+         The intro plays on EVERY load, in every environment — it was
+         previously suppressed after the first view of a session, and that is
+         no longer wanted.
 
-      const seen = sessionStorage.getItem(INTRO_KEY);
+         The key is CLEARED rather than simply left unread, for two reasons:
+         a session that already latched it before this change would otherwise
+         never see the intro again, and sticky-nav-v2 reads the same key to
+         decide whether to hold the masthead wordmark. Leaving a stale "1"
+         there would replay the globe while the corner logo popped in
+         immediately. Clearing it keeps that handshake honest without coupling
+         the two components.
+
+         REDUCED MOTION STILL SKIPS. That branch is an accessibility
+         guarantee, not a preference, and the client direction above is about
+         repeat visits — not about forcing motion on people who asked for
+         none. */
+      sessionStorage.removeItem(INTRO_KEY);
 
       let cx = 0, cy = 0, rx = 0, ry = 0, MAXS = 1;
       let ox = 0, oy = 0; // globe centre relative to the lockup centre
@@ -100,9 +146,25 @@ export default function GlobeReveal({
            and the wrapper's resting box is the section centre by construction
            (`absolute left-1/2 top-1/2` + the xPercent/yPercent below), so this
            derives the same layout box every time it is called. */
-        const host = root.current!.getBoundingClientRect();
-        const w = lockup.current!.offsetWidth;
-        const h = lockup.current!.offsetHeight;
+        /* Both the resize listener and document.fonts.ready outlive `done`,
+           and React unmounts the lockup at that point — so this dereferenced
+           null and THREW on any resize after the intro settled. Previously you
+           had to resize inside the 1.5s window to see it; with the skip below
+           it is one click plus one resize. Bailing keeps the last-rendered
+           geometry, which is correct: nothing that uses it is on screen. */
+        if (!root.current || !lockup.current) return;
+
+        const host = root.current.getBoundingClientRect();
+        const w = lockup.current.offsetWidth;
+        /* DERIVED from w, not read as offsetHeight. offsetHeight is rounded to
+           a whole pixel (360 where the box is really 359.643), which made sy
+           disagree with sx by ~0.1% and put render(0) 0.046px above the rest
+           state the CSS in app/homev2/page.tsx paints. Sub-pixel, but it is
+           the one number that stopped first paint and render(0) being bit-for-
+           bit identical. The div's height comes from the SVG's own aspect
+           ratio, so this is exact rather than an approximation — and it is the
+           same ratio the shared geometry module divides by. */
+        const h = (w * LOCKUP.h) / LOCKUP.w;
         const left = host.left + host.width / 2 - w / 2;
         const top = host.top + host.height / 2 - h / 2;
 
@@ -126,11 +188,13 @@ export default function GlobeReveal({
       const render = (p: number) => {
         const vw = window.innerWidth, vh = window.innerHeight;
 
-        const grow = seg(p, 0.22, 0.7);
-        const travel = seg(p, 0.22, 0.66);
-        const winOut = seg(p, 0.22, 0.38);  // navy windows clear -> film in the grid
-        const markOut = seg(p, 0.28, 0.45); // white globe + letters clear -> full circle
-        const copyIn = seg(p, 0.7, 1.0);
+        const at = (w: readonly [number, number]) =>
+          seg(p, atMs(w[0]), atMs(w[1]));
+        const grow = at(PHASE.grow);
+        const travel = at(PHASE.travel);
+        const winOut = at(PHASE.winOut);
+        const markOut = at(PHASE.markOut);
+        const copyIn = at(PHASE.copyIn);
 
         const s = lerp(1, MAXS, grow);
         const dx = lerp(0, vw / 2 - cx, travel);
@@ -141,21 +205,36 @@ export default function GlobeReveal({
             "ellipse(" + rx * s + "px " + ry * s + "px at " +
             (cx + dx) + "px " + (cy + dy) + "px)",
         });
-        gsap.set(mark.current, {
-          xPercent: -50, yPercent: -50,
-          x: ox + dx, y: oy + dy, scale: s, opacity: 1 - markOut,
+        /* The three plate refs go null the moment `done` flips and React
+           unmounts them — and render() outlives that, via the resize listener
+           and document.fonts.ready. The skip below makes that window trivial
+           to hit, where before it needed a resize inside 1.5s. */
+        if (mark.current) {
+          gsap.set(mark.current, {
+            xPercent: -50, yPercent: -50,
+            x: ox + dx, y: oy + dy, scale: s, opacity: 1 - markOut,
+          });
+        }
+        if (windows.current) gsap.set(windows.current, { opacity: 1 - winOut });
+        if (lockup.current) {
+          gsap.set(lockup.current, {
+            xPercent: -50, yPercent: -50,
+            y: -18 * markOut, opacity: 1 - markOut,
+          });
+        }
+        gsap.set(copy.current, {
+          opacity: copyIn,
+          y: 18 * (1 - copyIn),
+          /* opacity:0 does NOT remove hit-testing. Without this the CTA is
+             clickable and sits in the tab order for the whole intro while
+             completely invisible. */
+          pointerEvents: copyIn > 0 ? "auto" : "none",
         });
-        gsap.set(windows.current, { opacity: 1 - winOut });
-        gsap.set(lockup.current, {
-          xPercent: -50, yPercent: -50,
-          y: -18 * markOut, opacity: 1 - markOut,
-        });
-        gsap.set(copy.current, { opacity: copyIn, y: 18 * (1 - copyIn) });
       };
 
       measure();
 
-      if (reduced || seen) {
+      if (reduced) {
         render(1);
         setDone(true);
         const onR = () => { measure(); render(1); };
@@ -166,21 +245,57 @@ export default function GlobeReveal({
       render(0);
 
       const o = { p: 0 };
-      gsap.to(o, {
+      const tween = gsap.to(o, {
         p: 1,
-        duration: 1.5,
+        duration: INTRO_MS / 1000,
         ease: "power3.inOut",
         onUpdate: () => render(o.p),
-        onComplete: () => {
-          if (!dev) sessionStorage.setItem(INTRO_KEY, "1");
-          setDone(true);
-        },
+        /* Deliberately does NOT set INTRO_KEY — see the gate note above. */
+        onComplete: () => { detachSkip(); setDone(true); },
       });
+
+      /* --- SKIP -----------------------------------------------------------
+         Any deliberate input lands the finished hero at once. Three seconds is
+         a long time to hold someone who arrived wanting to read.
+
+         `scroll` is NOT in this list, deliberately: browsers restore scroll
+         position on reload and fire it unprompted, which would skip an intro
+         nobody asked to skip. `wheel` and `touchstart` are the honest signals
+         of scroll INTENT; `keydown` covers space, arrows and Tab.
+
+         `o.p` is forced to 1 as well as the tween being killed — the resize
+         handler below replays render(o.p), and a stale mid-intro p would snap
+         the film's clip-path back into the middle of the reveal on the next
+         resize. */
+      const SKIP_EVENTS = [
+        "pointerdown",
+        "keydown",
+        "wheel",
+        "touchstart",
+      ] as const;
+
+      const detachSkip = () =>
+        SKIP_EVENTS.forEach((e) => window.removeEventListener(e, skip));
+
+      const skip = () => {
+        detachSkip();
+        tween.kill();
+        o.p = 1;
+        render(1);
+        setDone(true);
+      };
+
+      SKIP_EVENTS.forEach((e) =>
+        window.addEventListener(e, skip, { passive: true }),
+      );
 
       const onResize = () => { measure(); render(o.p); };
       window.addEventListener("resize", onResize);
       document.fonts?.ready.then(() => { measure(); render(o.p); });
-      return () => window.removeEventListener("resize", onResize);
+      return () => {
+        window.removeEventListener("resize", onResize);
+        detachSkip();
+      };
     },
     { scope: root }
   );
@@ -376,10 +491,21 @@ export default function GlobeReveal({
           data-intro-plate
           aria-hidden
           className="pointer-events-none absolute left-1/2 top-1/2"
+          /* The centring translate alone would leave the globe on the SECTION
+             centre — 45.8px BELOW its glyph slot — for every frame between
+             first paint and hydration, then jump it up when render(0) lands.
+             GLOBE_OFFSET_TRANSFORM seats it correctly in the SSR markup, so
+             the first painted frame already equals render(0). It is derived,
+             never typed: see components/globe-reveal-geometry.ts.
+
+             Safe against the xPercent note on the lockup below: render() sets
+             xPercent, yPercent, x AND y on every call, so whatever GSAP parses
+             out of this compound transform at hydration is fully overwritten
+             rather than stacked. */
           style={{
             width: MARK_W,
             transformOrigin: "50% 50%",
-            transform: "translate(-50%,-50%)",
+            transform: `translate(-50%,-50%) ${GLOBE_OFFSET_TRANSFORM}`,
           }}
         >
         <svg viewBox="631 270 265 235" className="block w-full">
@@ -438,7 +564,11 @@ export default function GlobeReveal({
       <div
         ref={copy}
         data-intro-copy
-        className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center opacity-0"
+        /* `pointer-events-none` pairs with `opacity-0`: an opacity:0 element is
+           still clickable and still tabbable. render() restores it to `auto`
+           as the copy fades in, and the CSS in app/homev2/page.tsx restores it
+           for the JS-off and reduced-motion paths that never run render(). */
+        className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center opacity-0"
       >
         <p className="mb-6 rounded-full bg-[#0E2A47]/70 px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-white/85">
           <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-[#FFC800] align-middle" />

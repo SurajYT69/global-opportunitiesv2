@@ -77,9 +77,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  /* suppressHydrationWarning on <html>: /homev2's first-paint gate sets
+     `data-hero-intro` on this element from an inline script during HTML parse,
+     so the attribute is in the DOM before React hydrates and can never be in
+     the server payload. This is the documented pattern for it
+     (next/dist/docs/01-app/02-guides/preventing-flash-before-hydration.md,
+     "Themes"). It is not cosmetic: without it React treats the mismatch as a
+     hydration error and recovers by client-rendering from the nearest
+     boundary, which discards inline-script corrections made to anything else
+     inside that boundary. Scoped to attributes on THIS element only — it does
+     not cascade to children. */
   return (
     <html
       lang="en-IN"
+      suppressHydrationWarning
       className={`${display.variable} ${bebas.variable} ${mono.variable}`}
     >
       <body suppressHydrationWarning className="min-h-dvh">

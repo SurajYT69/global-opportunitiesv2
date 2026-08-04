@@ -92,7 +92,7 @@ const MENU_ID = "sticky-nav-menu";
    If the intro's length or key changes, these must follow.
    ---------------------------------------------------------------------- */
 const HERO_INTRO_KEY = "go-hero-intro-seen";
-const HERO_INTRO_MS = 1500;
+const HERO_INTRO_MS = 3000;
 
 /** The section the masthead floats over. Set by app/homev2/page.tsx. */
 const HERO_ID = "hero";
@@ -160,6 +160,12 @@ export default function StickyNavV2() {
     // hold, or the wordmark would be missing from a hero that is already
     // fully rendered.
     const reduced = window.matchMedia(MQ.reduce).matches;
+    /* `seen` is permanently false as of 2026-08-04: the once-per-session gate
+       is off by client direction and GlobeReveal now only ever CLEARS this key
+       (see its note). The read is kept rather than deleted because it is the
+       whole handshake — re-latch the key over there and the hold here starts
+       working again with no edit to this file. Reduced motion is the live
+       skip path. */
     const seen = sessionStorage.getItem(HERO_INTRO_KEY) !== null;
 
     const controls =
@@ -319,7 +325,7 @@ export default function StickyNavV2() {
               href={`#${HERO_ID}`}
               className="group inline-flex min-h-11 items-center no-underline"
             >
-              <span ref={logoScope} className="reveal block">
+              <span ref={logoScope} data-intro-logo className="reveal block">
                 <motion.span
                   style={{ scale: prefersReducedMotion ? 1 : wordmarkScale }}
                   className="relative block origin-left"

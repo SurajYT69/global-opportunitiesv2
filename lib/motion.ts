@@ -72,7 +72,15 @@ export const DUR = {
   d4: 0.48,
   /** 700ms — chapter reveal. HARD CAP for all non-hero motion. */
   d5: 0.7,
-  /** 900ms — hero headline only. Full hero sequence <=1400ms. */
+  /**
+   * 900ms — hero headline only. Full hero sequence <=1400ms.
+   *
+   * That cap still governs `/`. It does NOT govern /homev2's GlobeReveal
+   * intro, which runs 3000ms by client direction (2026-08-04) and owns its
+   * timing in components/GlobeReveal.tsx — this token is not imported there.
+   * Recorded as an exception rather than raised, so the cap keeps binding
+   * every hero that has not been individually signed off.
+   */
   hero: 0.9,
 } as const;
 

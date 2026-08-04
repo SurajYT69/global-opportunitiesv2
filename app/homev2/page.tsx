@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
 import GlobeReveal from "@/components/GlobeReveal";
+import {
+  FILM_CENTRE_AT,
+  FILM_RX,
+  FILM_RY,
+} from "@/components/globe-reveal-geometry";
 import StickyNavV2 from "@/components/homev2/sticky-nav-v2";
 import ColophonStrip from "../(home)/_components/colophon-strip";
 import Gazetteer from "../(home)/_components/gazetteer";
@@ -47,13 +52,19 @@ export const metadata: Metadata = {
    first painted frame is the film full-bleed with the wordmark off-centre —
    the video arrives first and the "preloader" lands late.
 
-   It cannot be solved with a static SSR default, because the two audiences
-   need opposite first frames: a first-time visitor must see p=0 (navy, plate
-   centred, no film), a returning visitor must see the finished hero
-   (acceptance 2). Only sessionStorage distinguishes them, and it is not
-   readable on the server — so the decision is made by a synchronous inline
-   script that runs during HTML parse, before the hero markup is reached.
-   This is the same no-flash pattern used for theme toggles.
+   It cannot be solved with a static SSR default, because two audiences need
+   opposite first frames: anyone who gets the intro must see p=0 (navy, plate
+   on the wordmark, no film), while a reduced-motion visitor must see the
+   finished hero. `prefers-reduced-motion` is not readable on the server — so
+   the decision is made by a synchronous inline script that runs during HTML
+   parse, before the hero markup is reached. This is the same no-flash pattern
+   used for theme toggles.
+
+   THE ONCE-PER-SESSION GATE IS OFF (2026-08-04, client direction): the intro
+   plays on every load. `go-hero-intro-seen` is now only ever CLEARED, never
+   read — the removeItem below exists to flush a key latched by an older build
+   and to keep sticky-nav-v2's read of it honest. See the matching note in
+   components/GlobeReveal.tsx. Reduced motion is the only skip path left.
 
    It sets ONE attribute; the rules below do the rest. GSAP takes over at
    hydration and writes inline styles, which outrank these (no !important
@@ -64,16 +75,45 @@ export const metadata: Metadata = {
    supplied component, where `opacity-0` on the copy had nothing to remove it
    with JS off, leaving the h1 permanently invisible.
    ---------------------------------------------------------------------- */
-const INTRO_BOOT = `(function(){try{var k='go-hero-intro-seen';${
-  process.env.NODE_ENV === "development" ? "sessionStorage.removeItem(k);" : ""
-}var s=sessionStorage.getItem(k)||matchMedia('(prefers-reduced-motion:reduce)').matches;document.documentElement.setAttribute('data-hero-intro',s?'skip':'play');}catch(e){}})();`;
+const INTRO_BOOT = `(function(){try{var k='go-hero-intro-seen';sessionStorage.removeItem(k);var s=matchMedia('(prefers-reduced-motion:reduce)').matches;document.documentElement.setAttribute('data-hero-intro',s?'skip':'play');}catch(e){}})();`;
 
-/* The ellipse matches render(0): rx = MARK_W/2, ry = rx * (235/265), centred.
-   MARK_W is `min(62vw,760px) * 0.23661`, so rx = that * 0.118305. */
+/* Rules, in order. Rationale lives HERE rather than inside the template
+   literal: comments in the string would ship to every visitor inside <style>,
+   and a stray backtick in one of them terminates the literal — which is
+   exactly how this file broke once already.
+
+   1. play + film   the ellipse matches render(0) — radii AND centre. It is
+                    NOT centred on the section: render(0) puts it on the globe's
+                    glyph slot in the wordmark, 45.8px higher. This rule used to
+                    say `at 50% 50%`, which is what made the mark jump at
+                    hydration. Every number now comes from
+                    components/globe-reveal-geometry.ts; the white globe plate
+                    is built from the same constants, and the two must move
+                    together or the first frame shows a crescent of the film.
+   2. plates        visibility, NOT display:none. measure() reads the lockup's
+                    offsetWidth, and a display:none element reports 0 — which
+                    made rx=0, MAXS=Infinity and a clip-path of
+                    "ellipse(NaNpx ...)" that the CSSOM silently rejected on
+                    every skip load. visibility:hidden keeps the box
+                    measurable. The plates are absolute, pointer-events-none
+                    and aria-hidden, so holding layout costs nothing, and
+                    React unmounts them a tick later anyway.
+   3. copy          opacity only; the h1 is never conditionally mounted.
+   4. logo          the masthead wordmark is held by the .reveal class until
+                    hydration runs its fade-in. That hold is only wanted while
+                    the intro plays — without this the logo arrives late on
+                    EVERY load, including skip reloads with no intro to wait
+                    for.
+
+   The CSS string below must contain no backticks. Interpolation is now used,
+   but ONLY for the geometry constants imported above — build-time numbers from
+   a module we own, never request data — because this string is injected with
+   dangerouslySetInnerHTML. Do not interpolate anything else into it. */
 const INTRO_CSS = `
-html[data-hero-intro="play"] [data-intro-film]{clip-path:ellipse(calc(min(62vw,760px)*.118305) calc(min(62vw,760px)*.104897) at 50% 50%)}
-html:not([data-hero-intro="play"]) [data-intro-plate]{display:none}
-html:not([data-hero-intro="play"]) [data-intro-copy]{opacity:1}
+html[data-hero-intro="play"] [data-intro-film]{clip-path:ellipse(${FILM_RX} ${FILM_RY} at ${FILM_CENTRE_AT})}
+html:not([data-hero-intro="play"]) [data-intro-plate]{visibility:hidden}
+html:not([data-hero-intro="play"]) [data-intro-copy]{opacity:1;pointer-events:auto}
+html:not([data-hero-intro="play"]) [data-intro-logo]{opacity:1}
 `;
 
 export default function HomeV2() {
