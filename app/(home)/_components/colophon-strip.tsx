@@ -11,14 +11,25 @@ import { fadeUp, staggerChildrenTight, VIEWPORT_ONCE } from "@/lib/motion";
    ---------------------------------------------------------------------------
    CANON: "Colophon strip runs as one line of set text, not a stat bar."
 
-     EST. 2001, AMRITSAR¹ · 25 YEARS · 40,000+ STUDENTS PLACED² ·
+     EST. 2001, AMRITSAR¹ · 40,000+ STUDENTS PLACED² ·
      700+ PARTNER UNIVERSITIES³ · 15 DESTINATIONS⁴ ·
-     18 OFFICES, NAMED AND ADDRESSED⁵ · 47 PUBLISHED TESTIMONIALS⁶
+     18 OFFICES ACROSS INDIA⁵ · 47 TESTIMONIALS⁶
 
-   Six canonical stats, six superscripts, every one of them resolving into the
-   Sources & Methods registry in `components/ui/footnote.tsx`. Evidence before
-   any further ask — the page is telling you, immediately, that it can be
-   audited.
+   SINGLE ROW (2026-08-04, client pass). The old seven-entry string wrapped
+   to two ragged lines inside the content column, which read as neither set
+   text nor a designed bar. Three moves brought it to one literal line:
+     - "25 YEARS" left — the only UNCITED entry (derived from Est. 2001,
+       no footnote), so the audit surface lost nothing.
+     - "named and addressed" -> "across India"; "published" dropped — the
+       registry notes still carry both qualifiers.
+     - At md+ the six entries DISTRIBUTE across the row (justify-between,
+       no wrap) and the middle dots retire; below md the line wraps as
+       dot-separated prose exactly as before.
+   Six entries, six superscripts, every one still a PRIMARY anchor into the
+   Sources & Methods registry in `components/ui/footnote.tsx` — the fnref-*
+   ids the Sources table back-links to live HERE and must not be removed.
+   Evidence before any further ask — the page is telling you, immediately,
+   that it can be audited.
 
    THE MONO LAW: every figure here is set in IBM Plex Mono because every
    figure here can be proved. Tabular figures come from the base layer.
@@ -38,7 +49,7 @@ import { fadeUp, staggerChildrenTight, VIEWPORT_ONCE } from "@/lib/motion";
    strip has no affordances to mark — nothing here is a control. The only
    interactive things in it are the `Footnote` superscripts, and those are
    owned by `components/ui/footnote.tsx`. Putting a glyph on each of the
-   seven figures would give the line a repeating leading mark per entry,
+   six figures would give the line a repeating leading mark per entry,
    which is precisely the "stat bar" the CANON line above forbids. The
    evidence here is carried by the mono figures and their superscripts.
 
@@ -60,7 +71,6 @@ interface Stat {
 /* `figure` + " " + `label` reproduces the CANON string verbatim. */
 const STATS: Stat[] = [
   { id: "founded", figure: "Est. 2001,", label: "Amritsar", source: "founded" },
-  { id: "years", figure: "25", label: "years" },
   {
     id: "students",
     figure: "40,000+",
@@ -82,13 +92,13 @@ const STATS: Stat[] = [
   {
     id: "offices",
     figure: "18",
-    label: "offices, named and addressed",
+    label: "offices across India",
     source: "offices",
   },
   {
     id: "testimonials",
     figure: "47",
-    label: "published testimonials",
+    label: "testimonials",
     source: "testimonials",
   },
 ];
@@ -99,17 +109,19 @@ export default function ColophonStrip() {
       id="colophon-strip"
       data-chapter="dream"
       aria-label="Global Opportunities in figures, with sources"
-      className="bg-paper-laid py-8 md:py-10"
+      className="bg-paper-laid py-6 md:py-8"
     >
       <Container>
         <Rule weight="chapter" />
 
+        {/* Wrapped dot-separated prose below md; one distributed line at
+            md+, where the dots retire and the spacing does the setting. */}
         <motion.p
           variants={staggerChildrenTight}
           initial="hidden"
           whileInView="visible"
           viewport={VIEWPORT_ONCE}
-          className="m-0 flex flex-wrap items-baseline gap-x-3 gap-y-2 py-5 font-mono text-caption uppercase"
+          className="m-0 flex flex-wrap items-baseline gap-x-3 gap-y-2 py-4 font-mono text-caption uppercase md:flex-nowrap md:justify-between md:gap-x-6 md:py-5"
         >
           {STATS.map((stat, i) => (
             <motion.span
@@ -125,7 +137,7 @@ export default function ColophonStrip() {
                 {stat.source && <Footnote id={stat.source} primary />}
               </span>
               {i < STATS.length - 1 && (
-                <span aria-hidden="true" className="text-rule-strong">
+                <span aria-hidden="true" className="text-rule-strong md:hidden">
                   ·
                 </span>
               )}
