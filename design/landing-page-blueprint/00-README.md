@@ -27,7 +27,7 @@ Produced 2026-08-03 by a multi-agent pipeline: 5 research agents (brand audit, c
 
 ## Relationship to the code
 
-The live implementation lives in this repo (`app/`, `components/sections/`, `components/ui/`, `components/providers/`, `lib/`). The canonical tokens are implemented in `app/globals.css`; section components map 1:1 to the canonical section ids. Where a document flags `[VERIFY]`, the figure needs client confirmation before production; a `[VERIFY]` figure may not ship set in the mono (proof) typeface.
+The live implementation lives in this repo (`app/` — home sections in `app/(home)/_components/` — `components/ui/`, `components/providers/`, `lib/`). The canonical tokens are implemented in `app/globals.css`; section components map 1:1 to the canonical section ids. Where a document flags `[VERIFY]`, the figure needs client confirmation before production; a `[VERIFY]` figure may not ship set in the mono (proof) typeface.
 
 ## Key operational commitments the design creates
 

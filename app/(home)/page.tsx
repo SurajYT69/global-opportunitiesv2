@@ -1,20 +1,20 @@
-import StickyNav from "@/components/sections/sticky-nav";
-import Hero from "@/components/sections/hero";
-import ColophonStrip from "@/components/sections/colophon-strip";
-import Gazetteer from "@/components/sections/gazetteer";
-import Register from "@/components/sections/register";
-import WhatWeDo from "@/components/sections/what-we-do";
-import StillPage from "@/components/sections/still-page";
-import BranchAtlas from "@/components/sections/branch-atlas";
-import Contributors from "@/components/sections/contributors";
-import ForParents from "@/components/sections/for-parents";
-import Reckoning from "@/components/sections/reckoning";
-import ElevenMonths from "@/components/sections/eleven-months";
-import Endpaper from "@/components/sections/endpaper";
-import Questions from "@/components/sections/questions";
-import Enquiry from "@/components/sections/enquiry";
-import Colophon from "@/components/sections/colophon";
-import MobileBar from "@/components/sections/mobile-bar";
+import StickyNav from "./_components/sticky-nav";
+import Hero from "./_components/hero";
+import ColophonStrip from "./_components/colophon-strip";
+import Gazetteer from "./_components/gazetteer";
+import Register from "./_components/register";
+import WhatWeDo from "./_components/what-we-do";
+import StillPage from "./_components/still-page";
+import BranchAtlas from "./_components/branch-atlas";
+import Contributors from "./_components/contributors";
+import ForParents from "./_components/for-parents";
+import Reckoning from "./_components/reckoning";
+import ElevenMonths from "./_components/eleven-months";
+import Endpaper from "./_components/endpaper";
+import Questions from "./_components/questions";
+import Enquiry from "./_components/enquiry";
+import Colophon from "./_components/colophon";
+import MobileBar from "./_components/mobile-bar";
 
 /* Organization JSON-LD per 06-strategy.md — real GO data only, no self-served
    ratings (policy), sameAs deliberately absent until profiles are verified. */

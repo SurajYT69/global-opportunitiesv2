@@ -13,7 +13,7 @@ import { DUR, GSAP_EASE, MQ, STAGGER } from "@/lib/motion";
    ->  sub-line  ->  CTA row  ->  no-cost qualifier  ->  the accreditation
    lockup at the right end of the stats bar, last.
 
-   Hooks live in components/sections/hero.tsx; every selector below resolves
+   Hooks live in app/(home)/_components/hero.tsx; every selector below resolves
    to exactly one element there. Nothing here may reference an element the
    v4 hero does not render.
 
