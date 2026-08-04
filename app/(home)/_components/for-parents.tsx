@@ -1,8 +1,8 @@
 import { ChevronDown, ChevronUp, MessageCircle, Phone } from "lucide-react";
 import type { ReactNode } from "react";
-import { DualClock } from "@/components/sections/for-parents/dual-clock";
-import { KitchenPlate } from "@/components/sections/for-parents/kitchen-plate";
-import { QuietFade } from "@/components/sections/for-parents/quiet-fade";
+import { DualClock } from "./for-parents/dual-clock";
+import { KitchenPlate } from "./for-parents/kitchen-plate";
+import { QuietFade } from "./for-parents/quiet-fade";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { Icon } from "@/components/ui/icon";

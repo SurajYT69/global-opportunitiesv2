@@ -181,12 +181,17 @@
   --radius-2: 4px; /* chips, inputs, selects, status pills */
   --radius-pill: 999px; /* CTA buttons ONLY */
 
-  /* --- Shadows · print misregistration is the only depth on the page plane */
+  /* --- Shadows · print misregistration is the only depth on the page plane.
+         Two blurred exceptions: drawer surfaces, and the stuck masthead
+         (client, 2026-08-04) — the masthead shadow exists only while the
+         sticky row is off its rest position, faded via opacity. */
   --shadow-reg-sienna: 3px 3px 0 0 #0b77b7;
   --shadow-reg-marine: 3px 3px 0 0 #0e2a47;
   --shadow-reg-rule: 2px 2px 0 0 #c7b9a1;
   --shadow-drawer: 0 1px 2px rgba(23, 19, 16, 0.05),
     0 24px 48px -20px rgba(23, 19, 16, 0.22); /* modal/drawer surfaces ONLY */
+  --shadow-masthead: 0 1px 2px rgba(23, 19, 16, 0.04),
+    0 12px 28px -20px rgba(23, 19, 16, 0.28); /* stuck sticky row ONLY */
 
   /* --- Easing curves ----------------------------------------------------- */
   --ease-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* GSAP power1.out */

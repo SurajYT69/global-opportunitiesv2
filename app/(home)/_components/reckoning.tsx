@@ -2,20 +2,20 @@
 
 import { useMemo, useState } from "react";
 import { Info, MessageCircle } from "lucide-react";
-import { ChipGroup } from "@/components/sections/reckoning/chip-group";
+import { ChipGroup } from "./reckoning/chip-group";
 import type {
   CountryId,
   DegreeId,
   TierId,
-} from "@/components/sections/reckoning/data";
+} from "./reckoning/data";
 import {
   COUNTRY_OPTIONS,
   DEGREE_OPTIONS,
   buildLedger,
   countryName,
   tierOptions,
-} from "@/components/sections/reckoning/data";
-import { Ledger } from "@/components/sections/reckoning/ledger";
+} from "./reckoning/data";
+import { Ledger } from "./reckoning/ledger";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { Icon } from "@/components/ui/icon";

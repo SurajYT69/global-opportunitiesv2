@@ -5,7 +5,7 @@ import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Rule } from "@/components/ui/rule";
 import { Icon } from "@/components/ui/icon";
-import { INDEX_DESTINATIONS } from "@/components/sections/gazetteer/data";
+import { INDEX_DESTINATIONS } from "@/app/(home)/_components/gazetteer/data";
 
 /* ===========================================================================
    /destinations — PLACEHOLDER
@@ -13,7 +13,7 @@ import { INDEX_DESTINATIONS } from "@/components/sections/gazetteer/data";
    The landing page's gazetteer now shows only the four anchors; the other
    eleven destinations belong here. This is a deliberate placeholder until the
    full index page (ruled rows, micro-spreads, plates) is built out — the row
-   component already exists at `components/sections/gazetteer/rows.tsx` and
+   component already exists at `app/(home)/_components/gazetteer/rows.tsx` and
    moves here when that happens.
 
    noindex while placeholder: a page of names with no facts should not be what
