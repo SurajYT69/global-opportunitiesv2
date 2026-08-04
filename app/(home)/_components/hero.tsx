@@ -21,9 +21,11 @@ import { HeroStage } from "./hero/hero-stage";
      2. THE HEADLINE IS A HAND-BROKEN TWO-LINE LOCKUP — "Step out" /
         "without doubt." — with "doubt." picked out in GO Yellow. Legal:
         ochre is banned as text ON PAPER (1.5:1); on the navy plate it
-        clears 8:1. The size steps down from --text-d0's 7.5rem cap to a
-        6.5rem cap so line two never wraps and the fold never overflows.
-        Block spans force the breaks; SplitText treats each as a line.
+        clears 8:1. The size steps down from --text-d0's 7.5rem cap so
+        line two never wraps and the fold never overflows. Weight is 700
+        (client, 2026-08-04 — one step up from d0's 600) over the busy
+        photographic plate. Block spans force the breaks; SplitText
+        treats each as a line.
      3. THE DEPARTURE CARD RETURNED at lg+ as the right-hand accent —
         then left again the same day (see v6). Its boot hook survives,
         guarded, in hero-stage.tsx.
@@ -129,7 +131,7 @@ const ACCREDITATION = "AIRC · ICEF · British Council";
 
 export default function Hero() {
   return (
-    <HeroStage className="relative isolate flex min-h-[calc(100svh_-_3.5rem)] flex-col overflow-hidden bg-endpaper md:h-[calc(100svh_-_4rem)] md:min-h-[620px]">
+    <HeroStage className="relative isolate flex min-h-[calc(100svh_-_3.5rem)] flex-col overflow-hidden bg-endpaper md:h-[calc(100svh_-_6.75rem)] md:min-h-[620px]">
       {/* ---- Plate I, full bleed — the hero IS the picture ---------------
           v6 (2026-08-04): client-supplied horizon banner replaces the
           departure-hall photograph. The right edge is the subject (student,
@@ -177,7 +179,7 @@ export default function Hero() {
                 rides in GO Yellow — highlight role, dark plate only. */}
             <h1
               data-hero-headline
-              className="mt-4 font-display text-[clamp(2.75rem,6vw,5.75rem)] leading-none font-semibold tracking-[-0.03em] text-plate-white md:mt-5"
+              className="mt-4 font-display text-[clamp(2.75rem,6vw,5.75rem)] leading-none font-bold tracking-[-0.03em] text-plate-white md:mt-5"
             >
               <span className="block">Step out</span>
               <span className="block">

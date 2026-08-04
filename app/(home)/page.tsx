@@ -48,8 +48,9 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSONLD) }}
       />
       <StickyNav />
-      {/* Fixed masthead adds no spacer; main owns the clearance (56px / 64px). */}
-      <main id="main" className="pt-14 md:pt-16">
+      {/* Fixed masthead adds no spacer; main owns the clearance. 56px below
+          md; 108px (utility strip + paper row, 6.75rem) at md+. */}
+      <main id="main" className="pt-14 md:pt-27">
         <Hero />
         <ColophonStrip />
         <Gazetteer />
