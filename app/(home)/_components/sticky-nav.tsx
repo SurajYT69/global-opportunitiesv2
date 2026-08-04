@@ -1,6 +1,13 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { CalendarCheck, ChevronRight, Clock, Phone } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -26,10 +33,16 @@ import { DUR, EASE, MQ } from "@/lib/motion";
    md+ — still text, glyph beside it, never instead (the rule that
    mattered survives) — which declutters the paper row down to wordmark /
    nav / CTA. Below md the strip does not render and nothing changes: the
-   phone lives in the drawer, the bar stays 56px. Desktop header is now
-   108px (2.25rem strip + 4.5rem row = 6.75rem) — `main`'s clearance, the
-   hero's fold calc and the spine offset all moved with it; grep for
-   `6.75rem`/`pt-27`/`top-27` before touching any of them.
+   phone lives in the drawer, the bar stays 56px.
+
+   ONLY THE PAPER ROW STICKS (client, same day). The strip lives in normal
+   flow outside <header> and scrolls away; the header itself is `sticky
+   top-0`, so `main` carries NO clearance padding — both tiers occupy real
+   space. Past 40px of scroll the row steps down 72px -> 56px at md+, the
+   size change carried by Framer's layout projection (transform), never a
+   raw height animation. The hero's fold calc subtracts the AT-REST stack
+   (6.75rem at md+, 3.5rem mobile); the spine hangs at `top-full`, so no
+   other file hard-codes the header height.
 
    SCROLL-SPY (same date). An IntersectionObserver watches the six nav
    targets through a band around the upper-middle of the viewport; the
@@ -81,6 +94,13 @@ export default function StickyNav() {
   const { scrollY, scrollYProgress } = useScroll();
   const wordmarkScale = useTransform(scrollY, [0, SCROLL_THRESHOLD], [1, 0.92], {
     clamp: true,
+  });
+
+  // Stuck-state: past the threshold the paper row is riding the top edge
+  // (the strip has scrolled away) and steps down 72px -> 56px at md+.
+  const [scrolled, setScrolled] = useState(false);
+  useMotionValueEvent(scrollY, "change", (v) => {
+    setScrolled(v > SCROLL_THRESHOLD);
   });
 
   const close = useCallback(() => {
@@ -217,18 +237,13 @@ export default function StickyNav() {
         ) : null}
       </AnimatePresence>
 
-      <header
-        id="sticky-nav"
-        className={cn(
-          "fixed inset-x-0 top-0",
-          open ? "z-[var(--z-drawer)]" : "z-[var(--z-nav)]",
-        )}
-      >
-        {/* THE UTILITY STRIP — md+ only. Solid GO Navy, mono label voice.
-            Every item on it is a verified fact (mono law): founding year,
-            office count, calling hours, the toll-free number. The phone
-            keeps its glyph BESIDE the visible number, never instead. */}
-        <div className="hidden bg-endpaper md:block">
+      {/* THE UTILITY STRIP — md+ only, and NOT sticky (client, 2026-08-04):
+          it lives in normal flow OUTSIDE the header and scrolls away with
+          the page. Solid GO Navy, mono label voice. Every item on it is a
+          verified fact (mono law): founding year, office count, calling
+          hours, the toll-free number. The phone keeps its glyph BESIDE the
+          visible number, never instead. */}
+      <div className="hidden bg-endpaper md:block">
           <Container
             width="frame"
             className="flex h-9 items-center justify-between gap-6"
@@ -250,14 +265,27 @@ export default function StickyNav() {
               </a>
             </div>
           </Container>
-        </div>
+      </div>
 
-        {/* THE PAPER ROW. Solid paper at 96%. No backdrop-filter, ever.
-            Three-zone composition (2026-08-04): brand lockup flex-1 left,
-            nav DEAD CENTRE (shrink-0 between two flex-1 wings), CTA flex-1
-            right. 72px tall at md+ — the extra air over the old 64px is
-            most of what reads as "professional". */}
-        <div className="relative">
+      <header
+        id="sticky-nav"
+        className={cn(
+          "sticky top-0",
+          open ? "z-[var(--z-drawer)]" : "z-[var(--z-nav)]",
+        )}
+      >
+        {/* THE PAPER ROW — the only sticky chrome. Solid paper at 96%. No
+            backdrop-filter, ever. Three-zone composition (2026-08-04):
+            brand lockup flex-1 left, nav DEAD CENTRE (shrink-0 between two
+            flex-1 wings), CTA flex-1 right. 72px tall at rest at md+; once
+            stuck it steps down to 56px. The size change is carried by
+            Framer's LAYOUT PROJECTION (transform under the hood) — raw
+            height animation stays banned. */}
+        <motion.div
+          layout
+          transition={{ duration: DUR.d3, ease: EASE.quart }}
+          className="relative"
+        >
           <div
             aria-hidden="true"
             className="absolute inset-0"
@@ -267,9 +295,24 @@ export default function StickyNav() {
             }}
           />
 
+          {/* The stuck-state shadow (--shadow-masthead, client 2026-08-04).
+              A separate layer faded via OPACITY — box-shadow itself never
+              animates, per the transform/opacity-only law. Invisible at
+              rest, where the row sits flush against the strip. */}
+          <div
+            aria-hidden="true"
+            className={cn(
+              "pointer-events-none absolute inset-0 shadow-masthead transition-opacity duration-200 ease-quad",
+              scrolled ? "opacity-100" : "opacity-0",
+            )}
+          />
+
           <Container
             width="frame"
-            className="relative flex h-14 items-center justify-between gap-4 md:h-18"
+            className={cn(
+              "relative flex h-14 items-center justify-between gap-4",
+              scrolled ? "md:h-14" : "md:h-18",
+            )}
           >
           {/* Running head — the brand lockup. Wordmark, then a hairline and
               a two-line tracked-caps tagline at lg+ (label voice, not mono:
@@ -390,14 +433,14 @@ export default function StickyNav() {
             </button>
           </div>
           </Container>
-        </div>
+        </motion.div>
 
-        {/* The chapter spine — fills with scroll progress. Rides the
-            masthead's bottom edge: 56px row on mobile, strip + row (108px,
-            top-27 = 6.75rem) at md+. */}
+        {/* The chapter spine — fills with scroll progress. `top-full`
+            rides the sticky row's bottom edge at every height, rest or
+            shrunk, without a hard-coded offset. */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-14 md:top-27"
+          className="pointer-events-none absolute inset-x-0 top-full"
         >
           <motion.div
             className="h-0.5 w-full origin-left"
@@ -408,7 +451,8 @@ export default function StickyNav() {
           />
         </div>
 
-        {/* The drawer. Sole blurred shadow on the page is permitted here. */}
+        {/* The drawer. One of the page's two permitted blurred shadows —
+            the other is the stuck masthead's (--shadow-masthead). */}
         <AnimatePresence>
           {open ? (
             <motion.nav

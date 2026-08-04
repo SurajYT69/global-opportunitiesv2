@@ -48,9 +48,11 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSONLD) }}
       />
       <StickyNav />
-      {/* Fixed masthead adds no spacer; main owns the clearance. 56px below
-          md; 108px (utility strip + paper row, 6.75rem) at md+. */}
-      <main id="main" className="pt-14 md:pt-27">
+      {/* The masthead is `sticky`, in normal flow (2026-08-04) — the strip
+          and paper row occupy real space, so main carries NO clearance
+          padding. The hero's fold calc still subtracts their at-rest
+          heights (3.5rem mobile row / 6.75rem strip+row at md+). */}
+      <main id="main">
         <Hero />
         <ColophonStrip />
         <Gazetteer />
