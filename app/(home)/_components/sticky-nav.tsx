@@ -7,7 +7,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { Icon } from "@/components/ui/icon";
-import { Rule } from "@/components/ui/rule";
 import { cn } from "@/lib/cn";
 import { DUR, EASE, MQ } from "@/lib/motion";
 
@@ -16,9 +15,9 @@ import { DUR, EASE, MQ } from "@/lib/motion";
    Chapter: — (persistent chrome)
 
    Canon: wordmark, six nav items, phone as TEXT, `Book a free guidance
-   session` pill. Surface is solid `--paper` at 96% plus a 0.25rem
-   `--rule-strong` masthead rule — there is NO backdrop-filter anywhere on this
-   page, including here.
+   session` pill. Surface is solid `--paper` at 96% — there is NO
+   backdrop-filter anywhere on this page, including here. (The 0.25rem
+   masthead rule was removed 2026-08-04 by client request.)
 
    ICONS (2026-08-04): Lucide is now canon site-wide, but only through
    `<Icon>` (see `components/ui/icon.tsx` for the stroke/size/colour pins). The
@@ -305,18 +304,11 @@ export default function StickyNav() {
           </div>
         </Container>
 
-        {/* Masthead rule (0.25rem --rule-strong) + the chapter spine */}
+        {/* The chapter spine — fills with scroll progress */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 top-14 md:top-16"
         >
-          <Rule
-            weight="masthead"
-            className={cn(
-              "transition-opacity duration-200 ease-quad",
-              "opacity-100",
-            )}
-          />
           <motion.div
             className="h-0.5 w-full origin-left"
             style={{
