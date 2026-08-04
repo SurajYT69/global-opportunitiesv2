@@ -1,21 +1,21 @@
 import type { Metadata } from "next";
 import GlobeReveal from "@/components/GlobeReveal";
 import StickyNavV2 from "@/components/homev2/sticky-nav-v2";
-import ColophonStrip from "@/components/sections/colophon-strip";
-import Gazetteer from "@/components/sections/gazetteer";
-import Register from "@/components/sections/register";
-import WhatWeDo from "@/components/sections/what-we-do";
-import StillPage from "@/components/sections/still-page";
-import BranchAtlas from "@/components/sections/branch-atlas";
-import Contributors from "@/components/sections/contributors";
-import ForParents from "@/components/sections/for-parents";
-import Reckoning from "@/components/sections/reckoning";
-import ElevenMonths from "@/components/sections/eleven-months";
-import Endpaper from "@/components/sections/endpaper";
-import Questions from "@/components/sections/questions";
-import Enquiry from "@/components/sections/enquiry";
-import Colophon from "@/components/sections/colophon";
-import MobileBar from "@/components/sections/mobile-bar";
+import ColophonStrip from "../(home)/_components/colophon-strip";
+import Gazetteer from "../(home)/_components/gazetteer";
+import Register from "../(home)/_components/register";
+import WhatWeDo from "../(home)/_components/what-we-do";
+import StillPage from "../(home)/_components/still-page";
+import BranchAtlas from "../(home)/_components/branch-atlas";
+import Contributors from "../(home)/_components/contributors";
+import ForParents from "../(home)/_components/for-parents";
+import Reckoning from "../(home)/_components/reckoning";
+import ElevenMonths from "../(home)/_components/eleven-months";
+import Endpaper from "../(home)/_components/endpaper";
+import Questions from "../(home)/_components/questions";
+import Enquiry from "../(home)/_components/enquiry";
+import Colophon from "../(home)/_components/colophon";
+import MobileBar from "../(home)/_components/mobile-bar";
 
 /* ---------------------------------------------------------------------------
    /homev2 — PARALLEL HERO, FOR COMPARISON AGAINST `/`

@@ -23,8 +23,16 @@ import { DUR, EASE, MQ } from "@/lib/motion";
    SECTION 1 · `sticky-nav-v2` — THE RUNNING HEAD, /homev2 VARIANT
    Chapter: — (persistent chrome)
 
-   A COPY of `components/sections/sticky-nav.tsx`, not an edit of it. The live
-   home page keeps the original untouched; only /homev2 imports this one.
+   A COPY of the home page's sticky-nav, not an edit of it. The live home page
+   keeps the original untouched; only /homev2 imports this one.
+
+   FORKED FROM commit 5887f75, when the original lived at
+   `components/sections/sticky-nav.tsx`. It now lives at
+   `app/(home)/_components/sticky-nav.tsx` AND HAS BEEN REDESIGNED SINCE
+   (+179/-53: two-tier header, scroll-spy nav, shorter CTA, masthead rule
+   removed, h-14/md:h-18 instead of h-14/md:h-16). This fork has NOT been
+   rebased onto that redesign, so /homev2 currently differs from / in the
+   masthead as well as the hero. Re-fork before trusting the comparison.
 
    WHAT DIFFERS, AND WHY
 
