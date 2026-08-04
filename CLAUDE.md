@@ -114,10 +114,14 @@ shows superseded Atlas values.
 **Green means verified.** `--verdigris` carries that one semantic. WhatsApp is
 **never** rendered in WhatsApp brand green — the meaning must not leak.
 
-**Banned imagery, permanently.** Flags, national landmarks, globes, aircraft,
-passports, suitcases, dotted flight paths, graduation caps, handshakes, isometric
+**Banned imagery.** Flags, national landmarks, globes, aircraft, passports,
+suitcases, dotted flight paths, graduation caps, handshakes, isometric
 illustration, 3D clay. This survived the icon adoption below — it was always about
-the category cliché, not the library.
+the category cliché, not the library. **One recorded exception (2026-08-04):** the
+hero background plate (`hero-horizon.png`) is client-supplied art containing globe/
+landmarks/aircraft/passport, admitted by explicit client direction — the same
+mechanism that admitted Lucide. The ban still governs everything we author:
+icons, illustrations, and every other photograph or plate on the site.
 
 **Drafted marks** — crosshairs, latitude ticks, bearing marks, registration
 corners, contour rules — are structure, not decoration. Icons did not retire them.
@@ -235,3 +239,6 @@ without the other slides every office off its coast.
 
 `app/(home)/_components/hero/departure-card.tsx` and `hero/hero-plate.tsx` are
 unreferenced and kept on purpose. Do not delete them as dead-code cleanup.
+(The v5 hero briefly returned the departure card to service on 2026-08-04; the
+v6 client-art hero retired it again the same day. Its boot hook survives,
+guarded, in `hero/hero-stage.tsx`.)

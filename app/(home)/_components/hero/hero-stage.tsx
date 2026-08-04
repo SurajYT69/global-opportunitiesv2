@@ -10,12 +10,15 @@ import { DUR, GSAP_EASE, MQ, STAGGER } from "@/lib/motion";
    THE BOOT SEQUENCE  ·  one-shot, <=1400ms, fires once, never loops
    ---------------------------------------------------------------------------
    stats-bar rule draws  ->  badge pill  ->  H1 rises behind line masks
-   ->  sub-line  ->  CTA row  ->  no-cost qualifier  ->  the accreditation
+   ->  sub-line  ->  CTA row  ->  no-cost qualifier  ->  the departure card
+   (v5, one plate — its interior `.reveal` marks are force-set visible so
+   the card never staggers station by station)  ->  the accreditation
    lockup at the right end of the stats bar, last.
 
    Hooks live in app/(home)/_components/hero.tsx; every selector below resolves
    to exactly one element there. Nothing here may reference an element the
-   v4 hero does not render.
+   current hero does not render (the departure card is guarded, since it is
+   the one piece a future revision might drop again).
 
    THE H1 IS THE LCP ELEMENT. It is never `opacity: 0` in CSS and is never
    gated on JavaScript. It paints at its final size and colour on first paint;
@@ -34,6 +37,7 @@ const T = {
   deck: 0.55,
   actions: 0.7,
   proof: 0.8,
+  card: 0.82, /* + DUR.d4 -> lands at 1.30s, inside the 1400ms cap */
   accreditation: 0.88,
 } as const;
 
@@ -141,6 +145,19 @@ export function HeroStage({ children, className, style }: HeroStageProps) {
             { opacity: 1, duration: DUR.d3, ease: GSAP_EASE.quad },
             T.accreditation,
           );
+
+        /* The departure card (v5) animates as ONE plate. Its interior
+           `.reveal` marks (stations, stamp) are force-set visible first —
+           a station-by-station stagger would blow the 1400ms budget. */
+        if (container.querySelector("[data-departure-card]")) {
+          gsap.set("[data-departure-card] .reveal", { opacity: 1 });
+          tl.fromTo(
+            "[data-departure-card]",
+            { opacity: 0, y: 16 },
+            { opacity: 1, y: 0, duration: DUR.d4 },
+            T.card,
+          );
+        }
 
         return () => {
           split?.revert();
