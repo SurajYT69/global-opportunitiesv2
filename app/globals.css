@@ -1,0 +1,605 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   THE DEPARTURE ATLAS — CANONICAL TOKEN LAYER
+   Global Opportunities · Volume XXV
+   Source of truth: direction.md (CANON v1.0, 2026-08-03).
+   Do not introduce a value that is not on this page.
+   ========================================================================= */
+
+/* ---------------------------------------------------------------------------
+   1. TAILWIND THEME
+   `static` guarantees every token is emitted as a CSS custom property in
+   :root, whether or not its utility is used anywhere.
+   ------------------------------------------------------------------------ */
+@theme static {
+  /* --- Color · light chapters ------------------------------------------- */
+  --color-paper: #fbf8f2; /* Cartridge   — page canvas, default surface */
+  --color-paper-still: #fdfbf7; /* Noon        — Trust chapter only */
+  --color-paper-laid: #f3ede2; /* Laid        — alternating surface */
+  --color-paper-warm: #f7efe1; /* Warm Laid   — For-Parents only */
+  --color-paper-tracing: #ede5d7; /* Tracing     — inset panels, plate fields */
+  --color-rule: #ddd2bf; /* Rule        — hairlines, keylines, inputs */
+  --color-rule-strong: #c7b9a1; /* Rule Strong — chapter/masthead/table rules */
+  --color-ink: #171310; /* Iron Gall   — primary type (17:1) */
+  --color-ink-muted: #5c5247; /* Ink Muted   — body, captions (6.8:1) */
+  --color-ink-faint: #8a7f72; /* Ink Faint   — 3.4:1 · >=24px or non-text ONLY */
+  /* BRAND REMAP 2026-08-03 v2 — values from the official GO brand colour
+     kit (global_opportunities_full_brand_color_kit_v2.html): GO Navy
+     #0E2A47 (nav/footer/dark bands), GO Blue #0B77B7 (links/secondary),
+     GO Red #B70000 (primary CTA only), GO Yellow #FFC800 (badges/
+     highlights). The kit marks the wordmark indigo/azure as LOGO-ONLY —
+     not used in UI. Token NAMES keep their Atlas roles; values are the
+     kit's. Warm paper/ink neutrals stay: they are the editorial
+     substrate, not brand chrome. Clay stays as the semantic warning
+     colour, distinct from the CTA red. All ratios recomputed, AA+. */
+  --color-marine: #0e2a47; /* GO Navy     — numerals, links, 2ndary btns (13.8:1) */
+  --color-marine-mid: #16334f; /* Navy Mid    — gradient stop only */
+  --color-sienna: #0b77b7; /* GO Blue     — contour, registration, underline swell (links 4.6:1) */
+  --color-sienna-press: #b70000; /* GO Red      — PRIMARY CTA FILL ONLY (white 7.0:1, marker text 6.6:1) */
+  --color-sienna-deep: #8f0000; /* Red Deep    — CTA hover / active (white 9.7:1) */
+  --color-sienna-tint: #e6f1f8; /* Blue Tint   — wells, selected chip bg */
+  --color-ochre: #ffc800; /* GO Yellow   — 1.5:1 · NEVER text on paper */
+  --color-ochre-tint: #fff3c4; /* Yellow Well — annotation well */
+  --color-verdigris: #095f92; /* Verified    — verified / cleared / STATUS: GO (6.5:1) */
+  --color-verdigris-tint: #e1eef7; /* Verified Tint — cleared-status pill bg */
+  --color-clay: #9e3b24; /* Clay        — external deadlines, refusal callouts (6.4:1) */
+
+  /* --- Color · dark chapter (`endpaper` only) ---------------------------- */
+  --color-endpaper: #0e2a47;
+  --color-endpaper-2: #16385c;
+  --color-plate-white: #f0eae0;
+  --color-plate-grey: #a8a096;
+  --color-plate-rule: #27476b;
+  --color-sienna-on-dark: #5fb0e8;
+  --color-ochre-on-dark: #ffc800;
+  --color-verdigris-on-dark: #7cc0ee;
+
+  /* --- Typefaces (wired to next/font CSS variables) ----------------------
+     RETHEME 2026-08-04: the editorial serif is retired. Geist is the ONLY
+     text face — display and UI both resolve to it, so `font-display` and
+     `font-ui` remain legal at every existing call site and simply stop
+     differing. Bebas Neue is a display-numeral face only. Mono is untouched:
+     the verified-figures ethic stands. */
+  --font-display: var(--font-geist); /* Geist — headlines, decks, quotes */
+  --font-ui: var(--font-geist); /* Geist — all UI chrome, body, forms */
+  --font-mono: var(--font-poppins); /* Poppins — figures & labels (the "verified fact" role) */
+  --font-bebas: var(--font-bebas-neue); /* Bebas Neue — display numerals ONLY */
+  /* Devanagari — loaded ONLY when the For-Parents Hindi toggle fires (SPLIT-B).
+     Falls back to the text face until that module sets --font-plex-deva. */
+  --font-deva: var(--font-plex-deva, var(--font-geist), ui-sans-serif, sans-serif);
+
+  /* --- Type scale --------------------------------------------------------
+     RETHEME: sizes (the clamps) are unchanged — the page rhythm is canon.
+     What changed is CHARACTER: Geist is a grotesque, so display weights move
+     up off the serif's light settings, tracking tightens at large optical
+     sizes, and the old ~0.92 serif leading opens up (Geist's ascenders and
+     descenders are longer than Newsreader's and collide below ~1.0). */
+  --text-d0: clamp(3.25rem, 8.4vw, 7.5rem); /* H1 only · Geist 600 */
+  --text-d0--line-height: 1;
+  --text-d0--letter-spacing: -0.03em;
+  --text-d0--font-weight: 600;
+
+  --text-d1: clamp(2.25rem, 4.8vw, 4rem); /* Chapter openers · Geist 600 */
+  --text-d1--line-height: 1.05;
+  --text-d1--letter-spacing: -0.025em;
+  --text-d1--font-weight: 600;
+
+  --text-d2: clamp(1.625rem, 2.8vw, 2.5rem); /* Section heads · Geist 600 */
+  --text-d2--line-height: 1.05;
+  --text-d2--letter-spacing: -0.02em;
+  --text-d2--font-weight: 600;
+
+  --text-h4: clamp(1.25rem, 1.6vw, 1.5rem); /* Sub-heads, row titles · Geist 600 */
+  --text-h4--line-height: 1.25;
+  --text-h4--letter-spacing: -0.012em;
+  --text-h4--font-weight: 600;
+
+  --text-deck: clamp(1.25rem, 1.9vw, 1.625rem); /* Deck · Geist 400 (no italic) */
+  --text-deck--line-height: 1.45;
+  --text-deck--letter-spacing: -0.01em;
+  --text-deck--font-weight: 400;
+
+  --text-quote: clamp(1.375rem, 2.2vw, 1.875rem); /* Pull quote · Geist 500 */
+  --text-quote--line-height: 1.36;
+  --text-quote--letter-spacing: -0.015em;
+  --text-quote--font-weight: 500;
+
+  /* Name kept for call-site compatibility; it is no longer a serif measure —
+     it is the long-form reading size used by For-Parents. */
+  --text-serif-body: 1.125rem; /* For-Parents ONLY · Geist 400 */
+  --text-serif-body--line-height: 1.7;
+  --text-serif-body--letter-spacing: 0em;
+  --text-serif-body--font-weight: 400;
+
+  --text-body: 1.0625rem; /* Default body · Geist 400 */
+  --text-body--line-height: 1.62;
+  --text-body--letter-spacing: -0.005em;
+  --text-body--font-weight: 400;
+
+  --text-body-sm: 0.9375rem; /* Dense UI copy · Geist 400 */
+  --text-body-sm--line-height: 1.55;
+  --text-body-sm--letter-spacing: 0em;
+  --text-body-sm--font-weight: 400;
+
+  --text-figure: clamp(2rem, 4vw, 3.25rem); /* Stat figures · Plex Mono 500 tabular */
+  --text-figure--line-height: 1;
+  --text-figure--letter-spacing: -0.01em;
+  --text-figure--font-weight: 500;
+
+  --text-data: 0.9375rem; /* Ledger / gazetteer data · Plex Mono 400 tabular */
+  --text-data--line-height: 1.5;
+  --text-data--letter-spacing: 0em;
+  --text-data--font-weight: 400;
+
+  --text-label: 0.6875rem; /* UPPERCASE running heads · Geist 600 */
+  --text-label--line-height: 1.3;
+  --text-label--letter-spacing: 0.14em;
+  --text-label--font-weight: 600;
+
+  --text-mono-label: 0.6875rem; /* UPPERCASE station labels, stamps · Plex Mono 500 */
+  --text-mono-label--line-height: 1.3;
+  --text-mono-label--letter-spacing: 0.1em;
+  --text-mono-label--font-weight: 500;
+
+  --text-caption: 0.75rem; /* Plate captions · Plex Mono 400 */
+  --text-caption--line-height: 1.45;
+  --text-caption--letter-spacing: 0.04em;
+  --text-caption--font-weight: 400;
+
+  --text-footnote: 0.8125rem; /* Marginalia rail · Geist 400 */
+  --text-footnote--line-height: 1.5;
+  --text-footnote--letter-spacing: 0em;
+  --text-footnote--font-weight: 400;
+
+  /* --- Tracking (letterspaced uppercase is reserved: running heads,
+         captions, data labels, stamps, footnote refs — never headlines,
+         never CTAs, never body) --------------------------------------------- */
+  --tracking-label: 0.14em;
+  --tracking-mono-label: 0.1em;
+  --tracking-caption: 0.04em;
+
+  /* --- Spacing (semantic only; the numeric scale maps 1:1 onto Tailwind's
+         default 0.25rem step — --s-4 (1rem) === p-4, --s-9 (6rem) === p-24) -- */
+  --spacing-section-y: clamp(5rem, 10vw, 9rem);
+  --spacing-section-y-tight: clamp(3rem, 6vw, 5rem);
+  --spacing-gutter: clamp(1.25rem, 4vw, 4rem);
+  --spacing-grid-gap: clamp(1rem, 2vw, 2rem);
+  --spacing-rail: 96px;
+  --spacing-rail-md: 64px;
+
+  /* --- Container widths -------------------------------------------------- */
+  --container-frame: 1600px; /* outer page frame */
+  --container-content: 1200px; /* default content column */
+  --container-prose: 66ch; /* default body measure */
+  --container-serif: 62ch; /* For-Parents long-form measure (name kept) */
+  --container-deck: 52ch; /* hero deck measure */
+
+  /* --- Border radii · nothing exceeds 4px except the CTA pill ------------- */
+  --radius-0: 0; /* rules, plates, ledger, tables — THE DEFAULT */
+  --radius-1: 2px; /* plate keylines, specimen sheets */
+  --radius-2: 4px; /* chips, inputs, selects, status pills */
+  --radius-pill: 999px; /* CTA buttons ONLY */
+
+  /* --- Shadows · print misregistration is the only depth on the page plane */
+  --shadow-reg-sienna: 3px 3px 0 0 #0b77b7;
+  --shadow-reg-marine: 3px 3px 0 0 #0e2a47;
+  --shadow-reg-rule: 2px 2px 0 0 #c7b9a1;
+  --shadow-drawer: 0 1px 2px rgba(23, 19, 16, 0.05),
+    0 24px 48px -20px rgba(23, 19, 16, 0.22); /* modal/drawer surfaces ONLY */
+
+  /* --- Easing curves ----------------------------------------------------- */
+  --ease-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* GSAP power1.out */
+  --ease-cubic: cubic-bezier(0.215, 0.61, 0.355, 1); /* GSAP power2.out */
+  --ease-quart: cubic-bezier(0.165, 0.84, 0.44, 1); /* GSAP power3.out */
+  --ease-expo: cubic-bezier(0.19, 1, 0.22, 1); /* GSAP expo.out */
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1); /* GSAP power2.inOut */
+  --ease-press: cubic-bezier(0.34, 1.4, 0.64, 1); /* GSAP back.out(1.4) */
+
+  /* --- Breakpoints ------------------------------------------------------- */
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 768px;
+  --breakpoint-md: 1024px; /* pinning + marginalia rail + desktop nav */
+  --breakpoint-lg: 1280px; /* full 96px rail */
+  --breakpoint-xl: 1600px;
+  --breakpoint-2xl: initial; /* removed — would sort below --breakpoint-xl */
+}
+
+/* ---------------------------------------------------------------------------
+   2. CANONICAL ALIASES
+   Every token under its canon name, for raw CSS. These are aliases, never
+   second definitions — the hexes live once, in @theme above.
+   ------------------------------------------------------------------------ */
+:root {
+  color-scheme: light;
+
+  /* Color — light chapters */
+  --paper: var(--color-paper);
+  --paper-still: var(--color-paper-still);
+  --paper-laid: var(--color-paper-laid);
+  --paper-warm: var(--color-paper-warm);
+  --paper-tracing: var(--color-paper-tracing);
+  --rule: var(--color-rule);
+  --rule-strong: var(--color-rule-strong);
+  --ink: var(--color-ink);
+  --ink-muted: var(--color-ink-muted);
+  --ink-faint: var(--color-ink-faint);
+  --marine: var(--color-marine);
+  --marine-mid: var(--color-marine-mid);
+  --sienna: var(--color-sienna);
+  --sienna-press: var(--color-sienna-press);
+  --sienna-deep: var(--color-sienna-deep);
+  --sienna-tint: var(--color-sienna-tint);
+  --ochre: var(--color-ochre);
+  --ochre-tint: var(--color-ochre-tint);
+  --verdigris: var(--color-verdigris);
+  --verdigris-tint: var(--color-verdigris-tint);
+  --clay: var(--color-clay);
+
+  /* Color — dark chapter */
+  --endpaper: var(--color-endpaper);
+  --endpaper-2: var(--color-endpaper-2);
+  --plate-white: var(--color-plate-white);
+  --plate-grey: var(--color-plate-grey);
+  --plate-rule: var(--color-plate-rule);
+  --sienna-on-dark: var(--color-sienna-on-dark);
+  --ochre-on-dark: var(--color-ochre-on-dark);
+  --verdigris-on-dark: var(--color-verdigris-on-dark);
+
+  /* Gradients — exactly six. No others permitted. */
+  --grad-paper-vignette: radial-gradient(
+    120% 90% at 50% 0%,
+    #fdfbf7 0%,
+    #fbf8f2 45%,
+    #f3ede2 100%
+  );
+  --grad-endpaper-turn: linear-gradient(180deg, #fbf8f2 0%, #16334f 55%, #0e2a47 100%);
+  --grad-endpaper-return: linear-gradient(180deg, #0e2a47 0%, #16334f 30%, #fbf8f2 100%);
+  --grad-plate-marine: linear-gradient(
+    152deg,
+    #0e2a47 0%,
+    #16385c 38%,
+    #2a6a9a 68%,
+    #0b77b7 100%
+  );
+  --grad-plate-laid: linear-gradient(152deg, #c7b9a1 0%, #ede5d7 55%, #f3ede2 100%);
+  --grad-spine-fill: linear-gradient(180deg, #0b77b7 0%, #5fb0e8 100%);
+
+  /* Type scale */
+  --fs-d0: var(--text-d0);
+  --fs-d1: var(--text-d1);
+  --fs-d2: var(--text-d2);
+  --fs-h4: var(--text-h4);
+  --fs-deck: var(--text-deck);
+  --fs-quote: var(--text-quote);
+  --fs-serif-body: var(--text-serif-body);
+  --fs-body: var(--text-body);
+  --fs-body-sm: var(--text-body-sm);
+  --fs-figure: var(--text-figure);
+  --fs-data: var(--text-data);
+  --fs-label: var(--text-label);
+  --fs-mono-label: var(--text-mono-label);
+  --fs-caption: var(--text-caption);
+  --fs-footnote: var(--text-footnote);
+
+  /* Legacy optical-size axis. Geist exposes `wght` only, so this token and the
+     `opsz-*` utilities are inert no-ops — an unsupported axis in
+     font-variation-settings is ignored by the UA. Kept so the many existing
+     `opsz-chapter` call sites keep compiling; delete only in a sweep. */
+  --nr-opsz: 16;
+
+  /* Spacing scale */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+  --s-10: 8rem;
+  --s-11: 10rem;
+  --s-12: 14rem;
+  --section-y: var(--spacing-section-y);
+  --section-y-tight: var(--spacing-section-y-tight);
+  --gutter: var(--spacing-gutter);
+  --grid-gap: var(--spacing-grid-gap);
+
+  /* Container widths & grid */
+  --frame-max: var(--container-frame);
+  --content-max: var(--container-content);
+  --measure-prose: var(--container-prose);
+  --measure-serif: var(--container-serif);
+  --measure-deck: var(--container-deck);
+  --rail: var(--spacing-rail);
+  --rail-md: var(--spacing-rail-md);
+  --grid-cols: 12;
+
+  /* Border radii */
+  --r-0: var(--radius-0);
+  --r-1: var(--radius-1);
+  --r-2: var(--radius-2);
+  --r-pill: var(--radius-pill);
+
+  /* Shadow recipes */
+  --reg-sienna: var(--shadow-reg-sienna);
+  --reg-marine: var(--shadow-reg-marine);
+  --reg-rule: var(--shadow-reg-rule);
+  /* --shadow-drawer is already canon-named in @theme */
+
+  /* Duration scale */
+  --dur-1: 120ms; /* press feedback */
+  --dur-2: 200ms; /* hover, color, focus ring */
+  --dur-3: 320ms; /* small reveal, chip, accordion */
+  --dur-4: 480ms; /* plate wipe, drawer, rule draw */
+  --dur-5: 700ms; /* chapter reveal — HARD CAP for all non-hero motion */
+  --dur-hero: 900ms; /* hero headline only; full hero sequence <=1400ms */
+  --stagger-tight: 0.045s;
+  --stagger: 0.08s;
+  --stagger-loose: 0.12s;
+
+  /* z-index scale */
+  --z-base: 0;
+  --z-raised: 10;
+  --z-rail: 20;
+  --z-nav: 30;
+  --z-mobilebar: 40;
+  --z-scrim: 50;
+  --z-drawer: 60;
+  --z-toast: 70;
+  --z-skiplink: 80;
+
+  /* Breakpoints (for JS matchMedia parity / container queries) */
+  --bp-xs: var(--breakpoint-xs);
+  --bp-sm: var(--breakpoint-sm);
+  --bp-md: var(--breakpoint-md);
+  --bp-lg: var(--breakpoint-lg);
+  --bp-xl: var(--breakpoint-xl);
+}
+
+/* Per-chapter static optical-size axis. Set once on the chapter root.
+   NEVER scrubbed. */
+[data-chapter="dream"],
+[data-chapter="success"] {
+  --nr-opsz: 72;
+}
+[data-chapter="explore"],
+[data-chapter="choose"],
+[data-chapter="apply"] {
+  --nr-opsz: 60;
+}
+[data-chapter="trust"] {
+  --nr-opsz: 44;
+}
+
+/* ---------------------------------------------------------------------------
+   3. BASE
+   ------------------------------------------------------------------------ */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-ui);
+    font-size: var(--fs-body);
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-synthesis-weight: none;
+  }
+
+  /* :focus-visible only, never bare :focus. */
+  :focus {
+    outline: none;
+  }
+  :focus-visible {
+    outline: 2px solid var(--sienna-press);
+    outline-offset: 2px;
+    border-radius: inherit;
+  }
+  [data-chapter="success"] :focus-visible {
+    outline-color: var(--ochre-on-dark);
+  }
+  @media (prefers-contrast: more) {
+    :focus-visible {
+      outline-width: 3px;
+    }
+  }
+
+  ::selection {
+    background-color: var(--sienna-tint);
+    color: var(--ink);
+  }
+  [data-chapter="success"] ::selection {
+    background-color: var(--marine-mid);
+    color: var(--plate-white);
+  }
+
+  /* Figures are always tabular — no reflow, no jitter, ever. */
+  [data-figure],
+  .font-mono {
+    font-variant-numeric: tabular-nums lining-nums slashed-zero;
+  }
+
+  /* Marginalia rail hangs off the content column at >=1024px only. */
+  hr {
+    border: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   4. UTILITIES
+   ------------------------------------------------------------------------ */
+
+/* Non-negotiable on every figure. */
+@utility tabular-figures {
+  font-variant-numeric: tabular-nums lining-nums slashed-zero;
+}
+
+/* Legacy optical-size utilities. INERT under Geist (wght-only axis) — the UA
+   ignores an unsupported axis. Retained so existing call sites compile. */
+@utility opsz-* {
+  font-variation-settings: "opsz" --value(integer);
+}
+@utility opsz-chapter {
+  font-variation-settings: "opsz" var(--nr-opsz);
+}
+
+/* Hairline rules at ink weights. Prefer <Rule /> for standalone dividers;
+   these are for edges on existing boxes. */
+@utility hairline-t {
+  border-top: 1px solid var(--rule);
+}
+@utility hairline-b {
+  border-bottom: 1px solid var(--rule);
+}
+@utility hairline-l {
+  border-left: 1px solid var(--rule);
+}
+@utility hairline-r {
+  border-right: 1px solid var(--rule);
+}
+@utility hairline-strong-t {
+  border-top: 1px solid var(--rule-strong);
+}
+@utility hairline-strong-b {
+  border-bottom: 1px solid var(--rule-strong);
+}
+
+/* Skip link — parked off-screen until focused. */
+@utility skip-link {
+  position: fixed;
+  top: var(--s-2);
+  left: var(--s-2);
+  z-index: var(--z-skiplink);
+  transform: translateY(-200%);
+  background-color: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--rule-strong);
+  padding: var(--s-3) var(--s-4);
+  font-family: var(--font-ui);
+  font-size: var(--fs-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  &:focus-visible {
+    transform: translateY(0);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   5. PAPER GRAIN
+   One static tile, background-repeat, multiply, 4%. Never animated, never a
+   live filter. Rendered once by <RootLayout>; nothing else should use it.
+   ------------------------------------------------------------------------ */
+.paper-grain {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-base);
+  pointer-events: none;
+  opacity: 0.04;
+  mix-blend-mode: multiply;
+  background-repeat: repeat;
+  background-size: 180px 180px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+@media (prefers-reduced-transparency: reduce) {
+  .paper-grain {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   5b. PLATE SYSTEM FIELD RECIPES
+   Consumed by <Plate />. Static background images only — never live filters.
+   ------------------------------------------------------------------------ */
+
+/* Plate A — graticule tile, 8% white, over --grad-plate-marine. */
+.plate-graticule {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cpath d='M48 0H0v48' fill='none' stroke='%23ffffff' stroke-opacity='0.08' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 48px 48px;
+}
+
+/* Plate C — hairline contour rings behind the monogram. */
+.plate-contour {
+  background-image: repeating-radial-gradient(
+    circle at 50% 50%,
+    var(--rule) 0 1px,
+    transparent 1px 15px
+  );
+  opacity: 0.6;
+}
+
+/* Plate B — honest redaction block. */
+.plate-redaction {
+  font-family: var(--font-mono);
+  color: var(--rule-strong);
+  letter-spacing: -0.06em;
+  user-select: none;
+}
+
+/* ---------------------------------------------------------------------------
+   6. LENIS
+   Required base rules (lenis/dist/lenis.css), inlined so no extra request.
+   ------------------------------------------------------------------------ */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent],
+.lenis [data-lenis-prevent-wheel],
+.lenis [data-lenis-prevent-touch],
+.lenis [data-lenis-prevent-vertical],
+.lenis [data-lenis-prevent-horizontal] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+.lenis.lenis-autoToggle {
+  transition-property: overflow;
+  transition-duration: 1ms;
+  transition-behavior: allow-discrete;
+}
+
+/* ---------------------------------------------------------------------------
+   7. REVEAL CONTRACT + REDUCED-MOTION BACKSTOP
+   Layer 3 of 3. Layer 1 is gsap.matchMedia()'s `reduce` branch; layer 2 is
+   <MotionConfig reducedMotion="user">.
+   Reduced motion must NEVER hide content: every branch lands on the final,
+   fully visible state.
+   ------------------------------------------------------------------------ */
+.reveal {
+  opacity: 0;
+}
+
+/* JS-disabled backstop is emitted by <RootLayout> inside <noscript>. */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}
