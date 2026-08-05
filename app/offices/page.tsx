@@ -4,11 +4,11 @@ import StickyNav from "@/app/(home)/_components/sticky-nav";
 import Colophon from "@/app/(home)/_components/colophon";
 import MobileBar from "@/app/(home)/_components/mobile-bar";
 import { PageHeader, PageFoot } from "@/components/homev2/page-shell";
-import Gazetteer from "@/app/(home)/_components/gazetteer";
-import { ForkStudents } from "@/components/homev2/audience-fork";
+import BranchAtlas from "@/app/(home)/_components/branch-atlas";
+import Contributors from "@/app/(home)/_components/contributors";
 
 /* ===========================================================================
-   /destinations
+   /offices
    ---------------------------------------------------------------------------
    Split off the homepage, Aug 2026. The homepage carried fifteen topics and
    ranked for none of them; this page carries one.
@@ -19,30 +19,30 @@ import { ForkStudents } from "@/components/homev2/audience-fork";
    ======================================================================== */
 
 export const metadata: Metadata = {
-  title: "Study abroad destinations — 15 countries | Global Opportunities",
+  title: "Our offices across India and the counsellors in them | Global Opportunities",
   description:
-    "Partner counts, intake windows, tuition bands and post-study work rights for the fifteen countries Global Opportunities places students in.",
-  alternates: { canonical: "/destinations" },
+    "Where Global Opportunities has offices you can walk into, and the counsellors who work in them — named, with what each of them handles.",
+  alternates: { canonical: "/offices" },
 };
 
-export default function DestinationsPage() {
+export default function OfficesPage() {
   return (
     <div className="pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))] md:pb-0">      <StickyNav />
       <main id="main" className="pt-14 md:pt-16">
         <PageHeader
-          eyebrow="THE GAZETTEER"
-          deck="Every country we place students in, with its partner count, its intake windows and the work rights it publishes — set out the same way so they can be compared rather than browsed."
+          eyebrow="OFFICES YOU CAN WALK INTO"
+          deck="A map is only useful if somebody is behind the desk. The offices are here with the counsellors who sit in them, because the second is what you are actually looking for."
         >
-          Fifteen destinations, on the same four axes.
+          Offices across India, and the people in them.
         </PageHeader>
 
-        <Gazetteer />
-        <ForkStudents />
+        <BranchAtlas />
+        <Contributors />
 
         <PageFoot
           related={[
           { href: "/partners", label: "The 700+ partner register" },
-          { href: "/costs", label: "What it costs, itemised" },
+          { href: "/how-it-works", label: "The eleven-month timeline" },
           ]}
         />
       </main>

@@ -4,11 +4,11 @@ import StickyNav from "@/app/(home)/_components/sticky-nav";
 import Colophon from "@/app/(home)/_components/colophon";
 import MobileBar from "@/app/(home)/_components/mobile-bar";
 import { PageHeader, PageFoot } from "@/components/homev2/page-shell";
-import Gazetteer from "@/app/(home)/_components/gazetteer";
-import { ForkStudents } from "@/components/homev2/audience-fork";
+import Register from "@/app/(home)/_components/register";
+import { ForkInstitutions } from "@/components/homev2/audience-fork";
 
 /* ===========================================================================
-   /destinations
+   /partners
    ---------------------------------------------------------------------------
    Split off the homepage, Aug 2026. The homepage carried fifteen topics and
    ranked for none of them; this page carries one.
@@ -19,30 +19,30 @@ import { ForkStudents } from "@/components/homev2/audience-fork";
    ======================================================================== */
 
 export const metadata: Metadata = {
-  title: "Study abroad destinations — 15 countries | Global Opportunities",
+  title: "Partner universities — 700+ institutions | Global Opportunities",
   description:
-    "Partner counts, intake windows, tuition bands and post-study work rights for the fifteen countries Global Opportunities places students in.",
-  alternates: { canonical: "/destinations" },
+    "Sixty-eight named partner institutions across eight countries, with the published count for each, and how to open a recruitment agreement with us.",
+  alternates: { canonical: "/partners" },
 };
 
-export default function DestinationsPage() {
+export default function PartnersPage() {
   return (
     <div className="pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))] md:pb-0">      <StickyNav />
       <main id="main" className="pt-14 md:pt-16">
         <PageHeader
-          eyebrow="THE GAZETTEER"
-          deck="Every country we place students in, with its partner count, its intake windows and the work rights it publishes — set out the same way so they can be compared rather than browsed."
+          eyebrow="THE REGISTER"
+          deck="Formal agreements across fifteen destinations, set as type rather than as crests, with the gap between the named list and the headline figure stated rather than smoothed over."
         >
-          Fifteen destinations, on the same four axes.
+          700+ partner universities, named where we can name them.
         </PageHeader>
 
-        <Gazetteer />
-        <ForkStudents />
+        <Register />
+        <ForkInstitutions />
 
         <PageFoot
           related={[
-          { href: "/partners", label: "The 700+ partner register" },
-          { href: "/costs", label: "What it costs, itemised" },
+          { href: "/destinations", label: "All fifteen destinations" },
+          { href: "/offices", label: "Our offices and counsellors" },
           ]}
         />
       </main>

@@ -24,14 +24,17 @@ import { QuestionDisclosure } from "./questions/accordion";
 /** A paragraph, or a bullet list. Order is preserved into the JSON-LD. */
 type AnswerBlock = string | string[];
 
-interface FaqItem {
+export interface FaqItem {
   /** Stable slug — becomes the button/panel id pair. */
   id: string;
   question: string;
   answer: AnswerBlock[];
 }
 
-const FAQS: FaqItem[] = [
+/* Exported since the Aug 2026 split: `/faq` emits FAQPage JSON-LD built from
+   this same array, so the structured data and the rendered answers cannot
+   drift apart. Nothing else about this section changed. */
+export const FAQS: FaqItem[] = [
   {
     id: "why-a-consultant",
     question: "Why use a consultant at all? I could apply on my own.",

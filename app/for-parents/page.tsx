@@ -4,11 +4,10 @@ import StickyNav from "@/app/(home)/_components/sticky-nav";
 import Colophon from "@/app/(home)/_components/colophon";
 import MobileBar from "@/app/(home)/_components/mobile-bar";
 import { PageHeader, PageFoot } from "@/components/homev2/page-shell";
-import Gazetteer from "@/app/(home)/_components/gazetteer";
-import { ForkStudents } from "@/components/homev2/audience-fork";
+import ForParents from "@/app/(home)/_components/for-parents";
 
 /* ===========================================================================
-   /destinations
+   /for-parents
    ---------------------------------------------------------------------------
    Split off the homepage, Aug 2026. The homepage carried fifteen topics and
    ranked for none of them; this page carries one.
@@ -19,30 +18,29 @@ import { ForkStudents } from "@/components/homev2/audience-fork";
    ======================================================================== */
 
 export const metadata: Metadata = {
-  title: "Study abroad destinations — 15 countries | Global Opportunities",
+  title: "For parents — the questions you actually ask | Global Opportunities",
   description:
-    "Partner counts, intake windows, tuition bands and post-study work rights for the fifteen countries Global Opportunities places students in.",
-  alternates: { canonical: "/destinations" },
+    "Written for the person signing the loan: money, safety, whether the degree counts at home, and who we answer to. Plain answers, no promises about outcomes.",
+  alternates: { canonical: "/for-parents" },
 };
 
-export default function DestinationsPage() {
+export default function ForParentsPage() {
   return (
     <div className="pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))] md:pb-0">      <StickyNav />
       <main id="main" className="pt-14 md:pt-16">
         <PageHeader
-          eyebrow="THE GAZETTEER"
-          deck="Every country we place students in, with its partner count, its intake windows and the work rights it publishes — set out the same way so they can be compared rather than browsed."
+          eyebrow="FOR THE PERSON WHO PAYS"
+          deck="Most of this site is written for someone who is nineteen and impatient. This page is not."
         >
-          Fifteen destinations, on the same four axes.
+          A page written for you, not for your child.
         </PageHeader>
 
-        <Gazetteer />
-        <ForkStudents />
+        <ForParents />
 
         <PageFoot
           related={[
-          { href: "/partners", label: "The 700+ partner register" },
           { href: "/costs", label: "What it costs, itemised" },
+          { href: "/faq", label: "Ten questions, answered in full" },
           ]}
         />
       </main>

@@ -65,12 +65,21 @@ import { DUR, EASE, MQ } from "@/lib/motion";
 
 /** Canon nav items, in canon order, resolved to their section ids. */
 const NAV_ITEMS = [
-  { label: "Destinations", href: "#gazetteer" },
-  { label: "Costs", href: "#reckoning" },
-  { label: "Process", href: "#eleven-months" },
-  { label: "Counsellors", href: "#contributors" },
-  { label: "Offices", href: "#branch-atlas" },
-  { label: "For Parents", href: "#for-parents" },
+  /* ROUTES, NOT ANCHORS (Aug 2026). Every entry here used to be an in-page
+     anchor, because the whole site was one page. The split moved those
+     sections onto their own routes and left six hash links pointing at ids
+     that no longer exist anywhere — the masthead silently did nothing on
+     every page of the site.
+
+     "Counsellors" and "Offices" both resolve to /offices, which carries the
+     branch atlas and the counsellor list; the anchor keeps them distinct
+     rather than shipping the same href twice. */
+  { label: "Destinations", href: "/destinations" },
+  { label: "Costs", href: "/costs" },
+  { label: "Process", href: "/how-it-works" },
+  { label: "Counsellors", href: "/offices#contributors" },
+  { label: "Offices", href: "/offices" },
+  { label: "For Parents", href: "/for-parents" },
 ] as const;
 
 /** Canon toll-free number, rendered as text. Mono = verified fact. */
@@ -113,9 +122,18 @@ export default function StickyNav() {
   // section occupies it at a time; when none of the six targets is in the
   // band (hero, or a section without a nav item), nothing is marked.
   useEffect(() => {
-    const targets = NAV_ITEMS.map((item) =>
-      document.querySelector<HTMLElement>(item.href),
-    ).filter((el): el is HTMLElement => el !== null);
+    /* HASH ITEMS ONLY (Aug 2026). This used to map EVERY nav item straight
+       into querySelector, which was safe while all six were "#section". The
+       split turned them into routes, and `querySelector("/destinations")`
+       throws a SyntaxError — not a caught miss, an exception that killed
+       hydration for the whole page on every subpage of the site.
+
+       The filter is the fix and also the guard: a nav item is only a
+       scroll-spy target if it is an in-page hash on THIS page. With none, the
+       early return below disables the observer entirely. */
+    const targets = NAV_ITEMS.filter((item) => item.href.startsWith("#"))
+      .map((item) => document.querySelector<HTMLElement>(item.href))
+      .filter((el): el is HTMLElement => el !== null);
     if (targets.length === 0) return;
 
     const io = new IntersectionObserver(
@@ -218,7 +236,8 @@ export default function StickyNav() {
   return (
     <>
       {/* First focusable on the page. */}
-      <a href="#hero" className="skip-link">
+      {/* Subpages have no #hero; skip to the page content instead. */}
+      <a href="#main" className="skip-link">
         Skip to content
       </a>
 
@@ -249,7 +268,7 @@ export default function StickyNav() {
             className="flex h-9 items-center justify-between gap-6"
           >
             <p className="m-0 font-mono text-mono-label uppercase text-plate-grey">
-              Est. 2001 · 18 offices across India
+              Est. 2001 · Offices across India
             </p>
             <div className="flex items-center gap-6">
               <span className="inline-flex items-center gap-2 font-mono text-mono-label uppercase text-plate-grey">
@@ -319,7 +338,7 @@ export default function StickyNav() {
               it is a noun phrase, not a verified figure). */}
           <div className="flex min-w-0 flex-1 items-center gap-4">
             <a
-              href="#hero"
+              href="/"
               className="group inline-flex min-h-11 items-center no-underline"
             >
               <motion.span
@@ -386,7 +405,7 @@ export default function StickyNav() {
                 the drawer and every other surface. "Session" is kill-list
                 safe; "free counselling" remains banned. */}
             <Button
-              href="#enquiry"
+              href="/#enquiry"
               size="sm"
               className="max-sm:hidden"
               onClick={() => setOpen(false)}
@@ -505,7 +524,7 @@ export default function StickyNav() {
                 </span>
               </a>
 
-              <Button href="#enquiry" size="lg" fullWidth onClick={close}>
+              <Button href="/#enquiry" size="lg" fullWidth onClick={close}>
                 <Icon as={CalendarCheck} />
                 Book a free guidance session
               </Button>

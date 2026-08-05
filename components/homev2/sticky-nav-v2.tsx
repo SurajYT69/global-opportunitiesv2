@@ -69,12 +69,21 @@ import { DUR, EASE, MQ } from "@/lib/motion";
 
 /** Canon nav items, in canon order, resolved to their section ids. */
 const NAV_ITEMS = [
-  { label: "Destinations", href: "#gazetteer" },
-  { label: "Costs", href: "#reckoning" },
-  { label: "Process", href: "#eleven-months" },
-  { label: "Counsellors", href: "#contributors" },
-  { label: "Offices", href: "#branch-atlas" },
-  { label: "For Parents", href: "#for-parents" },
+  /* ROUTES, NOT ANCHORS (Aug 2026). Every entry here used to be an in-page
+     anchor, because the whole site was one page. The split moved those
+     sections onto their own routes and left six hash links pointing at ids
+     that no longer exist anywhere — the masthead silently did nothing on
+     every page of the site.
+
+     "Counsellors" and "Offices" both resolve to /offices, which carries the
+     branch atlas and the counsellor list; the anchor keeps them distinct
+     rather than shipping the same href twice. */
+  { label: "Destinations", href: "/destinations" },
+  { label: "Costs", href: "/costs" },
+  { label: "Process", href: "/how-it-works" },
+  { label: "Counsellors", href: "/offices#contributors" },
+  { label: "Offices", href: "/offices" },
+  { label: "For Parents", href: "/for-parents" },
 ] as const;
 
 /** Canon toll-free number, rendered as text. Mono = verified fact. */

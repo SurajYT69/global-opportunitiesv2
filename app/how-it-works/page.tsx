@@ -4,11 +4,10 @@ import StickyNav from "@/app/(home)/_components/sticky-nav";
 import Colophon from "@/app/(home)/_components/colophon";
 import MobileBar from "@/app/(home)/_components/mobile-bar";
 import { PageHeader, PageFoot } from "@/components/homev2/page-shell";
-import Gazetteer from "@/app/(home)/_components/gazetteer";
-import { ForkStudents } from "@/components/homev2/audience-fork";
+import ElevenMonths from "@/app/(home)/_components/eleven-months";
 
 /* ===========================================================================
-   /destinations
+   /how-it-works
    ---------------------------------------------------------------------------
    Split off the homepage, Aug 2026. The homepage carried fifteen topics and
    ranked for none of them; this page carries one.
@@ -19,30 +18,29 @@ import { ForkStudents } from "@/components/homev2/audience-fork";
    ======================================================================== */
 
 export const metadata: Metadata = {
-  title: "Study abroad destinations — 15 countries | Global Opportunities",
+  title: "The eleven-month rule — how the process runs | Global Opportunities",
   description:
-    "Partner counts, intake windows, tuition bands and post-study work rights for the fifteen countries Global Opportunities places students in.",
-  alternates: { canonical: "/destinations" },
+    "How a study abroad application actually runs, month by month, from first conversation to departure, and what has to be true at each step.",
+  alternates: { canonical: "/how-it-works" },
 };
 
-export default function DestinationsPage() {
+export default function HowItWorksPage() {
   return (
     <div className="pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))] md:pb-0">      <StickyNav />
       <main id="main" className="pt-14 md:pt-16">
         <PageHeader
-          eyebrow="THE GAZETTEER"
-          deck="Every country we place students in, with its partner count, its intake windows and the work rights it publishes — set out the same way so they can be compared rather than browsed."
+          eyebrow="THE ELEVEN-MONTH RULE"
+          deck="The intake you can realistically make is decided by the calendar, not by ambition. This is the sequence, with what has to be finished before the next thing can start."
         >
-          Fifteen destinations, on the same four axes.
+          How eleven months of it actually runs.
         </PageHeader>
 
-        <Gazetteer />
-        <ForkStudents />
+        <ElevenMonths />
 
         <PageFoot
           related={[
-          { href: "/partners", label: "The 700+ partner register" },
-          { href: "/costs", label: "What it costs, itemised" },
+          { href: "/services", label: "Every service, priced" },
+          { href: "/destinations", label: "All fifteen destinations" },
           ]}
         />
       </main>

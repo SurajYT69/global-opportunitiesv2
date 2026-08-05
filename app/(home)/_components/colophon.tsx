@@ -6,6 +6,7 @@ import {
   MessageCircle,
   Phone,
 } from "lucide-react";
+import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Icon } from "@/components/ui/icon";
 import { Rule } from "@/components/ui/rule";
@@ -323,98 +324,34 @@ export default function Colophon() {
         {/* ── Sources & last verified ────────────────────────────────────
             Every superscript on this page resolves into a row of this table.
             Ids come from the foundation registry, so the markers never 404. */}
+        {/* ── Sources & last verified ────────────────────────────────────
+            THE TABLE MOVED (Aug 2026). It lived here and it was the single
+            largest thing in the footer — sixteen rows of claim, origin, owner
+            and date, repeated at the foot of every page on the site.
+
+            It now lives once, on /costs, where the money argument already is.
+            Every footnote superscript points straight at it: `Footnote` builds
+            its href as `/costs#fn-*`, so a marker anywhere on the site still
+            lands on its own row in one click. Do not make those hrefs
+            page-relative again without bringing the table back with them. */}
         <section aria-labelledby="colophon-sources">
           <h3 id="colophon-sources" className={blockLabel}>
             Sources &amp; last verified
           </h3>
           <p className="mt-3 max-w-prose font-display text-footnote opsz-8 text-ink-muted">
-            Every number printed on this page carries a superscript, and every
-            superscript lands here. Each entry names where the figure came
-            from, who inside Global Opportunities is accountable for it, and
-            the month it was last checked.
+            Every number printed on this site carries a superscript, and every
+            superscript lands in one table — where the figure came from, who
+            inside Global Opportunities is accountable for it, and the month it
+            was last checked.
           </p>
-
-          <table className="mt-6 w-full border-collapse text-left">
-            <caption className="sr-only">
-              Sources and last-verified dates for every figure on this page
-            </caption>
-            <thead>
-              <tr className="hairline-strong-b">
-                <th
-                  scope="col"
-                  className="w-8 pb-2 font-ui text-label uppercase text-ink-muted"
-                >
-                  No.
-                </th>
-                <th
-                  scope="col"
-                  className="pb-2 font-ui text-label uppercase text-ink-muted"
-                >
-                  Claim, and where it comes from
-                </th>
-                <th
-                  scope="col"
-                  className="hidden w-32 pb-2 font-ui text-label uppercase text-ink-muted sm:table-cell"
-                >
-                  Last verified
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {sources.map(({ id, n, source }) => (
-                <tr key={id} id={footnoteId(id)} className="hairline-b">
-                  <th
-                    scope="row"
-                    className="py-4 pr-2 align-top font-mono text-data font-normal tabular-figures"
-                  >
-                    <a
-                      href={`#${footnoteRefId(id)}`}
-                      aria-label={`Back to reference ${n} in the page`}
-                      className="text-sienna-press no-underline hover:underline"
-                    >
-                      {n}
-                    </a>
-                  </th>
-                  <td className="py-4 pr-4 align-top">
-                    <p className="font-mono text-mono-label uppercase text-ink tabular-figures">
-                      {source.claim}
-                    </p>
-                    <p className="mt-2 max-w-prose font-display text-footnote opsz-8 text-ink-muted">
-                      {source.note}
-                    </p>
-                    <p className="mt-1 font-mono text-caption uppercase text-ink-muted tabular-figures">
-                      {source.origin} · owner {source.owner}
-                      <span className="sm:hidden">
-                        {" "}
-                        · verified {source.lastVerified}
-                      </span>
-                    </p>
-                    {source.href && (
-                      /* The one place on the page that leaves it. The glyph
-                         trails the URL and stays inline — `inline-flex` here
-                         would stop a long href from wrapping inside its
-                         table cell. */
-                      <a
-                        href={source.href}
-                        rel="noopener"
-                        className="mt-1 inline-block font-mono text-caption uppercase text-marine underline decoration-rule-strong decoration-1 underline-offset-4 tabular-figures hover:decoration-sienna"
-                      >
-                        {source.href}
-                        <Icon
-                          as={ExternalLink}
-                          size="sm"
-                          className="ml-1.5 align-middle"
-                        />
-                      </a>
-                    )}
-                  </td>
-                  <td className="hidden py-4 align-top font-mono text-data text-ink tabular-figures sm:table-cell">
-                    {source.lastVerified}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <p className="mt-4">
+            <Link
+              href="/costs#sources"
+              className="inline-flex min-h-12 w-fit items-center gap-2 rounded-0 font-ui text-body font-semibold text-ink underline decoration-rule-strong decoration-1 underline-offset-[0.3em] transition-colors duration-200 ease-quad hover:decoration-2 hover:decoration-sienna"
+            >
+              Sources &amp; methods, in full
+            </Link>
+          </p>
         </section>
 
         <Rule weight="chapter" className="my-10" />
@@ -463,7 +400,7 @@ export default function Colophon() {
               rights and immigration rules are set by universities and by
               governments and change without notice. Every figure on this page
               is printed with the date it was last checked; where a figure has
-              gone stale, the table above is where you will see it first.
+              gone stale, the sources table is where you will see it first.
             </p>
           </section>
         </div>

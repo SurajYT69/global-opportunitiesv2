@@ -239,6 +239,21 @@ without the other slides every office off its coast.
 
 `app/(home)/_components/hero/departure-card.tsx` and `hero/hero-plate.tsx` are
 unreferenced and kept on purpose. Do not delete them as dead-code cleanup.
+
+Four more joined them in the **Aug 2026 homepage split**, all unreferenced and
+all kept deliberately:
+
+- `app/(home)/_components/hero.tsx` — the pre-GlobeReveal hero. `/` now renders
+  `components/GlobeReveal`; this is the fallback if that decision is revisited.
+- `app/(home)/_components/endpaper.tsx` — the six-card outcomes section. Home
+  shows ONE outcome via `components/homev2/outcome-card.tsx`, built from the
+  same `endpaper/data.ts`. The full section has no route until `/student-stories`
+  is written. **It is homeless, not retired.**
+- `components/homev2/resources.tsx` — the article row. Waiting on `/blog`; its
+  three `href`s are still `#`, which is why neither ships.
+- The default export of `components/homev2/audience-fork.tsx` — pages compose
+  `ForkStudents` and `ForkInstitutions` separately now, but the paired
+  composition is the only record of how the fork reads as a fork.
 (The v5 hero briefly returned the departure card to service on 2026-08-04; the
 v6 client-art hero retired it again the same day. Its boot hook survives,
 guarded, in `hero/hero-stage.tsx`.)

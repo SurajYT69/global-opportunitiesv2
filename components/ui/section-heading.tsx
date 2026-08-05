@@ -6,7 +6,7 @@ import { cn } from "@/lib/cn";
  *
  * Order of parts, top to bottom (CANON, retheme 2026-08-04):
  *   chapter index + name     Plex Mono, tracked caps, --marine (marine owns numerals)
- *   eyebrow                  Geist 600, tracked caps, --ink-muted
+ *   eyebrow                  Geist 600, tracked caps, --marine (--ochre on navy)
  *   headline                 Geist 600, --fs-d1 (h2) or --fs-d2 (h3)
  *   deck                     Geist 400 upright, --fs-deck, max 52ch
  *
@@ -53,8 +53,15 @@ export interface SectionHeadingProps {
   eyebrow?: string;
   /** Italic lede beneath the headline. Capped at 52ch. */
   deck?: ReactNode;
-  /** `h2` for chapter openers (--fs-d1), `h3` for section heads (--fs-d2). */
-  as?: "h2" | "h3";
+  /**
+   * `h2` for chapter openers (--fs-d1), `h3` for section heads (--fs-d2).
+   *
+   * `h1` was added for the Aug 2026 split: the eight subpages each need one,
+   * and rendering it through this component keeps every heading on the page
+   * built from the same stack. It takes --fs-d1, the same as `h2` — the level
+   * is a document-outline fact, not a size.
+   */
+  as?: "h1" | "h2" | "h3";
   /** `dark` recolours for the `endpaper` chapter. */
   tone?: "light" | "dark";
   align?: "left" | "center";
@@ -106,7 +113,10 @@ export function SectionHeading({
         <p
           className={cn(
             "font-ui text-label uppercase",
-            dark ? "text-plate-grey" : "text-ink-muted",
+            /* Aug 2026 visual pass: the eyebrow is the page's signature label and
+               it now carries colour. --marine on light ground, --ochre on navy.
+               Not sienna: red is reserved for primary CTAs. */
+            dark ? "text-ochre" : "text-marine",
           )}
         >
           {eyebrow}
@@ -117,7 +127,7 @@ export function SectionHeading({
         id={id}
         className={cn(
           "font-display opsz-chapter text-balance",
-          Heading === "h2" ? "text-d1" : "text-d2",
+          Heading === "h3" ? "text-d2" : "text-d1",
           dark ? "text-plate-white" : "text-ink",
           headingClassName,
         )}

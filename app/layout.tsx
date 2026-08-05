@@ -41,7 +41,7 @@ const mono = Poppins({
 export const metadata: Metadata = {
   title: "Study Abroad Consultants in India | Global Opportunities",
   description:
-    "Book a free guidance session with a named GO counsellor — 700+ partner universities, 15 countries, 18 offices across India. Real costs in rupees, real intake deadlines, no visa guarantees. Since 2001.",
+    "Book a free guidance session with a named GO counsellor — 700+ partner universities, 15 countries, offices across India. Real costs in rupees, real intake deadlines, no visa guarantees. Since 2001.",
   applicationName: "Global Opportunities",
   authors: [{ name: "Global Opportunities Private Limited" }],
   creator: "Global Opportunities Private Limited",
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   keywords: [
     "study abroad consultants",
     "overseas education consultants India",
-    "free counselling",
+    "free guidance session",
     "student visa guidance",
     "partner universities",
   ],
@@ -57,9 +57,9 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_IN",
     siteName: "Global Opportunities",
-    title: "Study Abroad Consultants in India | Free Counselling",
+    title: "Study Abroad Consultants in India | Global Opportunities",
     description:
-      "Free counselling with a named GO counsellor — 700+ partner universities, 15 countries, 18 offices across India. Real costs in rupees, real intake deadlines, no visa guarantees. Since 2001.",
+      "Book a free guidance session with a named GO counsellor — 700+ partner universities, 15 countries, offices across India. Real costs in rupees, real intake deadlines, no visa guarantees. Since 2001.",
   },
   robots: { index: true, follow: true },
   formatDetection: { telephone: true, address: false, email: false },

@@ -4,11 +4,10 @@ import StickyNav from "@/app/(home)/_components/sticky-nav";
 import Colophon from "@/app/(home)/_components/colophon";
 import MobileBar from "@/app/(home)/_components/mobile-bar";
 import { PageHeader, PageFoot } from "@/components/homev2/page-shell";
-import Gazetteer from "@/app/(home)/_components/gazetteer";
-import { ForkStudents } from "@/components/homev2/audience-fork";
+import WhatWeDo from "@/app/(home)/_components/what-we-do";
 
 /* ===========================================================================
-   /destinations
+   /services
    ---------------------------------------------------------------------------
    Split off the homepage, Aug 2026. The homepage carried fifteen topics and
    ranked for none of them; this page carries one.
@@ -19,30 +18,29 @@ import { ForkStudents } from "@/components/homev2/audience-fork";
    ======================================================================== */
 
 export const metadata: Metadata = {
-  title: "Study abroad destinations — 15 countries | Global Opportunities",
+  title: "Our services and what each one costs | Global Opportunities",
   description:
-    "Partner counts, intake windows, tuition bands and post-study work rights for the fifteen countries Global Opportunities places students in.",
-  alternates: { canonical: "/destinations" },
+    "Every service Global Opportunities provides, in the order it happens, with the price of each printed next to it and who else gets paid along the way.",
+  alternates: { canonical: "/services" },
 };
 
-export default function DestinationsPage() {
+export default function ServicesPage() {
   return (
     <div className="pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))] md:pb-0">      <StickyNav />
       <main id="main" className="pt-14 md:pt-16">
         <PageHeader
-          eyebrow="THE GAZETTEER"
-          deck="Every country we place students in, with its partner count, its intake windows and the work rights it publishes — set out the same way so they can be compared rather than browsed."
+          eyebrow="THE SERVICE LEDGER"
+          deck="Set out in the order it actually happens. Where a bank, an insurer or a government charges, you pay them directly and we add nothing to it."
         >
-          Fifteen destinations, on the same four axes.
+          Everything we do, with the price next to it.
         </PageHeader>
 
-        <Gazetteer />
-        <ForkStudents />
+        <WhatWeDo />
 
         <PageFoot
           related={[
-          { href: "/partners", label: "The 700+ partner register" },
-          { href: "/costs", label: "What it costs, itemised" },
+          { href: "/costs", label: "The full cost ledger" },
+          { href: "/how-it-works", label: "The eleven-month timeline" },
           ]}
         />
       </main>

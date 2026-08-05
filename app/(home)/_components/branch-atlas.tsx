@@ -38,7 +38,7 @@ export function BranchAtlas() {
           eyebrow="OFFICES YOU CAN WALK INTO"
           deck="Eighteen branches in fifteen cities, across eight states and union territories. Each one has an address, a number, and a door that opens tomorrow at eleven."
         >
-          18 offices across India
+          Offices across India
         </SectionHeading>
 
         <div className="flex flex-col gap-3">

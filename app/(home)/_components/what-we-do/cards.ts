@@ -107,7 +107,7 @@ export const SERVICE_CARDS: ServiceCard[] = [
       },
     ],
     fact: [
-      { text: "18 offices", note: "offices" },
+      { text: "Offices across India", note: "offices" },
       { text: "30 min" },
       { text: "no obligation" },
     ],

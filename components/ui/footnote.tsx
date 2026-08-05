@@ -58,7 +58,7 @@ export const SOURCES = {
     lastVerified: "2026-08",
   },
   offices: {
-    claim: "18 OFFICES, NAMED AND ADDRESSED",
+    claim: "OFFICES ACROSS INDIA, NAMED AND ADDRESSED",
     note: "Every branch below is listed with a street address and a phone number. We publish the number we can name.",
     origin: "Footer branch list",
     owner: "GO Editorial",
@@ -127,7 +127,10 @@ export function Footnote({ id, primary = false, className }: FootnoteProps) {
     <sup className={cn("align-super leading-none", className)}>
       <a
         id={primary ? footnoteRefId(id) : undefined}
-        href={`#${footnoteId(id)}`}
+        /* Cross-page, not page-relative: the sources table lives once, on
+           /costs. A bare `#fn-*` would resolve to nothing on every other
+           page of the site. */
+        href={`/costs#${footnoteId(id)}`}
         aria-label={`Footnote ${n}: ${source.note}`}
         className="font-mono text-[0.62em] text-sienna-press no-underline tabular-figures hover:underline"
       >
