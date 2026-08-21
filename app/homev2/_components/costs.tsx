@@ -76,7 +76,7 @@ export default function Costs() {
 
   return (
     <section id="costs" className="scroll-mt-20 py-section-y-tight">
-      <Container className="flex flex-col gap-8">
+      <Container className="flex flex-col gap-6">
         <header className="flex max-w-prose flex-col gap-2">
           <p className="text-caption text-muted-foreground">
             Costs
@@ -87,7 +87,7 @@ export default function Costs() {
           <h2 className="text-d2 text-ink">What it costs, in rupees.</h2>
           <p className="text-body text-muted-foreground">
             Per student, per year. Every figure is a range because nobody honest
-            has a point estimate — plan against the higher number.
+            has a point estimate. Plan against the higher number.
           </p>
         </header>
 

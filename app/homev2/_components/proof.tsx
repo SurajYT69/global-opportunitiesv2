@@ -1,5 +1,4 @@
 import { Container } from "@/components/ui/container";
-import { Footnote } from "@/components/ui/footnote";
 import { Counter } from "./stats/counter";
 
 /* ===========================================================================
@@ -64,7 +63,7 @@ export default function Proof() {
   return (
     <section aria-label="Global Opportunities in figures" className="bg-secondary py-section-y">
       <Container>
-        <dl className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
+        <dl className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
           {FIGURES.map(({ value, suffix, count, label, source }) => (
             /* flex-col-REVERSE is deliberate. A <dl> pairs a term with its
                value, so the DOM order must be <dt>label</dt><dd>figure</dd> —
@@ -88,7 +87,6 @@ export default function Proof() {
                 ) : (
                   `${value}${suffix}`
                 )}
-                <Footnote id={source} primary />
               </dd>
             </div>
           ))}

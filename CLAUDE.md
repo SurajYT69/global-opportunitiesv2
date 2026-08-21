@@ -41,9 +41,16 @@ regex sweep over `.next/server/app/index.html` for `text-*` utilities,
 Benchmarked against **Crimson Education's India page** (a direct competitor)
 and popular Dribbble web shots. What they do that this page did not: sentence
 case everywhere (not tracked caps), cards separated by **background tint rather
-than a drawn border**, three type sizes per screen, one accent colour, a single
-slim sticky CTA instead of a four-layer masthead, and a dark scrim under any
-headline sitting on a photograph.
+than a drawn border**, ~~three type sizes per screen~~, one accent colour, a
+single slim sticky CTA instead of a four-layer masthead, and a dark scrim under
+any headline sitting on a photograph.
+
+> **"Three type sizes per screen" was wrong, and it was wrong by eye.** This
+> read was taken by looking at the page. On 2026-08-21 the same page was
+> measured through the CDP, and **Crimson runs fourteen distinct sizes** — see
+> the table in the next section. Everything else in this paragraph survived
+> measurement; that one claim sent the leverage list chasing a type-scale cut
+> for a day. **Measure the benchmark, do not eyeball it.**
 
 ### THE SYSTEM WAS REBUILT (2026-08-21) — read this before the history below
 
@@ -105,10 +112,54 @@ Measured after, on `/homev2`: raw Tailwind type sizes **17 → 0**, hard-coded
   `public/logo-light.svg` are generated from `files/GO-logo-brand-palette.svg`
   and share one viewBox, so the masthead cross-fade registers exactly.
 - **`/homev2` IS NOW A SEPARATE, REBUILT PAGE (2026-08-21).** It used to be the
-  same tree as `/` under a `data-v3` flag. It is now eight sections of its own,
-  built on shadcn/ui. Measured against `/`: 435KB → 204KB, 15 sections → 9,
-  14 type sizes → 8, 366 letterspaced-caps → 99, 436 borders → 150. The
-  `[data-v3]` CSS block and the `v3` prop are deleted — nothing rendered them.
+  same tree as `/` under a `data-v3` flag. It is a page of its own, built on
+  shadcn/ui. Measured against `/` on the day it forked: 435KB → 204KB, 15
+  sections → 9, 14 type sizes → 8, 366 letterspaced-caps → 99, 436 borders →
+  150. The `[data-v3]` CSS block and the `v3` prop are deleted — nothing
+  rendered them.
+
+  **It has grown since, and those numbers are a snapshot, not a target.** The
+  running order is now hero, proof, partners, destinations, ways-we-assist,
+  costs, offices, test-preparations, success-stories, reviews, faq, enquiry,
+  footer — twelve sections after the hero. Four were ported from the sibling
+  repo and one (success-stories) is new. Re-measure before quoting any of the
+  figures above; do not treat "9 sections" as a cap the page has broken.
+
+  **SECOND ROUND, same day (2026-08-21).** All of it is scoped to `/homev2`;
+  `/` is untouched except where noted.
+
+  - **Vertical rhythm cut, from one place.** `py-section-y` compiles to
+    `padding-block: var(--spacing-section-y)`, so the two vars are redefined
+    on the shell root in `home-shell.tsx` and every section below re-paces
+    with no section file edited. 64->112px became 40->64px, and the tight
+    step 40->64px became 28->40px. Internal gaps came down one step across
+    twelve sections. Page height 10,836 -> 9,780px at 1912px. **Do not push
+    the cut into `globals.css`**: those vars are shared with `/`, and the
+    whole point of the scoped override is that `/` keeps its own rhythm.
+  - **The footer grew a CTA band and a sitemap**, both ported from the
+    sibling repo at `D:\Global\global-oppertunities-nextjs`. The band is the
+    dark `--endpaper` plate above the columns; the sitemap is its four link
+    columns, its six social marks and its legal-name line. The 38 internal
+    hrefs are VERBATIM and every one of them 404s here, by explicit decision:
+    this repo ships three routes. Do not repoint them at `/destinations`.
+  - **The FAQ is no longer a Radix accordion.** It is a client-selected
+    component from 21st.dev, re-skinned, at
+    `app/homev2/_components/faq/faq-tabs.tsx`. Two audience tabs rather than
+    the seven `topic` values, and the answers were cut from two-to-four
+    paragraphs to one. `topic` is still on the interface because `/` reads it.
+  - **`components/shadcn/native-select.tsx` had `w-fit` on its wrapper.**
+    `className` lands on the `<select>`, which is already `w-full`, so there
+    was no class a call site could pass to widen it and the enquiry form's
+    three selects sat at placeholder width beside full-width inputs. Now
+    `w-full`. Only `/homev2` uses that component.
+  - **The footer's audit surface was removed** on client instruction: the
+    branch line, the sources panel and the disclaimer. See the note under
+    "The footnote machinery" in Content and compliance for what had to go
+    with it and why.
+  - **Three FAQ layouts were tried and two were rejected by the client**:
+    two-column accordion (ragged rules, and an empty cell beside any open
+    answer) and heading-left/accordion-right. Read the note at the top of
+    `faq-tabs.tsx` before proposing a fourth.
 
 ### Next, in leverage order
 
@@ -200,8 +251,9 @@ app/
                         section's client parts and data
   homev2/
     page.tsx            metadata + noindex, renders <HomeShell />
-    _components/        THE REBUILT PAGE — home-shell, nav, proof,
-                        destinations, how-it-works, costs, offices, faq,
+    _components/        THE REBUILT PAGE — home-shell, nav, proof, partners,
+                        destinations, ways-we-assist, costs, offices,
+                        test-preparations, success-stories, reviews, faq,
                         enquiry, footer
   layout.tsx            font, metadata, providers
   destinations/page.tsx placeholder index of the 11 non-anchor destinations
@@ -288,6 +340,40 @@ lining / slashed-zero numerals, the wider tracking on `--text-mono-label` and
 `--text-caption`, and the 500 weight on `--text-figure`. Those three ARE the
 law now; weakening one weakens it. Nouns and prose stay out of the role, and
 `tabular-figures` is still required wherever numbers must align.
+
+**NO EM-DASHES IN COPY (2026-08-21, client instruction).** Every em-dash was
+removed from every rendered string on `/homev2`: section decks, the costs
+note, the offices note, the enquiry copy, the footer CTA band and sources
+blurb, the ten FAQ answers, the route metadata, and the success-stories
+`aria-label`. 26 replacements over 9 files.
+
+It is a rewrite, not a find-and-replace. An em-dash almost always joins two
+independent clauses, so the fix is a full stop, a colon or a semicolon
+depending on what the sentence was doing; swapping in a comma leaves comma
+splices behind. Verified by parsing the prerendered HTML rather than by
+grepping source, because a collapsed FAQ answer still ships in the DOM but an
+inactive tab does not.
+
+Three things are deliberately still em-dashes:
+
+- **The `<Footnote>` placeholder.** A figure GO has not published renders an
+  em-dash with an `sr-only` "not yet published". That is a typographic device
+  with a defined meaning, not prose, and the alternative is `0` or `TBD`,
+  which the compliance rules forbid. Keep it.
+- **The hero subtitle**, in `components/GlobeReveal.tsx`. It is SHARED with
+  `/` and the client asked for the hero to be left alone. It is the only
+  em-dash left in `/homev2`'s rendered output. Needs sign-off, not a
+  drive-by, because the same string ships on both routes.
+- **En-dashes are not em-dashes** and all of them stay: `9 AM - 9 PM`,
+  `30-45 minutes`, `2-3 yrs`, every rupee and score range. Only U+2014 was
+  swept.
+
+Student testimonials in `reviews/carousel.tsx` were changed too, but by
+PUNCTUATION ONLY. Every word a student said is preserved and the em-dash
+became a comma or a semicolon. A quotation is not ours to rewrite.
+
+This document still contains em-dashes throughout. It is not rendered copy, so
+it was left alone; sweeping it is a separate decision.
 
 **UPPERCASE IS ONE ROLE (2026-08-21, tightened).** Tracked caps are the
 `label` step and nothing else. Not captions, not footnotes, not helper text,
@@ -448,9 +534,22 @@ for the semantic name.
 
 The mapping still means added components inherit GO colour with no patching. Three deliberate calls recorded
 there: `--destructive` is CLAY not GO Red (red is the CTA and must not read as
-an error), `--radius` is 4px not shadcn's 10px, and `dark:` is bound to a
-selector this app never emits — this site has no dark MODE, only a dark
-CHAPTER, and stock `dark:` follows `prefers-color-scheme`.
+an error), `--radius` maps onto the house scale rather than shadcn's 10px
+(6px `sm`, 12px `md`/`lg`/`xl` since 2026-08-21 — it was 2px/4px before), and
+`dark:` is bound to a selector this app never emits — this site has no dark
+MODE, only a dark CHAPTER, and stock `dark:` follows `prefers-color-scheme`.
+
+**ADD COMPONENTS BY HAND, NOT WITH THE CLI.** `components.json` was
+hand-written precisely because `shadcn init` rewrites `globals.css`, and
+`shadcn add` is one flag away from the same blast radius. `dialog.tsx` was
+added on 2026-08-21 by writing the four pieces actually used (Root, Trigger,
+Content, Title) against the `radix-ui` meta-package that `sheet.tsx` already
+depends on — **no new dependency, and nothing near the palette.** Do the same
+for the next one.
+
+**There is no video component, and there will not be.** shadcn/ui is a Radix
+primitives library; it ships no media player. If a section needs one, it needs
+a Dialog and a `<video>`, not a registry hunt — see Media below.
 
 **Known deviation:** the Accordion animates `height` (off Radix's CSS variable),
 against the "only transform and opacity" rule in Motion below. It is a
@@ -503,8 +602,23 @@ phrases, "free counselling", and "100,000+ students" may all be used.
   numbers nobody has published. If GO has no figure, there is still no figure.
 - **The footnote machinery is not a rule, it is a feature.** `<Footnote>` and
   the sources list still work and still resolve; a marker that points at a row
-  that does not exist is a broken link, not a policy question. `/homev2` cites
-  5 sources with 0 dangling markers — keep it that way.
+  that does not exist is a broken link, not a policy question.
+
+  **`/homev2` NO LONGER HAS AN AUDIT SURFACE (2026-08-21, client
+  instruction).** The "Sources and last verified" panel, the "Offices · 15
+  cities" line and the "nothing here is a quotation" disclaimer were removed
+  from its footer. **The eight `<Footnote>` markers were removed in the same
+  commit, and that part was not optional**: each rendered a real
+  `<a href="#fn-*">` into that panel, so leaving them would have left eight
+  in-page links pointing at anchors that no longer exist, which is precisely
+  the broken link this rule exists to prevent. Verified on the prerendered
+  HTML: 0 `fnref-` anchors, 0 `fn-` targets, 0 `#fn-` links.
+
+  `components/ui/footnote.tsx` and its `SOURCES` registry are UNTOUCHED, and
+  `/` still renders its colophon and still resolves all six sources. If the
+  panel is ever restored on `/homev2`, the markers come back with it, and
+  `primary` may be set on only ONE marker per source or the page ships
+  duplicate DOM ids.
 - **A `<Footnote>` inside an `<a>` breaks the hero.** See the hydration note in
   Motion. That is a correctness constraint, not a compliance one.
 
@@ -666,6 +780,59 @@ notes / method / "who pays us" tail of `reckoning` (including its
 "Get this ledger in writing" WhatsApp CTA and the ledger's superscript note
 markers). The nav lost its "Process" and "Counsellors" items with them, and the
 colophon contents list lost four entries. Git has all of it.
+
+## Media
+
+### The student films
+
+`public/video/story/*.mp4` — five films, 13.5MB, all 720×1280 or 360×640 (9:16
+exactly, verified) and 29–46 seconds. Pulled 2026-08-21 from GO's own landing
+pages: `ads.global-opportunities.net/kdm/branch/hyderabad` and
+`/nz/branch/bangalore`. Four on each page, three shared, five unique.
+
+**COPIED, NOT HOT-LINKED.** That host is an ads subdomain on its own release
+cycle. A testimonial rail that silently empties when marketing reorganises a
+directory is worse than no rail.
+
+**The captions say only what the filenames prove.** `australia-ahmedabad` →
+"Australia / Ahmedabad". The same students appear on landing pages for OTHER
+branches, so the city in a filename is the STUDENT's branch, not the page's.
+No names: GO's own pages publish none, and this is the do-not-invent rule
+applied to people rather than figures.
+
+### Why the section is a poster grid and not five players
+
+`success-stories.tsx` (server, data + heading) and `success-stories/player.tsx`
+(client, the card). The first cut was five inline `<video controls>` in a
+five-column grid and the client's verdict was "it feels plain" — correctly. At
+a fifth of a 1200px column each film is 227px wide, so most of what the eye
+lands on is the BROWSER's control bar: a grey strip we do not style, cannot
+style, and which looks nothing like the rest of the page. Five of them in a row
+is five pieces of someone else's UI.
+
+So the grid shows posters with our own play affordance and the real player
+opens in a Dialog at `min(90vw, 24rem)`.
+
+- **THE POSTER IS THE VIDEO**, seeked by `#t=0.5`. This is load-bearing: a
+  `<video>` with no poster paints BLACK until played, so without the fragment
+  the rail reads as five dead rectangles. It is the same trick the source pages
+  use. `preload="metadata"` pulls a header and one frame, so the grid costs
+  about what five JPEGs would — and there are no JPEGs to regenerate whenever a
+  film is replaced.
+- The poster is `aria-hidden` and `tabIndex={-1}`. The BUTTON is the control; a
+  focusable video nested inside it puts a dead stop in the tab order.
+- **`autoPlay` is on the dialog's player and nowhere else.** The visitor got
+  there by tapping a play button, so playing is what they just asked for.
+  Nothing autoplays in the grid, and no `muted` is set on it that would let it.
+- The caption sits ON the card over a gradient scrim rather than as loose text
+  beneath it. Necessary, not decorative: these films composite their own
+  captions and graphics, so the backdrop behind our text is not ours to choose.
+
+**Known gap: no `<track>` captions.** GO supplied none, and inventing a
+transcript for a student's spoken testimonial is not something to guess at.
+Each film carries an `aria-label` naming destination and branch, so the control
+is identifiable — but real captions need source files from GO. This is the one
+accessibility debt in the section; do not close it by making something up.
 
 ## Intentionally dead files
 

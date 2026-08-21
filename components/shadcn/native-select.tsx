@@ -10,7 +10,13 @@ function NativeSelect({
 }: Omit<React.ComponentProps<"select">, "size"> & { size?: "sm" | "default" }) {
   return (
     <div
-      className="group/native-select relative w-fit has-[select:disabled]:opacity-50"
+      /* w-full, NOT the stock w-fit. The <select> inside is already w-full,
+         but className lands on the SELECT, not on this wrapper — so a w-fit
+         wrapper shrinks to the placeholder text and there is no class you can
+         pass from the call site to widen it. That is why the enquiry form's
+         three selects sat at "Select a city" width beside full-width Inputs.
+         Only /homev2's enquiry form uses this component. */
+      className="group/native-select relative w-full has-[select:disabled]:opacity-50"
       data-slot="native-select-wrapper"
     >
       <select

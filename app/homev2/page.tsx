@@ -46,7 +46,7 @@ import HomeShell from "./_components/home-shell";
 export const metadata: Metadata = {
   title: "Study abroad with Global Opportunities",
   description:
-    "Overseas education consultants since 2001. 18 offices across India, 700+ partner universities. Book a free guidance session — no cost, no obligation.",
+    "Overseas education consultants since 2001. 18 offices across India, 700+ partner universities. Book a free guidance session. No cost, no obligation.",
   keywords: [
     "study abroad consultants",
     "overseas education consultants India",
@@ -59,13 +59,13 @@ export const metadata: Metadata = {
     siteName: "Global Opportunities",
     title: "Study Abroad Consultants in India | Global Opportunities",
     description:
-      "A free guidance session with a named GO counsellor — 700+ partner universities, 15 countries, 18 offices across India. Real costs in rupees, real intake deadlines, no visa guarantees. Since 2001.",
+      "A free guidance session with a named GO counsellor. 700+ partner universities, 15 countries, 18 offices across India. Real costs in rupees, real intake deadlines, no visa guarantees. Since 2001.",
   },
   twitter: {
     card: "summary",
     title: "Study Abroad Consultants in India | Global Opportunities",
     description:
-      "A free guidance session with a named GO counsellor — 700+ partner universities, 15 countries, 18 offices across India. Since 2001.",
+      "A free guidance session with a named GO counsellor. 700+ partner universities, 15 countries, 18 offices across India. Since 2001.",
   },
   robots: { index: false, follow: false },
 };

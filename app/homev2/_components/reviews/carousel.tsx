@@ -24,7 +24,7 @@ const reviews: {
     {
         name: "Dhairya Nayyar",
         tag: "IELTS",
-        text: "Such a fantastic experience with Global Opportunities and successfully getting my visa months before my course started. Special thanks to the team, especially Mr. Anjandeep, as he was so helpful throughout my journey and guided me in every possible way — along with Ms. Pallavi, who is also an excellent IELTS teacher.",
+        text: "Such a fantastic experience with Global Opportunities and successfully getting my visa months before my course started. Special thanks to the team, especially Mr. Anjandeep, as he was so helpful throughout my journey and guided me in every possible way, along with Ms. Pallavi, who is also an excellent IELTS teacher.",
         image: dhairyaNayyar,
     },
     {
@@ -36,13 +36,13 @@ const reviews: {
     {
         name: "Swati Jadav",
         tag: "Seminar",
-        text: "Global Opportunities is the best scope to go abroad. I have not attended a seminar like this — my interest to go abroad has increased with this session. I thank all the facilitators for the wonderful chance; I have informed all my friends about this too. Again, thank you for this session!",
+        text: "Global Opportunities is the best scope to go abroad. I have not attended a seminar like this; my interest to go abroad has increased with this session. I thank all the facilitators for the wonderful chance; I have informed all my friends about this too. Again, thank you for this session!",
         image: swatiJadav,
     },
     {
         name: "Patel Misva Alpesh Kumar",
         tag: "Seminar",
-        text: "Global Opportunities is the best way to go abroad. I like this seminar — it is the best opportunity to improve my career. Thank you for the information!",
+        text: "Global Opportunities is the best way to go abroad. I like this seminar; it is the best opportunity to improve my career. Thank you for the information!",
         image: patelMisva,
     },
 ];

@@ -1,5 +1,4 @@
 import { Container } from "@/components/ui/container";
-import { Footnote } from "@/components/ui/footnote";
 import { AtlasClient } from "@/app/(home)/_components/branch-atlas/atlas-client";
 import {
   BRANCH_COUNT,
@@ -41,14 +40,13 @@ export default function Offices() {
       data-chapter="trust"
       className="scroll-mt-20 bg-secondary py-section-y"
     >
-      <Container className="flex flex-col gap-10">
+      <Container className="flex flex-col gap-8">
         <header className="flex max-w-prose flex-col gap-3">
           <p className="text-caption text-muted-foreground">
             Offices
           </p>
           <h2 className="text-d2 text-ink">
             {`${BRANCH_COUNT} offices across India`}
-            <Footnote id="offices" />
           </h2>
           <p className="text-body text-muted-foreground">
             {`${BRANCH_COUNT} branches in ${CITY_COUNT} cities, across ${STATE_COUNT} states and union territories. Each one has an address, a number, and a door that opens tomorrow at eleven. Tap a marker for the branch.`}
@@ -76,7 +74,7 @@ export default function Offices() {
           <p className="text-footnote text-muted-foreground">
             Branch names are Global Opportunities&rsquo; own published list. We
             print a street address only where the company publishes one, and a
-            direct line only where the company publishes one — every other
+            direct line only where the company publishes one. Every other
             branch is reachable on the national line, and the drawer says so.
           </p>
           <p className="font-mono text-caption text-muted-foreground tabular-figures">

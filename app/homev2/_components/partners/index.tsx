@@ -53,11 +53,11 @@ const partners: { name: string; logo: StaticImageData }[] = [
 
 function PartnerCards({ ariaHidden = false }: { ariaHidden?: boolean }) {
     return (
-        <ul aria-hidden={ariaHidden || undefined} className="flex items-stretch gap-2 pr-2">
+        <ul aria-hidden={ariaHidden || undefined} className="flex items-stretch gap-3 pr-3">
             {partners.map((partner) => (
                 <li
                     key={partner.name}
-                    className="flex h-10 w-[calc(25vw-0.625rem)] shrink-0 items-center justify-center overflow-hidden rounded-2 bg-secondary sm:h-16 sm:w-40"
+                    className="flex h-20 w-[calc(40vw-0.75rem)] shrink-0 items-center justify-center overflow-hidden rounded-2 bg-secondary p-4 sm:h-28 sm:w-60"
                 >
                     <Image
                         src={partner.logo}
@@ -71,11 +71,20 @@ function PartnerCards({ ariaHidden = false }: { ariaHidden?: boolean }) {
     );
 }
 
+/* THE RAIL PAUSES ON HOVER (2026-08-21, client). `group` sits on the clipping
+   wrapper rather than the section, so the pause fires when the pointer is over
+   the logos and not over the whitespace either side of them. focus-within is
+   there for the same reason a pause button would be: a keyboard user tabbing
+   into the rail needs it to hold still, and CSS animation-play-state is the
+   only way to do either without a state hook and a re-render per frame.
+
+   The comment lives HERE and not inside the return: a JSX comment placed
+   before the root element is a second top-level child and will not parse. */
 export function Partners() {
     return (
         <section aria-label="Our partner universities" className="border-b border-rule py-section-y-tight">
-            <div className="overflow-hidden">
-                <div className="flex w-max animate-marquee [animation-duration:80s]">
+            <div className="group overflow-hidden">
+                <div className="flex w-max animate-marquee [animation-duration:80s] group-hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused] motion-reduce:[animation-play-state:paused]">
                     <PartnerCards />
                     <PartnerCards ariaHidden />
                 </div>

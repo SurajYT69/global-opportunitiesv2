@@ -31,7 +31,7 @@ const STEPS = [
   {
     n: "01",
     title: "Walk into your nearest office",
-    body: "Fifteen cities, eighteen branches. Or take the first call remotely — it is thirty to forty-five minutes either way, and it costs nothing.",
+    body: "Fifteen cities, eighteen branches. Or take the first call remotely. It is thirty to forty-five minutes either way, and it costs nothing.",
   },
   {
     n: "02",
@@ -41,7 +41,7 @@ const STEPS = [
   {
     n: "03",
     title: "Shortlisting and application",
-    body: "Universities we can name, with their accreditation attached, before you apply to any of them. Ask which ones pay us commission — a counsellor who cannot answer that has not done the work.",
+    body: "Universities we can name, with their accreditation attached, before you apply to any of them. Ask which ones pay us commission. A counsellor who cannot answer that has not done the work.",
   },
   {
     n: "04",
@@ -51,7 +51,7 @@ const STEPS = [
   {
     n: "05",
     title: "Offer letter, then the visa file",
-    body: "The visa file is checked before it is filed, by people who used to assess visa applications for a living. Nobody can promise you a visa — the decision belongs to a government.",
+    body: "The visa file is checked before it is filed, by people who used to assess visa applications for a living. Nobody can promise you a visa. The decision belongs to a government.",
   },
 ] as const;
 
@@ -69,7 +69,7 @@ export default function HowItWorks() {
           <h2 className="text-d2 text-ink">Five steps, start to visa.</h2>
           <p className="text-body text-muted-foreground">
             This is the process as Global Opportunities publishes it. Every step
-            is free except the fees other people charge — those you pay
+            is free except the fees other people charge. Those you pay
             directly, at their published price.
           </p>
         </header>

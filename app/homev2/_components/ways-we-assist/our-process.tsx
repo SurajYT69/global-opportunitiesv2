@@ -76,7 +76,7 @@ export function OurProcess() {
             </p>
             <h3 className="mt-3 text-heading text-ink">Our Process</h3>
 
-            <ol ref={containerRef} className="relative mt-8 flex flex-col gap-9">
+            <ol ref={containerRef} className="relative mt-6 flex flex-col gap-7">
                 {/* track */}
                 <span aria-hidden className="absolute bottom-6 left-6 top-6 w-0.5 -translate-x-1/2 rounded-full bg-rule" />
                 {/* scroll-linked progress line */}

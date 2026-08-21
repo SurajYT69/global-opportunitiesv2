@@ -79,11 +79,11 @@ export function TestPreparations() {
                     </h2>
                 </div>
 
-                <div className="mt-8 grid auto-rows-fr gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-6 grid auto-rows-fr gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {exams.map((exam) => (
                         <article
                             key={exam.name}
-                            className="group relative flex gap-4 rounded-2 bg-white p-4 ring-1 ring-rule transition-all duration-300 hover:-translate-y-1 hover:ring-marine/20"
+                            className="group relative flex gap-4 rounded-2 bg-secondary p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-muted"
                         >
                             <div className="relative h-28 w-36 shrink-0 self-center overflow-hidden rounded-2">
                                 <Image
@@ -130,7 +130,7 @@ export function TestPreparations() {
                     ))}
                 </div>
 
-                <div className="relative mt-8 overflow-hidden rounded-2 bg-endpaper px-6 py-5 text-white">
+                <div className="relative mt-6 overflow-hidden rounded-2 bg-endpaper px-6 py-5 text-white">
                     <div
                         aria-hidden
                         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.12)_1px,transparent_0)] bg-size-[22px_22px] opacity-40"

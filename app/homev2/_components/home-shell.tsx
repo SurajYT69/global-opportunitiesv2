@@ -18,6 +18,7 @@ import Footer from "./footer";
 import { WaysWeAssist } from "./ways-we-assist";
 import { Partners } from "./partners";
 import { TestPreparations } from "./test-preparations";
+import SuccessStories from "./success-stories";
 import { Reviews } from "./reviews";
 
 /* ===========================================================================
@@ -76,9 +77,22 @@ html:not([data-hero-intro="play"]) [data-intro-copy]{opacity:1;pointer-events:au
 html:not([data-hero-intro="play"]) [data-intro-logo]{opacity:1}
 `;
 
+/* SECTION RHYTHM, SCOPED TO /homev2 (2026-08-21, client: "reduce section
+   padding aggressively"). `py-section-y` / `py-section-y-tight` compile to
+   var() references, so redefining the two vars on the shell root re-paces
+   every section below without touching a single section file — and without
+   changing `/`, which keeps the original 64->112 / 40->64 rhythm. */
+const SECTION_RHYTHM = {
+  "--spacing-section-y": "clamp(2.5rem, 4.5vw, 4rem)" /* 40 -> 64px */,
+  "--spacing-section-y-tight": "clamp(1.75rem, 3vw, 2.5rem)" /* 28 -> 40px */,
+} as React.CSSProperties;
+
 export default function HomeShell() {
   return (
-    <div className="pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))] md:pb-0">
+    <div
+      className="pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))] md:pb-0"
+      style={SECTION_RHYTHM}
+    >
       {/* No Organization JSON-LD here — this route is noindex, so structured
           data on it is pointless at best and a duplicate-entity signal at
           worst. `/` carries the canonical graph. */}
@@ -111,13 +125,23 @@ export default function HomeShell() {
             its right-hand column, so keeping both would have printed the
             process twice. The services list is the new content; the process
             came along with it. */}
-        <Proof />
+        {/* RUNNING ORDER CHANGED 2026-08-21 (client). <Partners> took the
+            slot directly under the hero and <Proof> moved down to sit against
+            <Offices>. The logo rail is the stronger first thing after the
+            film: it is evidence you can see rather than four numbers to read,
+            and it earns the hero's scroll. The four figures now open the
+            tinted band that <Offices> finishes, which also puts "18 offices
+            across India" next to the map that draws them. */}
         <Partners />
         <Destinations />
         <WaysWeAssist />
         <Costs />
+        <Proof />
         <Offices />
         <TestPreparations />
+        {/* Video before text: a filmed student outranks a quoted one, so the
+            films sit above the written reviews rather than after them. */}
+        <SuccessStories />
         <Reviews />
         <Faq />
         <Enquiry />

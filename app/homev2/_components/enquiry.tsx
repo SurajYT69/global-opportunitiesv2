@@ -67,7 +67,7 @@ export default function Enquiry() {
 
   return (
     <section id="enquiry" className="scroll-mt-20 bg-secondary py-section-y">
-      <Container className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+      <Container className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
         <header className="flex max-w-prose flex-col gap-4">
           <p className="text-caption text-muted-foreground">
             Talk to someone
@@ -80,7 +80,7 @@ export default function Enquiry() {
           </p>
           <p className="text-body-sm text-muted-foreground">
             Between 9 AM and 9 PM IST a counsellor calls within fifteen minutes.
-            Outside those hours, the next morning — we do not call at night.
+            Outside those hours, the next morning. We do not call at night.
           </p>
           <p className="font-mono text-body-sm text-muted-foreground tabular-figures">
             Or call 1800 111 119, free from any Indian number.

@@ -1,7 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { Container } from "@/components/ui/container";
-import { Footnote } from "@/components/ui/footnote";
 import { Icon } from "@/components/ui/icon";
 import {
   Card,
@@ -45,7 +44,7 @@ export default function Destinations() {
           provided here instead. Without this the hero's second button scrolls
           nowhere on this route. Remove only if GlobeReveal gains a href prop. */}
       <span id="gazetteer" aria-hidden className="block scroll-mt-20" />
-      <Container className="flex flex-col gap-10">
+      <Container className="flex flex-col gap-8">
         <header className="flex max-w-prose flex-col gap-3">
           <p className="text-caption text-muted-foreground">
             Destinations
@@ -63,7 +62,14 @@ export default function Destinations() {
               rows on /destinations need and these cards do not. */}
           {ANCHOR_DESTINATIONS.map(({ destination: d }) => (
             <li key={d.slug}>
-              <Card className="h-full gap-0 overflow-hidden border-0 bg-muted py-0">
+              {/* bg-secondary, NOT bg-muted (2026-08-21). These cards were the
+                    page's only #ECF0F5 while <WaysWeAssist> and the FAQ rows
+                    were #F5F7FA, so two card tints sat four sections apart
+                    and read as a mistake. #F5F7FA is `--paper-laid`, the tint
+                    that replaces a drawn card border; #ECF0F5 is the darker
+                    STATE on top of it (FAQ open, service-card hover). A
+                    resting card does not use the state colour. */}
+                <Card className="h-full gap-0 overflow-hidden border-0 bg-secondary py-0">
                 {/* 3:2. `bg-marine` is the fallback field, so a missing file
                     reads as a plate rather than a hole. */}
                 <div className="relative aspect-[3/2] w-full bg-marine">
@@ -117,19 +123,18 @@ export default function Destinations() {
           ))}
         </ul>
 
-        {/* THE FOOTNOTE MARKER MUST STAY OUTSIDE THE <a>. It renders its own
-            anchor (every marker is a real in-page link so it works with JS
-            off), and an <a> inside an <a> is invalid nesting: the parser
-            splits it, so the DOM React hydrates into no longer matches what it
+        {/* THE HYDRATION LESSON THIS BLOCK TAUGHT, KEPT (2026-08-21).
+            There used to be a <Footnote> marker after this link. It renders
+            its own <a>, and an <a> inside an <a> is invalid nesting: the
+            parser splits it, so the DOM React hydrates into is not the one it
             rendered. That threw React #418, React regenerated the tree from
             the root, and regenerating the root wiped the `data-hero-intro`
-            attribute the inline boot script had set — which hid
+            attribute the inline boot script had set, which hid
             [data-intro-plate] one second into the three-second intro and made
-            the hero wordmark vanish. A nesting mistake here breaks the HERO.
+            the hero wordmark vanish. A NESTING MISTAKE HERE BREAKS THE HERO.
 
-            "15 destinations" still needs the marker — it is a claim, and
-            without it the page cited sources 1, 2, 3, 5 with an unexplained
-            gap — so it sits after the link instead of inside it. */}
+            The marker itself is gone with the sources panel it resolved into.
+            The rule is not: never put an anchor inside an anchor. */}
         <p className="m-0 flex flex-wrap items-baseline gap-x-2">
           <a
             href="/destinations"
@@ -138,7 +143,6 @@ export default function Destinations() {
             All 15 destinations
             <Icon as={ArrowRight} size="sm" />
           </a>
-          <Footnote id="destinations" primary />
         </p>
       </Container>
     </section>

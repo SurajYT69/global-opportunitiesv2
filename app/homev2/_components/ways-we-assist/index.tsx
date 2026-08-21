@@ -159,7 +159,7 @@ export function WaysWeAssist() {
     return (
         <section id="how-it-works" className="scroll-mt-20 py-section-y">
 
-            <div className="mx-auto grid w-full max-w-content gap-12 px-gutter lg:grid-cols-[1.25fr_1fr] lg:gap-16">
+            <div className="mx-auto grid w-full max-w-content gap-10 px-gutter lg:grid-cols-[1.25fr_1fr] lg:gap-12">
                 <div>
                     <p className="text-label uppercase text-ink-faint">
                         End-To-End Support
@@ -168,7 +168,7 @@ export function WaysWeAssist() {
                         Ways We Can Assist You
                     </h2>
 
-                    <ul className="mt-8 grid auto-rows-fr gap-3 sm:grid-cols-2">
+                    <ul className="mt-6 grid auto-rows-fr gap-3 sm:grid-cols-2">
                         {services.map((service, index) => (
                             <li
                                 key={service.label}

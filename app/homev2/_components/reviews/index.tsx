@@ -18,11 +18,15 @@ export function Reviews() {
                     </h2>
                 </div>
 
-                <div className="mt-10">
+                <div className="mt-8">
                     <ReviewsCarousel />
                 </div>
 
-                <div className="mt-8 flex flex-wrap items-center gap-3">
+                {/* CENTRED, not left-ranged (2026-08-21, client). The carousel and its
+                    dot pagination are both centred on the column, so a CTA hard
+                    against the left gutter read as belonging to the heading above
+                    rather than to the rail it closes. */}
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
                     {/* The ported version had TWO buttons here, to
                         /write-review and /reviews. Neither route exists in
                         this project — both returned 404 — so they were
