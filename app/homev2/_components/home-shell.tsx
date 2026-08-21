@@ -5,6 +5,7 @@ import {
   FILM_RY,
 } from "@/components/globe-reveal-geometry";
 import MobileBar from "@/app/(home)/_components/mobile-bar";
+import { FlightPath } from "./flight-path";
 import Nav from "./nav";
 import Proof from "./proof";
 import Destinations from "./destinations";
@@ -90,7 +91,10 @@ const SECTION_RHYTHM = {
 export default function HomeShell() {
   return (
     <div
-      className="pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))] md:pb-0"
+      /* `relative` is the FlightPath layer's containing block, and it must
+         NOT gain `isolation: isolate` — that would trap the z-index -1 layer
+         and hide the plane completely. See globals.css §7a. */
+      className="relative pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))] md:pb-0"
       style={SECTION_RHYTHM}
     >
       {/* No Organization JSON-LD here — this route is noindex, so structured
@@ -101,6 +105,10 @@ export default function HomeShell() {
           has to be set before [data-intro-film] is painted. */}
       <style dangerouslySetInnerHTML={{ __html: INTRO_CSS }} />
       <script dangerouslySetInnerHTML={{ __html: INTRO_BOOT }} />
+
+      {/* Behind everything, page-height. Mounted here rather than in a section
+          because it spans the whole document. */}
+      <FlightPath />
 
       <Nav />
 

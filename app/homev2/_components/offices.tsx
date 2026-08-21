@@ -1,5 +1,5 @@
 import { Container } from "@/components/ui/container";
-import { AtlasClient } from "@/app/(home)/_components/branch-atlas/atlas-client";
+import { Locator } from "./offices/locator";
 import {
   BRANCH_COUNT,
   CITY_COUNT,
@@ -49,26 +49,26 @@ export default function Offices() {
             {`${BRANCH_COUNT} offices across India`}
           </h2>
           <p className="text-body text-muted-foreground">
-            {`${BRANCH_COUNT} branches in ${CITY_COUNT} cities, across ${STATE_COUNT} states and union territories. Each one has an address, a number, and a door that opens tomorrow at eleven. Tap a marker for the branch.`}
+            {`${BRANCH_COUNT} branches in ${CITY_COUNT} cities, across ${STATE_COUNT} states and union territories. Each one has an address, a number, and a door that opens tomorrow at eleven. Tap a marker, or a row, for the branch.`}
           </p>
         </header>
 
-        {/* THE WRAPPER IS THE FIX FOR MOBILE HORIZONTAL SCROLL.
+        {/* <Locator/> REPLACES <AtlasClient/> ON THIS ROUTE ONLY (2026-08-21).
 
-            AtlasClient's inner column is `max-w-[26rem]` (416px) and does not
-            shrink below it, so at 360px it runs 13px past the viewport and the
-            whole DOCUMENT scrolls sideways — measured on `/`, where the same
-            component overflows by 106px because more of the old page does it
-            too. Wide content is allowed to scroll, but only inside its own
-            box; the page body must never scroll horizontally.
+            AtlasClient is a single copy that `/` also imports, and CLAUDE.md
+            allows a second LAYOUT its own directory but forbids a variant flag
+            inside a shared component. So `/` keeps its crosshair plate and
+            this route gets app/homev2/_components/offices/. The data — the
+            outline, the station register, the drawer — is still imported from
+            the shared files and is NOT duplicated.
 
-            Scoped here rather than fixed inside AtlasClient because that
-            component is shared with `/` and this route is not authorised to
-            change how `/` renders. The same wrapper would fix `/` — raised in
-            the handover. */}
-        <div className="-mx-gutter overflow-x-auto px-gutter">
-          <AtlasClient />
-        </div>
+            The old `-mx-gutter overflow-x-auto px-gutter` wrapper is gone with
+            it. It existed because AtlasClient's index column is a hard
+            `max-w-[26rem]` that will not shrink, which pushed the document
+            13px sideways at 360px. The locator's index is `w-full` with the
+            cap applied only from lg, so it shrinks and there is nothing left
+            to scroll. */}
+        <Locator />
 
         <div className="flex max-w-prose flex-col gap-2">
           <p className="text-footnote text-muted-foreground">
