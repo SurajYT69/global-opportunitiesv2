@@ -166,7 +166,7 @@ export function Plate({
               )}
               <div className="flex flex-col gap-2">
                 {coordinates && (
-                  <span className="font-mono text-caption uppercase text-plate-white tabular-figures">
+                  <span className="font-mono text-caption text-plate-white tabular-figures">
                     {coordinates}
                   </span>
                 )}
@@ -260,7 +260,7 @@ export function Plate({
           {caption && (
             <span
               className={cn(
-                "font-mono text-caption uppercase tabular-figures",
+                "font-mono text-caption tabular-figures",
                 dark ? "text-plate-white" : "text-ink-muted",
               )}
             >
@@ -270,7 +270,7 @@ export function Plate({
           {captionMeta && (
             <span
               className={cn(
-                "font-mono text-caption uppercase tabular-figures",
+                "font-mono text-caption tabular-figures",
                 dark ? "text-plate-grey" : "text-ink-muted",
               )}
             >

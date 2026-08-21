@@ -175,7 +175,7 @@ export function FootnoteDefinition({
         {n}
       </a>{" "}
       {source.note}{" "}
-      <span className="font-mono text-caption uppercase opacity-70 tabular-figures">
+      <span className="font-mono text-caption opacity-70 tabular-figures">
         {source.origin} · verified {source.lastVerified}
       </span>
     </li>
@@ -230,13 +230,13 @@ export function FootnoteDetails({
 
   return (
     <details className={cn("md:hidden", className)}>
-      <summary className="cursor-pointer font-mono text-caption uppercase text-ink-muted tabular-figures marker:text-sienna-press">
+      <summary className="cursor-pointer font-mono text-caption text-ink-muted tabular-figures marker:text-sienna-press">
         {`Note ${n}`}
       </summary>
       <p className="mt-2 font-display text-footnote text-ink-muted">
         {children ?? source.note}
       </p>
-      <p className="mt-1 font-mono text-caption uppercase text-ink-muted opacity-70 tabular-figures">
+      <p className="mt-1 font-mono text-caption text-ink-muted opacity-70 tabular-figures">
         {source.origin} · verified {source.lastVerified}
       </p>
     </details>

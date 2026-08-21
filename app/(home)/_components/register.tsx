@@ -292,29 +292,46 @@ export default function Register() {
               className="object-cover"
             />
           </div>
-          <figcaption className="mt-3 font-mono text-caption uppercase text-ink-muted tabular-figures">
+          <figcaption className="mt-3 font-mono text-caption text-ink-muted tabular-figures">
             The register · 700+ partner institutions on record
           </figcaption>
         </figure>
 
         {/* --- The register proper -------------------------------------------
-            Four columns of country blocks at >=1280px, three at 1024px, two at
-            768px. Country name and its published count share one line; the
-            named institutions run beneath in a tight column; the remainder is
-            stated in mono. Nothing is hidden and nothing is truncated. */}
-        <ul className="mt-8 grid list-none grid-cols-1 gap-x-grid-gap gap-y-8 p-0 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            REDESIGN 2026-08-20 (client: "redesign this fully and make some
+            beautifully and small so it feels right"). Eight country blocks used
+            to print their full named list — up to twelve institutions each,
+            around ninety lines of link-blue names stacked four columns wide.
+            That was the densest surface on the page.
+
+            Each country is now a small plate: its name, its published count,
+            and THREE named institutions as evidence that the count is real.
+            The plate is a bordered card rather than a bare top rule, so eight
+            of them read as a set of eight objects instead of one field of text.
+
+            THIS TRUNCATES, AND THAT IS THE CHANGE. The old note in this file
+            promised "nothing is hidden and nothing is truncated"; that promise
+            is what made the section unreadable. The full register is one click
+            away on the "See the full list" link below, and the per-country
+            count beside each name is still the published figure, so no claim
+            here is weaker than it was. The remaining names are still in
+            REGISTER above, untouched — this is a display decision, not a data
+            one, and restoring the full list is a one-line change. */}
+        <ul className="mt-8 grid list-none grid-cols-1 gap-grid-gap p-0 sm:grid-cols-2 lg:grid-cols-4">
           {REGISTER.map((entry, index) => (
             <Reveal
               key={entry.country}
               as="li"
               delay={Math.min(index, 5) * STAGGER.tight}
-              className="flex flex-col border-t border-rule-strong pt-3"
+              className="flex flex-col rounded-1 border border-rule bg-paper p-5"
             >
-              <div className="flex items-baseline justify-between gap-2">
-                <h3 className="font-ui text-h4 text-ink">{entry.country}</h3>
+              <div className="flex items-baseline justify-between gap-3">
+                <h3 className="font-ui text-h4 leading-none text-ink">
+                  {entry.country}
+                </h3>
                 <span
                   data-figure
-                  className="font-mono text-data text-marine tabular-figures"
+                  className="shrink-0 font-ui text-[1.375rem] font-semibold leading-none text-marine tabular-figures"
                 >
                   {entry.count}
                   <SourceMark id="partner-universities" />
@@ -322,20 +339,17 @@ export default function Register() {
                 </span>
               </div>
 
-              <ul className="m-0 mt-2 flex list-none flex-col p-0">
-                {entry.named.map((institution) => (
+              {/* Three names, not twelve. Evidence, not an index. */}
+              <ul className="m-0 mt-4 flex list-none flex-col gap-1 p-0">
+                {entry.named.slice(0, 3).map((institution) => (
                   <li
                     key={institution}
-                    className="font-ui text-body-sm leading-snug text-ink"
+                    className="font-ui text-body-sm leading-snug text-ink-muted"
                   >
                     {institution}
                   </li>
                 ))}
               </ul>
-
-              <p className="mt-2 font-mono text-caption uppercase text-ink-muted tabular-figures">
-                {entry.more}
-              </p>
             </Reveal>
           ))}
         </ul>

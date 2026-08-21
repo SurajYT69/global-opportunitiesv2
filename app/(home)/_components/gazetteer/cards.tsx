@@ -110,10 +110,10 @@ export function AnchorCards() {
                 published locator, identical to the plate the expanded index
                 row already shows for it. */}
             <div className="mt-3 flex flex-col gap-1">
-              <span className="font-mono text-caption uppercase text-ink-muted tabular-figures">
+              <span className="font-mono text-caption text-ink-muted tabular-figures">
                 {d.city}
               </span>
-              <span className="font-mono text-caption uppercase text-ink-muted tabular-figures">
+              <span className="font-mono text-caption text-ink-muted tabular-figures">
                 {d.coordinates} · {d.utc}
               </span>
             </div>

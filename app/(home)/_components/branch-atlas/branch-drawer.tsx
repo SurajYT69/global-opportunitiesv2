@@ -105,7 +105,7 @@ function Panel({ station, onClose }: PanelProps) {
             >
               {station.city}
             </h3>
-            <span className="font-mono text-caption uppercase text-ink-muted">
+            <span className="font-mono text-caption text-ink-muted">
               {station.state}
             </span>
           </div>
@@ -150,7 +150,7 @@ function Panel({ station, onClose }: PanelProps) {
                     {branch.phone.display}
                   </a>
                 </span>
-                <span className="font-mono text-caption uppercase text-ink-muted">
+                <span className="font-mono text-caption text-ink-muted">
                   {branch.phone.kind === "direct"
                     ? "DIRECT LINE TO THIS BRANCH"
                     : "NATIONAL LINE · ASK FOR THIS BRANCH"}
@@ -165,7 +165,7 @@ function Panel({ station, onClose }: PanelProps) {
             {WALK_IN_LINE}
           </p>
           {/* The hours row: the only opening-hours claim on the page, marked. */}
-          <p className="flex items-center gap-2 font-mono text-caption uppercase text-ink-muted tabular-figures">
+          <p className="flex items-center gap-2 font-mono text-caption text-ink-muted tabular-figures">
             <Icon as={Clock} size="sm" />
             {PHONE_WINDOW}
           </p>
@@ -183,7 +183,7 @@ function Panel({ station, onClose }: PanelProps) {
           >
             {`Call ${TOLL_FREE_LINE.display}`}
           </Button>
-          <p className="font-mono text-caption uppercase text-ink-muted tabular-figures">
+          <p className="font-mono text-caption text-ink-muted tabular-figures">
             NO COST · NO OBLIGATION · 30–45 MIN
           </p>
           {multi && (

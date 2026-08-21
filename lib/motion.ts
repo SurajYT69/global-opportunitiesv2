@@ -75,8 +75,9 @@ export const DUR = {
   /**
    * 900ms — hero headline only. Full hero sequence <=1400ms.
    *
-   * That cap still governs `/`. It does NOT govern /homev2's GlobeReveal
-   * intro, which runs 3000ms by client direction (2026-08-04) and owns its
+   * That cap does NOT govern the home page's GlobeReveal intro (promoted
+   * from /homev2 on 2026-08-20), which runs 3000ms by client direction
+   * (2026-08-04) and owns its
    * timing in components/GlobeReveal.tsx — this token is not imported there.
    * Recorded as an exception rather than raised, so the cap keeps binding
    * every hero that has not been individually signed off.

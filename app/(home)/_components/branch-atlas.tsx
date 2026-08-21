@@ -47,7 +47,7 @@ export function BranchAtlas() {
               figure. `align-[-0.24em]` sits the glyph on the mono baseline. */}
           <p
             data-figure
-            className="font-mono text-data uppercase text-ink tabular-figures"
+            className="font-mono text-data text-ink tabular-figures"
           >
             <Icon as={Building2} size="sm" className="mr-2 align-[-0.24em]" />
             {`${BRANCH_COUNT} BRANCHES`}
@@ -72,7 +72,7 @@ export function BranchAtlas() {
             direct line only where the company publishes one — every other
             branch is reachable on the national line, and the drawer says so.
           </p>
-          <p className="font-mono text-caption uppercase text-ink-muted tabular-figures">
+          <p className="font-mono text-caption text-ink-muted tabular-figures">
             <Icon as={PhoneCall} size="sm" className="mr-2 align-[-0.24em]" />
             {`TOLL-FREE ${TOLL_FREE_LINE.display} · 9 AM – 9 PM IST`}
           </p>

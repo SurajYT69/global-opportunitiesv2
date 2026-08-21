@@ -76,7 +76,7 @@ export function Field({
         {icon && <Icon as={icon} size="sm" className="self-center" />}
         <span>{label}</span>
         {optional && (
-          <span className="font-mono text-caption uppercase text-ink-muted">
+          <span className="font-mono text-caption text-ink-muted">
             optional
           </span>
         )}

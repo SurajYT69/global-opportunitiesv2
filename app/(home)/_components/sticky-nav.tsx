@@ -3,6 +3,7 @@
 import {
   AnimatePresence,
   motion,
+  useAnimate,
   useMotionValueEvent,
   useReducedMotion,
   useScroll,
@@ -11,6 +12,7 @@ import {
 import { CalendarCheck, ChevronRight, Clock, Phone } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { INTRO_KEY, INTRO_MS } from "@/components/globe-reveal-geometry";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { Icon } from "@/components/ui/icon";
@@ -40,9 +42,8 @@ import { DUR, EASE, MQ } from "@/lib/motion";
    top-0`, so `main` carries NO clearance padding — both tiers occupy real
    space. Past 40px of scroll the row steps down 72px -> 56px at md+, the
    size change carried by Framer's layout projection (transform), never a
-   raw height animation. The hero's fold calc subtracts the AT-REST stack
-   (6.75rem at md+, 3.5rem mobile); the spine hangs at `top-full`, so no
-   other file hard-codes the header height.
+   raw height animation. The spine hangs at `top-full`, so no other file
+   hard-codes the header height.
 
    SCROLL-SPY (same date). An IntersectionObserver watches the six nav
    targets through a band around the upper-middle of the viewport; the
@@ -56,8 +57,43 @@ import { DUR, EASE, MQ } from "@/lib/motion";
    TEXT and a glyph sits BESIDE it, never instead of it. Every glyph here has
    a visible word next to it, so every glyph here is decorative and unlabelled.
 
+   -------------------------------------------------------------------------
+   TRANSPARENT OVER THE HERO FILM (2026-08-20). Merged back from the
+   `components/homev2/sticky-nav-v2` fork when the v2 hero was promoted to `/`;
+   that file is gone and this is again the only masthead in the codebase.
+
+   The fork existed because GlobeReveal is a full-bleed film: an opaque
+   56/72px strip cuts the frame at exactly the moment the ellipse is trying
+   to fill the viewport, which reads as a rendering bug rather than a
+   masthead. The old comment here — "a transparent phase would set ink type
+   over a dark image" — is answered rather than ignored: every foreground
+   colour swaps in lockstep with the surface, so ink type never lands on the
+   film. Over the film the palette is plate-white on navy; past it, the
+   original ink-on-cream returns unchanged.
+
+   THE TWO-TIER FLOW SURVIVED THE MERGE. The fork was `fixed`; this is still
+   `sticky`, with the strip still in normal flow, because that is what lets
+   the strip scroll away while the row sticks. The hero is pulled up under
+   both tiers by a negative margin in `app/(home)/page.tsx` (`-mt-14
+   md:-mt-27`, the at-rest stack height), so the film still starts at the
+   viewport top and fills `h-svh` with no navy sliver. Both tiers carry
+   `z-[var(--z-nav)]` so they paint over it.
+
+   THE WORDMARK IS HELD BACK THROUGH THE INTRO, then fades in as the hero
+   opens — the mark "lands" in the corner. The intro puts the GO lockup,
+   huge, in the centre of the viewport, and a second copy of the same lockup
+   sitting above it for 1.5s is avoidable. NO STATE IS THREADED between this
+   component and GlobeReveal: it reads the same public signal GlobeReveal
+   writes — the `go-hero-intro-seen` sessionStorage key — and nothing else.
+
+   MOTION SAFETY. The hold is expressed with the canon `.reveal` class, so it
+   inherits both existing backstops: `<noscript>` in layout.tsx forces it
+   visible with JS off, and the reduced-motion block in globals.css forces it
+   visible with motion off. Neither path can strand the wordmark at opacity 0.
+   -------------------------------------------------------------------------
+
    Motion (Motion / framer-motion owns pointer + React state):
-     - transparent over the hero -> paper + masthead rule past 40px
+     - transparent over the hero film -> paper past it
      - wordmark scales 1 -> 0.92 past 40px (transform only)
      - the chapter spine fills with `--grad-spine-fill` on scrollYProgress
    Every branch lands on a fully visible final state.
@@ -67,8 +103,6 @@ import { DUR, EASE, MQ } from "@/lib/motion";
 const NAV_ITEMS = [
   { label: "Destinations", href: "#gazetteer" },
   { label: "Costs", href: "#reckoning" },
-  { label: "Process", href: "#eleven-months" },
-  { label: "Counsellors", href: "#contributors" },
   { label: "Offices", href: "#branch-atlas" },
   { label: "For Parents", href: "#for-parents" },
 ] as const;
@@ -79,6 +113,23 @@ const PHONE_HREF = "tel:1800111119";
 
 const SCROLL_THRESHOLD = 40;
 const MENU_ID = "sticky-nav-menu";
+
+/* --- the GlobeReveal handshake ------------------------------------------
+   These WERE hand-copied from components/GlobeReveal.tsx, with a note calling
+   that the one thing here that could silently drift. They now come from
+   components/globe-reveal-geometry.ts, which both this masthead and the hero
+   import — so the drift is structurally impossible rather than merely
+   documented. Aliased to the old local names so the body below is unchanged.
+   ---------------------------------------------------------------------- */
+const HERO_INTRO_KEY = INTRO_KEY;
+const HERO_INTRO_MS = INTRO_MS;
+
+/** The section the masthead floats over. Set by app/(home)/page.tsx. */
+const HERO_ID = "hero";
+
+/** Stuck height of the paper row (`h-14` at every breakpoint once scrolled).
+    The film is treated as ending this far above the hero's bottom edge. */
+const NAV_STUCK_H = 56;
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -99,9 +150,84 @@ export default function StickyNav() {
   // Stuck-state: past the threshold the paper row is riding the top edge
   // (the strip has scrolled away) and steps down 72px -> 56px at md+.
   const [scrolled, setScrolled] = useState(false);
+
+  /* --- surface state ----------------------------------------------------
+     `onFilm` is true while the masthead overlaps the hero. It starts true
+     because the home page always opens at the top of the hero; a restored
+     mid-page scroll corrects it on the first measurement below. Starting it
+     false instead would flash a cream bar across the first frame of the
+     intro, which is the exact artefact this behaviour exists to remove.
+
+     Measured through getBoundingClientRect rather than offsetTop: the hero is
+     pulled up under the masthead by a negative margin, and whether that
+     margin collapses through <main> is not worth depending on.
+     ------------------------------------------------------------------- */
+  const [onFilm, setOnFilm] = useState(true);
+  const filmEnd = useRef(0);
+
+  useEffect(() => {
+    const measure = () => {
+      const hero = document.getElementById(HERO_ID);
+      const bottom = hero
+        ? hero.getBoundingClientRect().bottom + window.scrollY
+        : 0;
+      filmEnd.current = Math.max(bottom - NAV_STUCK_H, 0);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- seeded from
+      // a DOM measurement; the hero's height has no render-time source.
+      setOnFilm(filmEnd.current > 0 && window.scrollY < filmEnd.current);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  // One scroll listener for both reads, through Motion's own event so the
+  // work stays batched with the rest of the page's scroll handling.
   useMotionValueEvent(scrollY, "change", (v) => {
     setScrolled(v > SCROLL_THRESHOLD);
+    setOnFilm(filmEnd.current > 0 && v < filmEnd.current);
   });
+
+  /* An open drawer is a solid cream panel — the masthead above it must match
+     it regardless of where the page is scrolled to. */
+  const solid = !onFilm || open;
+
+  /* --- the wordmark hold ------------------------------------------------ */
+  const [logoScope, animateLogo] = useAnimate<HTMLSpanElement>();
+
+  useEffect(() => {
+    const el = logoScope.current;
+    if (!el) return;
+
+    // Both branches that make GlobeReveal skip its intro must also skip the
+    // hold, or the wordmark would be missing from a hero that is already
+    // fully rendered.
+    const reduced = window.matchMedia(MQ.reduce).matches;
+    /* `seen` is permanently false as of 2026-08-04: the once-per-session gate
+       is off by client direction and GlobeReveal now only ever CLEARS this key
+       (see its note). The read is kept rather than deleted because it is the
+       whole handshake — re-latch the key over there and the hold here starts
+       working again with no edit to this file. Reduced motion is the live
+       skip path. */
+    const seen = sessionStorage.getItem(HERO_INTRO_KEY) !== null;
+
+    const controls =
+      reduced || seen
+        ? animateLogo(el, { opacity: 1 }, { duration: 0 })
+        : animateLogo(
+            el,
+            { opacity: 1 },
+            {
+              // Lands just before the intro settles, so the mark arrives with
+              // the copy rather than after it.
+              delay: HERO_INTRO_MS / 1000 - 0.25,
+              duration: DUR.d4,
+              ease: EASE.quad,
+            },
+          );
+
+    return () => controls.stop();
+  }, [animateLogo, logoScope]);
 
   const close = useCallback(() => {
     setOpen(false);
@@ -212,13 +338,10 @@ export default function StickyNav() {
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [open, close]);
 
-  /* The hero is a full-bleed photograph now — the masthead is ALWAYS solid.
-     A transparent phase would set ink type over a dark image. */
-
   return (
     <>
       {/* First focusable on the page. */}
-      <a href="#hero" className="skip-link">
+      <a href={`#${HERO_ID}`} className="skip-link">
         Skip to content
       </a>
 
@@ -239,32 +362,42 @@ export default function StickyNav() {
 
       {/* THE UTILITY STRIP — md+ only, and NOT sticky (client, 2026-08-04):
           it lives in normal flow OUTSIDE the header and scrolls away with
-          the page. Solid GO Navy, mono label voice. Every item on it is a
-          verified fact (mono law): founding year, office count, calling
-          hours, the toll-free number. The phone keeps its glyph BESIDE the
-          visible number, never instead. */}
-      <div className="hidden bg-endpaper md:block">
-          <Container
-            width="frame"
-            className="flex h-9 items-center justify-between gap-6"
-          >
-            <p className="m-0 font-mono text-mono-label uppercase text-plate-grey">
-              Est. 2001 · 18 offices across India
-            </p>
-            <div className="flex items-center gap-6">
-              <span className="inline-flex items-center gap-2 font-mono text-mono-label uppercase text-plate-grey">
-                <Icon as={Clock} size="sm" />9 AM–9 PM IST
-              </span>
-              <a
-                href={PHONE_HREF}
-                aria-label={`Call Global Opportunities on ${PHONE_DISPLAY}`}
-                className="inline-flex items-center gap-2 font-mono text-mono-label text-plate-white no-underline transition-colors duration-200 ease-quad hover:text-sienna-on-dark"
-              >
-                <Icon as={Phone} size="sm" />
-                {PHONE_DISPLAY}
-              </a>
-            </div>
-          </Container>
+          the page. Every item on it is a verified fact (mono law): founding
+          year, office count, calling hours, the toll-free number. The phone
+          keeps its glyph BESIDE the visible number, never instead.
+
+          `relative z-[var(--z-nav)]` is load-bearing since the v2 hero: the
+          film is pulled up UNDER this row by a negative margin, and an
+          unpositioned strip would lose the paint order to the hero's own
+          `relative` section. Its navy ground drops away over the film — the
+          type is already plate-white/plate-grey, so it reads on both. */}
+      <div
+        className={cn(
+          "relative z-[var(--z-nav)] hidden transition-colors duration-200 ease-quad md:block",
+          onFilm ? "bg-transparent" : "bg-endpaper",
+        )}
+      >
+        <Container
+          width="frame"
+          className="flex h-9 items-center justify-between gap-6"
+        >
+          <p className="m-0 font-mono text-mono-label uppercase text-plate-grey">
+            Est. 2001 · 18 offices across India
+          </p>
+          <div className="flex items-center gap-6">
+            <span className="inline-flex items-center gap-2 font-mono text-mono-label uppercase text-plate-grey">
+              <Icon as={Clock} size="sm" />9 AM–9 PM IST
+            </span>
+            <a
+              href={PHONE_HREF}
+              aria-label={`Call Global Opportunities on ${PHONE_DISPLAY}`}
+              className="inline-flex items-center gap-2 font-mono text-mono-label text-plate-white no-underline transition-colors duration-200 ease-quad hover:text-sienna-on-dark"
+            >
+              <Icon as={Phone} size="sm" />
+              {PHONE_DISPLAY}
+            </a>
+          </div>
+        </Container>
       </div>
 
       <header
@@ -274,8 +407,9 @@ export default function StickyNav() {
           open ? "z-[var(--z-drawer)]" : "z-[var(--z-nav)]",
         )}
       >
-        {/* THE PAPER ROW — the only sticky chrome. Solid paper at 96%. No
-            backdrop-filter, ever. Three-zone composition (2026-08-04):
+        {/* THE PAPER ROW — the only sticky chrome. Solid paper at 96% past
+            the film; over the film it is simply ABSENT, never blurred (no
+            backdrop-filter, ever). Three-zone composition (2026-08-04):
             brand lockup flex-1 left, nav DEAD CENTRE (shrink-0 between two
             flex-1 wings), CTA flex-1 right. 72px tall at rest at md+; once
             stuck it steps down to 56px. The size change is carried by
@@ -288,7 +422,10 @@ export default function StickyNav() {
         >
           <div
             aria-hidden="true"
-            className="absolute inset-0"
+            className={cn(
+              "absolute inset-0 transition-opacity duration-200 ease-quad",
+              solid ? "opacity-100" : "opacity-0",
+            )}
             style={{
               backgroundColor:
                 "color-mix(in srgb, var(--paper) 96%, transparent)",
@@ -298,12 +435,13 @@ export default function StickyNav() {
           {/* The stuck-state shadow (--shadow-masthead, client 2026-08-04).
               A separate layer faded via OPACITY — box-shadow itself never
               animates, per the transform/opacity-only law. Invisible at
-              rest, where the row sits flush against the strip. */}
+              rest, where the row sits flush against the strip, and over the
+              film, where there is no bar for it to be cast by. */}
           <div
             aria-hidden="true"
             className={cn(
               "pointer-events-none absolute inset-0 shadow-masthead transition-opacity duration-200 ease-quad",
-              scrolled ? "opacity-100" : "opacity-0",
+              scrolled && solid ? "opacity-100" : "opacity-0",
             )}
           />
 
@@ -316,27 +454,79 @@ export default function StickyNav() {
           >
           {/* Running head — the brand lockup. Wordmark, then a hairline and
               a two-line tracked-caps tagline at lg+ (label voice, not mono:
-              it is a noun phrase, not a verified figure). */}
+              it is a noun phrase, not a verified figure).
+
+              `.reveal` holds the mark at opacity 0 until the effect above
+              releases it; the noscript and reduced-motion backstops both
+              force it visible, so JS-off and motion-off users never lose it.
+              Both lockups are stacked and cross-faded rather than swapped on
+              `src`, which would fire a network request mid-scroll. */}
           <div className="flex min-w-0 flex-1 items-center gap-4">
             <a
-              href="#hero"
+              href={`#${HERO_ID}`}
               className="group inline-flex min-h-11 items-center no-underline"
             >
-              <motion.span
-                style={{ scale: prefersReducedMotion ? 1 : wordmarkScale }}
-                className="block origin-left"
-              >
-                <Image
-                  src="/logo.png"
-                  alt="Global Opportunities"
-                  width={109}
-                  height={49}
-                  priority
-                  className="h-9 w-auto md:h-11"
-                />
-              </motion.span>
+              <span ref={logoScope} data-intro-logo className="reveal block">
+                <motion.span
+                  style={{ scale: prefersReducedMotion ? 1 : wordmarkScale }}
+                  className="relative block origin-left"
+                >
+                  {/* VECTOR, NOT RASTER (2026-08-20). Both marks were bitmaps
+                      — logo.png 109x49 and logo-light.webp 149x49 — drawn at
+                      up to 134px wide, so they had no resolution headroom: the
+                      wordmark rendered visibly soft next to the crisp UI text
+                      beside it, and the globe's window cuts turned to mush.
+                      They were also DIFFERENT CROPS of the same artwork, so
+                      the two states did not register against each other and
+                      the wider light mark overflowed the box the narrower dark
+                      one sized.
+
+                      Both files are now generated from the vector master at
+                      `files/GO-logo-brand-palette.svg` and share one viewBox,
+                      so the cross-fade lands pixel-for-pixel and the mark is
+                      sharp at any density. `unoptimized` because the image
+                      optimizer refuses SVG without `dangerouslyAllowSVG`, and
+                      a 12KB vector has nothing to optimize anyway. */}
+                  <Image
+                    src="/logo.svg"
+                    alt="Global Opportunities"
+                    width={1120}
+                    height={530}
+                    priority
+                    unoptimized
+                    className={cn(
+                      "h-9 w-auto transition-opacity duration-200 ease-quad md:h-11",
+                      solid ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                  <Image
+                    src="/logo-light.svg"
+                    alt=""
+                    aria-hidden="true"
+                    width={1120}
+                    height={530}
+                    priority
+                    unoptimized
+                    className={cn(
+                      "absolute left-0 top-0 h-9 w-auto transition-opacity duration-200 ease-quad md:h-11",
+                      solid ? "opacity-0" : "opacity-100",
+                    )}
+                  />
+                </motion.span>
+              </span>
             </a>
-            <p className="m-0 hidden self-center hairline-l pl-4 font-ui text-label uppercase text-ink-muted lg:block">
+            {/* `border-l` + an explicit colour rather than the `hairline-l`
+                utility: the rule has to swap with the surface, and stacking a
+                colour utility on top of one that also sets border-color is a
+                source-order coin toss. */}
+            <p
+              className={cn(
+                "m-0 hidden self-center border-l pl-4 font-ui text-label uppercase transition-colors duration-200 ease-quad lg:block",
+                solid
+                  ? "border-[var(--rule)] text-ink-muted"
+                  : "border-plate-grey/40 text-plate-grey",
+              )}
+            >
               Overseas education
               <br />
               consultants
@@ -348,7 +538,12 @@ export default function StickyNav() {
               hairline that swells under the word on hover/focus, and six 20px
               strokes in a horizontal rail would out-weigh both it and the
               masthead rule. The drawer rows below DO carry one, because a
-              full-width list row has no such underline to lean on. */}
+              full-width list row has no such underline to lean on.
+
+              Over the film that hairline goes plate-white, because sienna on
+              navy is the one pairing in the palette that fails contrast. No
+              nav item can be `active` over the film — the hero is not one of
+              the six targets — so the inked state is a solid-only concern. */}
           <nav aria-label="Primary" className="hidden shrink-0 md:block">
             <ul className="flex items-center gap-6 lg:gap-8">
               {NAV_ITEMS.map((item) => (
@@ -357,16 +552,20 @@ export default function StickyNav() {
                     href={item.href}
                     aria-current={active === item.href ? "true" : undefined}
                     className={cn(
-                      "group relative inline-flex min-h-11 items-center font-ui text-body-sm font-medium text-ink no-underline transition-colors duration-200 ease-quad hover:text-sienna-press",
-                      active === item.href && "text-sienna-press",
+                      "group relative inline-flex min-h-11 items-center font-ui text-body-sm font-medium no-underline transition-colors duration-200 ease-quad",
+                      solid
+                        ? "text-ink hover:text-sienna-press"
+                        : "text-plate-white hover:text-white",
+                      solid && active === item.href && "text-sienna-press",
                     )}
                   >
                     {item.label}
                     <span
                       aria-hidden="true"
                       className={cn(
-                        "pointer-events-none absolute inset-x-0 bottom-2 h-px origin-left scale-x-0 bg-sienna transition-transform duration-200 ease-quad group-hover:scale-x-100 group-focus-visible:scale-x-100",
-                        active === item.href && "scale-x-100",
+                        "pointer-events-none absolute inset-x-0 bottom-2 h-px origin-left scale-x-0 transition-transform duration-200 ease-quad group-hover:scale-x-100 group-focus-visible:scale-x-100",
+                        solid ? "bg-sienna" : "bg-plate-white",
+                        solid && active === item.href && "scale-x-100",
                       )}
                     />
                   </a>
@@ -380,7 +579,9 @@ export default function StickyNav() {
                 below md it lives in the drawer. The paper row carries only
                 wordmark / nav / CTA now. */}
 
-            {/* Button already sets `inline-flex items-center gap-2`.
+            {/* GO Red carries itself on both surfaces — the one element here
+                that needs no variant. Button already sets `inline-flex
+                items-center gap-2`.
                 Short form in the masthead only (client, 2026-08-04): the
                 canonical "Book a free guidance session" stays on the hero,
                 the drawer and every other surface. "Session" is kill-list
@@ -413,19 +614,22 @@ export default function StickyNav() {
               <span aria-hidden="true" className="relative block h-3 w-5">
                 <span
                   className={cn(
-                    "absolute left-0 top-0 block h-px w-full bg-ink transition-transform duration-200 ease-quad",
+                    "absolute left-0 top-0 block h-px w-full transition-[transform,background-color] duration-200 ease-quad",
+                    solid ? "bg-ink" : "bg-plate-white",
                     open && "translate-y-1.5 rotate-45",
                   )}
                 />
                 <span
                   className={cn(
-                    "absolute left-0 top-1.5 block h-px w-full bg-ink transition-opacity duration-200 ease-quad",
+                    "absolute left-0 top-1.5 block h-px w-full transition-[opacity,background-color] duration-200 ease-quad",
+                    solid ? "bg-ink" : "bg-plate-white",
                     open && "opacity-0",
                   )}
                 />
                 <span
                   className={cn(
-                    "absolute left-0 top-3 block h-px w-full bg-ink transition-transform duration-200 ease-quad",
+                    "absolute left-0 top-3 block h-px w-full transition-[transform,background-color] duration-200 ease-quad",
+                    solid ? "bg-ink" : "bg-plate-white",
                     open && "-translate-y-1.5 -rotate-45",
                   )}
                 />
@@ -437,10 +641,15 @@ export default function StickyNav() {
 
         {/* The chapter spine — fills with scroll progress. `top-full`
             rides the sticky row's bottom edge at every height, rest or
-            shrunk, without a hard-coded offset. */}
+            shrunk, without a hard-coded offset. Ink-side furniture: it goes
+            with the cream, because over the film the top edge of the frame
+            is the only rule there should be. */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-full"
+          className={cn(
+            "pointer-events-none absolute inset-x-0 top-full transition-opacity duration-200 ease-quad",
+            solid ? "opacity-100" : "opacity-0",
+          )}
         >
           <motion.div
             className="h-0.5 w-full origin-left"
@@ -509,10 +718,10 @@ export default function StickyNav() {
                 <Icon as={CalendarCheck} />
                 Book a free guidance session
               </Button>
-              <p className="mt-2 font-mono text-caption uppercase text-ink-muted">
+              <p className="mt-2 font-mono text-caption text-ink-muted">
                 30 min · free · no obligation
               </p>
-              <p className="mt-1 font-mono text-caption uppercase text-ink-muted">
+              <p className="mt-1 font-mono text-caption text-ink-muted">
                 A GO counsellor calls you within 15 minutes, 9 AM–9 PM IST. No
                 fee, no obligation.
               </p>

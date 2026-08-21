@@ -55,8 +55,13 @@ type AsButton = BaseProps &
 
 export type ButtonProps = AsAnchor | AsButton;
 
+/* `leading-none` is NOT in here — it is applied AFTER the size class in the
+   cn() call below. `cn` is tailwind-merge-backed as of 2026-08-21, and a
+   `text-{size}` utility carries its own line-height, so a size class listed
+   after `leading-none` would delete it and the pill would grow to 1.62.
+   Order is load-bearing; do not fold this back into BASE. */
 const BASE =
-  "inline-flex items-center justify-center gap-2 font-ui font-semibold leading-none " +
+  "inline-flex items-center justify-center gap-2 font-ui font-semibold " +
   "no-underline select-none cursor-pointer " +
   "transition-colors duration-200 ease-quad " +
   "active:translate-y-px " +
@@ -68,6 +73,7 @@ export function Button(props: ButtonProps) {
     BASE,
     VARIANT[props.variant ?? "primary"],
     SIZE[props.size ?? "md"],
+    "leading-none",
     props.fullWidth && "w-full",
     props.className,
   );

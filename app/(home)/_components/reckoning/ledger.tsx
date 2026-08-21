@@ -3,17 +3,14 @@
 import { motion } from "framer-motion";
 import {
   ArrowLeftRight,
-  Asterisk,
   BookOpen,
   Equal,
   HeartPulse,
   House,
   IndianRupee,
-  Landmark,
   Lock,
   Minus,
   Receipt,
-  Ruler,
   Stamp,
   Ticket,
 } from "lucide-react";
@@ -23,7 +20,6 @@ import { Icon, type IconComponent } from "@/components/ui/icon";
 import { cn } from "@/lib/cn";
 import { DUR, DUR_MS, EASE, MQ } from "@/lib/motion";
 import type { LedgerView } from "./data";
-import { METHOD, METHOD_STAMP } from "./data";
 import type { FigureFormat } from "./format";
 import { formatBy, formatRupees } from "./format";
 
@@ -194,27 +190,6 @@ function useOdometers(
 
 /* --- Pieces -------------------------------------------------------------- */
 
-/**
- * Superscript note marker. Section-scoped: the ledger's notes are per-figure
- * and re-number with the selection, so they cannot live in the page-level
- * SOURCES registry (which is frozen at the six canonical stats). Same anchor
- * behaviour, same sienna, works with JavaScript disabled.
- */
-function NoteRef({ n, note }: { n: number; note: string }) {
-  return (
-    <sup className="align-super leading-none">
-      <a
-        id={`rk-noteref-${n}`}
-        href={`#rk-note-${n}`}
-        aria-label={`Note ${n}: ${note}`}
-        className="font-mono text-[0.62em] text-sienna-press no-underline tabular-figures hover:underline"
-      >
-        {n}
-      </a>
-    </sup>
-  );
-}
-
 interface FigureRangeProps {
   id: string;
   row: number;
@@ -310,7 +285,7 @@ export function Ledger({ view, selectionKey, selectionLabel }: LedgerProps) {
     if (!draw) setDraw(true);
   }
 
-  const { lines, scholarship, subtotal, total, notes } = view;
+  const { lines, scholarship, subtotal, total } = view;
   const scholarshipNoteNumber = lines.length + 1;
   const totalRow = lines.length + 1;
 
@@ -362,12 +337,11 @@ export function Ledger({ view, selectionKey, selectionLabel }: LedgerProps) {
                       className="mr-2 align-[-0.2em]"
                     />
                     {line.label}
-                    <NoteRef n={index + 1} note={line.note} />
                   </span>
                   {line.native && (
                     /* `pl-7` = the 20px mark plus its 8px gap, so the native
                        gloss hangs under the label and not under the mark. */
-                    <span className="mt-1 block pl-7 font-mono text-caption uppercase text-ink-muted tabular-figures">
+                    <span className="mt-1 block pl-7 font-mono text-caption text-ink-muted tabular-figures">
                       {line.native}
                     </span>
                   )}
@@ -404,12 +378,8 @@ export function Ledger({ view, selectionKey, selectionLabel }: LedgerProps) {
                   {/* The subtraction line gets the accountant's minus. */}
                   <Icon as={Minus} className="mr-2 align-[-0.2em]" />
                   Less: scholarships and bursaries
-                  <NoteRef
-                    n={scholarshipNoteNumber}
-                    note={scholarship.note}
-                  />
                 </span>
-                <span className="mt-1 block pl-7 font-mono text-caption uppercase text-ink-muted">
+                <span className="mt-1 block pl-7 font-mono text-caption text-ink-muted">
                   {`EXAMPLES · ${scholarship.funders.join(" · ")}`}
                 </span>
               </th>
@@ -448,7 +418,7 @@ export function Ledger({ view, selectionKey, selectionLabel }: LedgerProps) {
                   <Icon as={Equal} className="mr-2 align-[-0.14em]" />
                   Total, one year
                 </span>
-                <span className="mt-1 block pl-7 font-mono text-caption uppercase text-ink-muted">
+                <span className="mt-1 block pl-7 font-mono text-caption text-ink-muted">
                   ONE STUDENT · AFTER SCHOLARSHIPS
                 </span>
               </th>
@@ -462,10 +432,10 @@ export function Ledger({ view, selectionKey, selectionLabel }: LedgerProps) {
                     format="lakh"
                   />
                 </span>
-                <span className="mt-2 block font-mono text-caption uppercase text-ink-muted tabular-figures">
+                <span className="mt-2 block font-mono text-caption text-ink-muted tabular-figures">
                   {`${formatRupees(total.low)} – ${formatRupees(total.high)}`}
                 </span>
-                <span className="mt-1 block font-mono text-caption uppercase text-ink-muted tabular-figures">
+                <span className="mt-1 block font-mono text-caption text-ink-muted tabular-figures">
                   {`BEFORE SCHOLARSHIPS ${formatRupees(subtotal.low)} – ${formatRupees(subtotal.high)}`}
                 </span>
               </td>
@@ -474,60 +444,6 @@ export function Ledger({ view, selectionKey, selectionLabel }: LedgerProps) {
         </table>
       </div>
 
-      {/* An education loan is the other half of the parent's arithmetic. */}
-      <p className="mt-6 flex max-w-prose items-start gap-2 font-ui text-body-sm text-ink-muted">
-        <Icon as={Landmark} size="sm" className="mt-[0.24em]" />
-        <span>
-          An education loan of ₹40,00,000 over ten years costs roughly ₹54,000
-          to ₹57,500 a month, depending on whether it is secured against
-          property. Ask us to run that number for the amount you actually need,
-          before you apply anywhere. We do not lend.
-        </span>
-      </p>
-
-      {/* Notes sit OUTSIDE the live region — they resolve markers, they are
-          not an announcement. */}
-      <div className="mt-10">
-        <h3 className="font-ui text-label uppercase text-ink-muted">
-          <Icon as={Asterisk} size="sm" className="mr-1.5 align-[-0.24em]" />
-          Notes on the figures above
-        </h3>
-        <ol className="mt-4 flex list-none flex-col gap-3 p-0">
-          {notes.map((note, index) => (
-            <li
-              key={`${selectionKey}-note-${index}`}
-              id={`rk-note-${index + 1}`}
-              className="font-display text-footnote text-ink-muted"
-            >
-              <a
-                href={`#rk-noteref-${index + 1}`}
-                aria-label={`Back to reference ${index + 1}`}
-                className="font-mono text-[0.72em] text-sienna-press no-underline tabular-figures hover:underline"
-              >
-                {index + 1}
-              </a>{" "}
-              {note}
-            </li>
-          ))}
-        </ol>
-      </div>
-
-      <div className="mt-8 border-t border-rule pt-6">
-        <h3 className="font-ui text-label uppercase text-ink-muted">
-          <Icon as={Ruler} size="sm" className="mr-1.5 align-[-0.24em]" />
-          Method
-        </h3>
-        <ul className="mt-4 flex max-w-prose list-none flex-col gap-3 p-0">
-          {METHOD.map((item) => (
-            <li key={item} className="font-display text-footnote text-ink-muted">
-              {item}
-            </li>
-          ))}
-        </ul>
-        <p className="mt-4 font-mono text-caption uppercase text-ink-muted tabular-figures">
-          {METHOD_STAMP}
-        </p>
-      </div>
     </div>
   );
 }

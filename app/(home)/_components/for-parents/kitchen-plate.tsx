@@ -41,7 +41,7 @@ export function KitchenPlate({ className }: { className?: string }) {
         />
       </div>
 
-      <figcaption className="mt-3 font-mono text-caption uppercase text-ink-muted tabular-figures">
+      <figcaption className="mt-3 font-mono text-caption text-ink-muted tabular-figures">
         THE KITCHEN TABLE · WHERE THIS DECISION ACTUALLY HAPPENS
       </figcaption>
     </figure>

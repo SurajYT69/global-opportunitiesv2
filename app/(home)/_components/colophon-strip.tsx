@@ -7,98 +7,89 @@ import { Rule } from "@/components/ui/rule";
 import { fadeUp, staggerChildrenTight, VIEWPORT_ONCE } from "@/lib/motion";
 
 /* ===========================================================================
-   SECTION 3 · `colophon-strip` · THE COLOPHON STRIP · Chapter I DREAM
+   SECTION 2 · `colophon-strip` · THE COLOPHON STRIP · Chapter I DREAM
    ---------------------------------------------------------------------------
-   CANON: "Colophon strip runs as one line of set text, not a stat bar."
+   THE FIGURES, AS A COLOPHON OF FIGURES (redesign 2026-08-20, client: "this
+   doesn't feel right").
 
-     EST. 2001, AMRITSAR¹ · 40,000+ STUDENTS PLACED² ·
-     700+ PARTNER UNIVERSITIES³ · 15 DESTINATIONS⁴ ·
-     18 OFFICES ACROSS INDIA⁵ · 47 TESTIMONIALS⁶
+   WHAT WAS WRONG. Every word in here — figure and label alike — was set at
+   `text-caption`, 12px, separated only by colour and weight, and
+   squeezed between TWO chapter rules directly under a full-bleed cinematic
+   hero. Six provable numbers had no more presence than a legal line. The old
+   note in this file called that "a dense rail rather than another airy band";
+   arriving off the film it read as a caption someone forgot to style.
 
-   SINGLE ROW (2026-08-04, client pass). The old seven-entry string wrapped
-   to two ragged lines inside the content column, which read as neither set
-   text nor a designed bar. Three moves brought it to one literal line:
-     - "25 YEARS" left — the only UNCITED entry (derived from Est. 2001,
-       no footnote), so the audit surface lost nothing.
-     - "named and addressed" -> "across India"; "published" dropped — the
-       registry notes still carry both qualifiers.
-     - At md+ the six entries DISTRIBUTE across the row (justify-between,
-       no wrap) and the middle dots retire; below md the line wraps as
-       dot-separated prose exactly as before.
-   Six entries, six superscripts, every one still a PRIMARY anchor into the
-   Sources & Methods registry in `components/ui/footnote.tsx` — the fnref-*
-   ids the Sources table back-links to live HERE and must not be removed.
-   Evidence before any further ask — the page is telling you, immediately,
-   that it can be audited.
+   WHAT IT IS NOW. Six columns, each a figure stacked over its qualifier. The
+   figure carries real size and the tabular/lining numerals the mono role
+   still owns; the qualifier stays in the small tracked-caps label voice. Same
+   six entries, same order, same string content — the hierarchy is the change,
+   not the copy.
 
-   THE MONO LAW: every figure here is set in IBM Plex Mono because every
-   figure here can be proved. Tabular figures come from the base layer.
+   ONE RULE, NOT TWO. The top rule marks the seam where the film ends and the
+   paper starts, which is a real transition and worth a mark. The bottom rule
+   marked nothing — the section's own padding already ended it — and the pair
+   of them read as a box drawn around the numbers.
 
-   UI WEIGHT (2026-08-03): the strip used to set the whole line at one colour
-   and one weight, which read as prose. Each entry is now split into its
-   FIGURE and its words: the figure takes --marine (the token's documented
-   role is "numerals") at mono 500, the words take --ink-muted at 400. The
-   line is still one line of running text — the same string, the same order,
-   the same separators — it simply now has a typographic hierarchy, so the
-   numbers register as data instead of as sentence. Vertical padding is cut
-   roughly a third so the strip sits under the hero as a dense rail rather
-   than another airy band.
+   THE SIX SUPERSCRIPTS ARE LOAD-BEARING. Every entry is still a PRIMARY
+   anchor into the Sources & Methods registry in `components/ui/footnote.tsx`;
+   the `fnref-*` ids the Sources table back-links to live HERE. Do not remove a
+   `<Footnote … primary />` from this file — you would break the back-link at
+   the foot of the page, silently.
 
-   ICONS (2026-08-04): none, deliberately, and this is the one file in the
-   chrome where that is the answer. Lucide is now canon site-wide, but the
-   strip has no affordances to mark — nothing here is a control. The only
-   interactive things in it are the `Footnote` superscripts, and those are
-   owned by `components/ui/footnote.tsx`. Putting a glyph on each of the
-   six figures would give the line a repeating leading mark per entry,
-   which is precisely the "stat bar" the CANON line above forbids. The
-   evidence here is carried by the mono figures and their superscripts.
+   ONE CANON DEVIATION, RECORDED. The founding entry used to read
+   "Est. 2001, Amritsar" with "Est. 2001," as the figure. Stacked, that put a
+   word and a comma on the figure line. It is now the numeral "2001" over
+   "Established · Amritsar" — same fact, same source id, same superscript.
+
+   THE MONO LAW: every figure here is set in the mono role because every
+   figure here can be proved. Since the single-family retheme that role is
+   Geist plus `tabular-figures`, so the request is explicit on the figure.
 
    No heading — this strip is an `aria-label`led region, not a chapter.
-   Motion: one once-only reveal on enter, opacity + y24, tight stagger.
-   The footnote DEFINITIONS live once, in the colophon footer; these markers
-   are anchors into that table, and they work with JavaScript disabled.
+   Motion: one once-only reveal on enter, opacity + y24, tight stagger. No
+   count-up: "Est. 2001" cannot be counted to, and an odometer on the other
+   five is the SaaS stat-bar tell this section has always been written against.
    ======================================================================== */
 
 interface Stat {
   id: string;
-  /** The provable quantity. Mono 500, --marine. Carries its own punctuation. */
+  /** The provable quantity. Display size, tabular figures. */
   figure: string;
-  /** The words that qualify it. Mono 400, --ink-muted. */
+  /** The words that qualify it. Small tracked caps. */
   label: string;
   source?: SourceId;
 }
 
-/* `figure` + " " + `label` reproduces the CANON string verbatim. */
 const STATS: Stat[] = [
-  { id: "founded", figure: "Est. 2001,", label: "Amritsar", source: "founded" },
+  { id: "founded", figure: "2001", label: "Established · Amritsar", source: "founded" },
   {
     id: "students",
     figure: "40,000+",
-    label: "students placed",
+    label: "Students placed",
     source: "students-placed",
   },
   {
     id: "partners",
     figure: "700+",
-    label: "partner universities",
+    label: "Partner universities",
     source: "partner-universities",
   },
   {
     id: "destinations",
     figure: "15",
-    label: "destinations",
+    label: "Destinations",
     source: "destinations",
   },
   {
     id: "offices",
     figure: "18",
-    label: "offices across India",
+    label: "Offices across India",
     source: "offices",
   },
   {
     id: "testimonials",
     figure: "47",
-    label: "testimonials",
+    label: "Testimonials",
     source: "testimonials",
   },
 ];
@@ -109,43 +100,49 @@ export default function ColophonStrip() {
       id="colophon-strip"
       data-chapter="dream"
       aria-label="Global Opportunities in figures, with sources"
-      className="bg-paper-laid py-6 md:py-8"
+      className="bg-paper-laid py-10 md:py-14"
     >
       <Container>
         <Rule weight="chapter" />
 
-        {/* Wrapped dot-separated prose below md; one distributed line at
-            md+, where the dots retire and the spacing does the setting. */}
-        <motion.p
+        {/* Two columns on a phone, three at sm, all six in a row at md+.
+            The divider is a left hairline on every column except the first in
+            its row — cheaper than rendering separator elements, and it
+            disappears correctly when the grid rewraps. */}
+        <motion.dl
           variants={staggerChildrenTight}
           initial="hidden"
           whileInView="visible"
           viewport={VIEWPORT_ONCE}
-          className="m-0 flex flex-wrap items-baseline gap-x-3 gap-y-2 py-4 font-mono text-caption uppercase md:flex-nowrap md:justify-between md:gap-x-6 md:py-5"
+          className="m-0 mt-8 grid grid-cols-2 gap-y-8 sm:grid-cols-3 md:mt-10 md:grid-cols-6 md:gap-y-0"
         >
           {STATS.map((stat, i) => (
-            <motion.span
+            <motion.div
               key={stat.id}
               variants={fadeUp}
-              className="inline-flex items-baseline gap-3 whitespace-nowrap"
+              className={[
+                // flex-col-reverse: <dt> must precede <dd> in the DOM for a
+                // valid description list, but the figure reads first.
+                "flex flex-col-reverse px-4 first:pl-0 md:px-6",
+                // even columns on mobile, every 3rd at sm, every 6th at md
+                i % 2 === 0 ? "" : "border-l border-rule",
+                i % 3 === 0 ? "sm:border-l-0" : "sm:border-l sm:border-rule",
+                i % 6 === 0 ? "md:border-l-0 md:pl-0" : "md:border-l md:border-rule",
+              ].join(" ")}
             >
-              <span className="text-ink-muted">
-                <span data-figure className="font-medium text-marine">
-                  {stat.figure}
-                </span>{" "}
+              <dt className="mt-3 font-mono text-mono-label uppercase text-ink-muted">
                 {stat.label}
                 {stat.source && <Footnote id={stat.source} primary />}
-              </span>
-              {i < STATS.length - 1 && (
-                <span aria-hidden="true" className="text-rule-strong md:hidden">
-                  ·
-                </span>
-              )}
-            </motion.span>
+              </dt>
+              <dd
+                data-figure
+                className="m-0 font-ui text-[clamp(1.75rem,2.6vw,2.5rem)] font-semibold leading-none tracking-[-0.02em] text-marine tabular-figures"
+              >
+                {stat.figure}
+              </dd>
+            </motion.div>
           ))}
-        </motion.p>
-
-        <Rule weight="chapter" />
+        </motion.dl>
       </Container>
     </section>
   );

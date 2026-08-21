@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Info, MessageCircle } from "lucide-react";
+import { Info } from "lucide-react";
 import { ChipGroup } from "./reckoning/chip-group";
 import type {
   CountryId,
@@ -16,10 +16,8 @@ import {
   tierOptions,
 } from "./reckoning/data";
 import { Ledger } from "./reckoning/ledger";
-import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { Icon } from "@/components/ui/icon";
-import { Rule } from "@/components/ui/rule";
 import { SectionHeading } from "@/components/ui/section-heading";
 
 /* ===========================================================================
@@ -110,7 +108,7 @@ export default function Reckoning() {
             onChange={setTier}
           />
           {/* The chips' one caveat, marked as an aside rather than a rule. */}
-          <p className="flex items-start gap-2 font-mono text-caption uppercase text-ink-muted tabular-figures">
+          <p className="flex items-start gap-2 font-mono text-caption text-ink-muted tabular-figures">
             <Icon as={Info} size="sm" className="mt-[0.2em]" />
             <span>
               DOCTORAL AND DIPLOMA ROUTES PRICE DIFFERENTLY — A FUNDED PHD
@@ -128,55 +126,6 @@ export default function Reckoning() {
           />
         </div>
 
-        <Rule weight="chapter" className="mt-16" />
-
-        {/* ------------------------------------------------------------------
-            THE LINE NOBODY ELSE PRINTS — canon copy, verbatim
-            ------------------------------------------------------------------ */}
-        <div className="mt-12">
-          <p className="max-w-serif font-display text-quote opsz-32 text-ink">
-            What Global Opportunities charges you: ₹0. Here is who pays us, and
-            how.
-          </p>
-
-          <div className="mt-8 flex max-w-prose flex-col gap-5 font-ui text-body text-ink">
-            <p>
-              Partner universities pay us a commission when a student enrols.
-              That is where our income comes from, and it is the standard
-              arrangement across this industry. Counselling, shortlisting,
-              applications, the visa file and the pre-departure briefing are
-              free to you, and they are free because of that commission — not
-              as an offer that expires.
-            </p>
-            <p>
-              Everything you actually pay for is a line in the ledger above,
-              paid by you directly to whoever charges it, at their published
-              price. We add no margin to any of them. A small number of our own
-              services &mdash; coaching for IELTS or PTE, for instance &mdash;
-              are paid, and they are marked and priced where they are listed.
-            </p>
-            <p>
-              The obvious question is whether a commission makes us push
-              expensive universities. The answer you should insist on from any
-              consultant is the same one: ask to see the shortlist with the
-              reasons written down, and ask what the alternative was. Ours comes
-              with both.
-            </p>
-          </div>
-
-          <div className="mt-10">
-            <Button href={WHATSAPP_HREF} variant="secondary" size="lg">
-              Get this ledger in writing
-            </Button>
-            <p className="mt-3 flex max-w-prose items-start gap-2 font-mono text-caption uppercase text-ink-muted tabular-figures">
-              <Icon as={MessageCircle} size="sm" className="mt-[0.2em]" />
-              <span>
-                OPENS WHATSAPP · THE MESSAGE IS ALREADY WRITTEN · ASKS FOR A
-                WRITTEN BREAKDOWN AND THE REAL MONTHLY LOAN FIGURE
-              </span>
-            </p>
-          </div>
-        </div>
       </Container>
     </section>
   );

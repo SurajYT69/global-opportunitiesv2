@@ -59,13 +59,9 @@ const CONTENTS: { href: string; label: string }[] = [
   { href: "#hero", label: "The Departure Card" },
   { href: "#gazetteer", label: "Four destinations, up close" },
   { href: "#register", label: "The Register of partner universities" },
-  { href: "#what-we-do", label: "Fifteen things we do" },
-  { href: "#still-page", label: "Accreditation" },
   { href: "#branch-atlas", label: "Eighteen offices" },
-  { href: "#contributors", label: "The counsellors" },
   { href: "#for-parents", label: "For parents" },
   { href: "#reckoning", label: "What it costs, in rupees" },
-  { href: "#eleven-months", label: "Your next eleven months" },
   { href: "#endpaper", label: "Outcomes" },
   { href: "#questions", label: "Questions people actually ask" },
   { href: "#enquiry", label: "Book a free guidance session" },
@@ -235,7 +231,7 @@ export default function Colophon() {
                     would carry the green back in. */}
                 <a
                   href={WHATSAPP_HREF}
-                  className="inline-flex min-h-12 items-center gap-2 rounded-2 border border-rule-strong px-3 font-mono text-caption uppercase text-ink no-underline tabular-figures hover:border-sienna hover:text-marine"
+                  className="inline-flex min-h-12 items-center gap-2 rounded-2 border border-rule-strong px-3 font-mono text-caption text-ink no-underline tabular-figures hover:border-sienna hover:text-marine"
                 >
                   <Icon as={MessageCircle} size="sm" />
                   Message {PHONE_NATIONAL}
@@ -245,7 +241,7 @@ export default function Colophon() {
 
             {/* `flex`, not `inline-flex`, so the line keeps its block flow
                 under the contact list. */}
-            <p className="mt-4 flex items-center gap-2 font-mono text-caption uppercase text-ink-muted tabular-figures">
+            <p className="mt-4 flex items-center gap-2 font-mono text-caption text-ink-muted tabular-figures">
               <Icon as={Clock} size="sm" />
               9 AM – 9 PM IST · New Delhi · UTC+05:30
             </p>
@@ -262,7 +258,7 @@ export default function Colophon() {
           </div>
         </div>
 
-        <Rule weight="chapter" className="my-10" />
+        <div aria-hidden="true" className="h-16" />
 
         {/* ── Branches ───────────────────────────────────────────────────── */}
         <section aria-labelledby="colophon-branches">
@@ -283,7 +279,7 @@ export default function Colophon() {
                 <a
                   href={branch.href}
                   aria-label={`Call Global Opportunities, ${branch.city}`}
-                  className="inline-flex min-h-11 items-center font-mono text-caption uppercase text-marine no-underline tabular-figures hover:underline"
+                  className="inline-flex min-h-11 items-center font-mono text-caption text-marine no-underline tabular-figures hover:underline"
                 >
                   {branch.phone}
                 </a>
@@ -299,7 +295,7 @@ export default function Colophon() {
           </p>
         </section>
 
-        <Rule weight="chapter" className="my-10" />
+        <div aria-hidden="true" className="h-16" />
 
         {/* ── Accreditation ─────────────────────────────────────────────── */}
         <section aria-labelledby="colophon-accreditation">
@@ -318,7 +314,7 @@ export default function Colophon() {
           </p>
         </section>
 
-        <Rule weight="chapter" className="my-10" />
+        <div aria-hidden="true" className="h-16" />
 
         {/* ── Sources & last verified ────────────────────────────────────
             Every superscript on this page resolves into a row of this table.
@@ -382,7 +378,7 @@ export default function Colophon() {
                     <p className="mt-2 max-w-prose font-display text-footnote opsz-8 text-ink-muted">
                       {source.note}
                     </p>
-                    <p className="mt-1 font-mono text-caption uppercase text-ink-muted tabular-figures">
+                    <p className="mt-1 font-mono text-caption text-ink-muted tabular-figures">
                       {source.origin} · owner {source.owner}
                       <span className="sm:hidden">
                         {" "}
@@ -397,7 +393,7 @@ export default function Colophon() {
                       <a
                         href={source.href}
                         rel="noopener"
-                        className="mt-1 inline-block font-mono text-caption uppercase text-marine underline decoration-rule-strong decoration-1 underline-offset-4 tabular-figures hover:decoration-sienna"
+                        className="mt-1 inline-block font-mono text-caption text-marine underline decoration-rule-strong decoration-1 underline-offset-4 tabular-figures hover:decoration-sienna"
                       >
                         {source.href}
                         <Icon
@@ -417,7 +413,7 @@ export default function Colophon() {
           </table>
         </section>
 
-        <Rule weight="chapter" className="my-10" />
+        <div aria-hidden="true" className="h-16" />
 
         {/* ── Privacy & legal ───────────────────────────────────────────── */}
         <div className="grid gap-grid-gap md:grid-cols-2">
@@ -475,7 +471,7 @@ export default function Colophon() {
           <p className="font-ui text-body-sm text-ink-muted">
             © 2026 Global Opportunities Private Limited · New Delhi
           </p>
-          <p className="font-mono text-caption uppercase text-ink-muted tabular-figures">
+          <p className="font-mono text-caption text-ink-muted tabular-figures">
             Est. 2001, Amritsar
           </p>
         </div>

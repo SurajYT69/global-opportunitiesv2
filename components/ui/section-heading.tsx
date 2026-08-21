@@ -4,54 +4,53 @@ import { cn } from "@/lib/cn";
 /**
  * Chapter opener / section head.
  *
- * Order of parts, top to bottom (CANON, retheme 2026-08-04):
- *   chapter index + name     Plex Mono, tracked caps, --marine (marine owns numerals)
- *   eyebrow                  Geist 600, tracked caps, --ink-muted
- *   headline                 Geist 600, --fs-d1 (h2) or --fs-d2 (h3)
- *   deck                     Geist 400 upright, --fs-deck, max 52ch
+ * Order of parts, top to bottom:
+ *   eyebrow    the `label` step, tracked caps, --ink-faint
+ *   headline   Source Serif 4 400, --fs-title, balanced
+ *   deck       Geist 400, --fs-lede, max 52ch
  *
- * The chapter device is now a zero-padded arabic index ("03 · TRUST"), not a
- * roman numeral — roman numerals read as the editorial/newspaper register the
- * client rejected. Call sites still pass roman ("III"); the mapping happens
- * here so no section file has to change.
+ * ---------------------------------------------------------------------------
+ * THE CHAPTER DEVICE WAS RETIRED (2026-08-20, client: "clean modern not
+ * cluttered").
  *
- * Letterspaced uppercase is legal here and only here in the heading stack:
- * running heads, captions, data labels, stamps, footnote refs. Never headlines.
+ * Every section used to open with THREE stacked lines before it said anything:
+ * a chapter stamp ("02 · EXPLORE" in tracked marine caps), an eyebrow ("THE
+ * FOUR ANCHOR DESTINATIONS" in tracked ink caps), and only then the headline.
+ * Two tracked-caps preambles in a row is the single loudest editorial-magazine
+ * tell on the page, repeated at the top of all eight sections — the reader met
+ * it before every heading and had to step over it every time.
+ *
+ * `chapter` and `chapterName` are STILL ACCEPTED and are now ignored. Every
+ * call site passes an `eyebrow` as well (verified across all eight sections),
+ * so nothing lost a label and no section file had to change. The props stay in
+ * the signature so this was a one-file edit and so a future decision to bring
+ * the device back has somewhere to land — delete them only when you are also
+ * editing the call sites.
+ *
+ * RHYTHM, NOT A UNIFORM GAP. The old stack used one `gap-4` between every
+ * part, which set the eyebrow, the headline and the deck at equal distance and
+ * flattened the hierarchy. The eyebrow now sits close to the headline it
+ * introduces, and the deck sits further from it, so the group reads as one
+ * heading with a lede rather than three separate lines.
+ * ---------------------------------------------------------------------------
+ *
+ * UPPERCASE IS NOW ONE ROLE (2026-08-21). The eyebrow is the `label` step and
+ * that step IS the tracked-caps role — there is no longer a second, third and
+ * fourth place caps are legal. Captions, footnotes, helper text, stamps and
+ * strip labels are all sentence case now. Never headlines, never CTAs.
+ *
+ * The heading is `title`, in the display serif. `d1` and `d2` both alias to
+ * it, so the h2/h3 distinction is semantic only — it no longer changes size.
  */
-
-/** Roman chapter numerals as authored across the section files. */
-const ROMAN_CHAPTER_INDEX: Readonly<Record<string, string>> = {
-  I: "01",
-  II: "02",
-  III: "03",
-  IV: "04",
-  V: "05",
-  VI: "06",
-};
-
-/**
- * "III" -> "03". Already-arabic input ("3", "03") is zero-padded too. Anything
- * unrecognised passes through untouched rather than rendering a wrong number.
- */
-function chapterIndex(chapter: string): string {
-  const key = chapter.trim().toUpperCase();
-
-  const roman = ROMAN_CHAPTER_INDEX[key];
-  if (roman) return roman;
-
-  if (/^\d{1,2}$/.test(key)) return key.padStart(2, "0");
-
-  return chapter;
-}
 
 export interface SectionHeadingProps {
-  /** Chapter numeral in the margin — "I".."VI". Rendered as "01".."06". */
+  /** @deprecated Accepted and ignored — the chapter device was retired. */
   chapter?: string;
-  /** Chapter name — "DREAM", "EXPLORE", "TRUST"… */
+  /** @deprecated Accepted and ignored — the chapter device was retired. */
   chapterName?: string;
-  /** Tracked-caps label above the headline. */
+  /** Tracked-caps label above the headline. The section's only preamble. */
   eyebrow?: string;
-  /** Italic lede beneath the headline. Capped at 52ch. */
+  /** Lede beneath the headline. Capped at 52ch. */
   deck?: ReactNode;
   /** `h2` for chapter openers (--fs-d1), `h3` for section heads (--fs-d2). */
   as?: "h2" | "h3";
@@ -66,8 +65,6 @@ export interface SectionHeadingProps {
 }
 
 export function SectionHeading({
-  chapter,
-  chapterName,
   eyebrow,
   deck,
   as: Heading = "h2",
@@ -79,34 +76,20 @@ export function SectionHeading({
   children,
 }: SectionHeadingProps) {
   const dark = tone === "dark";
-  const hasChapter = Boolean(chapter || chapterName);
 
   return (
     <header
       className={cn(
-        "flex flex-col gap-4",
+        "flex flex-col",
         align === "center" && "items-center text-center",
         className,
       )}
     >
-      {hasChapter && (
-        <p
-          className={cn(
-            "font-mono text-mono-label uppercase tabular-figures",
-            dark ? "text-sienna-on-dark" : "text-marine",
-          )}
-        >
-          {chapter && <span>{chapterIndex(chapter)}</span>}
-          {chapter && chapterName && <span aria-hidden="true"> · </span>}
-          {chapterName && <span>{chapterName}</span>}
-        </p>
-      )}
-
       {eyebrow && (
         <p
           className={cn(
-            "font-ui text-label uppercase",
-            dark ? "text-plate-grey" : "text-ink-muted",
+            "mb-3 text-label uppercase",
+            dark ? "text-plate-grey" : "text-ink-faint",
           )}
         >
           {eyebrow}
@@ -116,8 +99,7 @@ export function SectionHeading({
       <Heading
         id={id}
         className={cn(
-          "font-display opsz-chapter text-balance",
-          Heading === "h2" ? "text-d1" : "text-d2",
+          "text-balance font-display text-title",
           dark ? "text-plate-white" : "text-ink",
           headingClassName,
         )}
@@ -128,7 +110,7 @@ export function SectionHeading({
       {deck && (
         <p
           className={cn(
-            "font-display text-deck max-w-deck",
+            "mt-5 max-w-deck text-lede",
             align === "center" && "mx-auto",
             dark ? "text-plate-grey" : "text-ink-muted",
           )}

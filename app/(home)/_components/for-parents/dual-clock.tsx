@@ -188,7 +188,7 @@ export function DualClock() {
               )}
             </p>
 
-            <p className="font-mono text-caption uppercase text-ink-muted tabular-figures">
+            <p className="font-mono text-caption text-ink-muted tabular-figures">
               {now ? `${weekdayIn(now, zone.zone)} · ${zone.rule}` : zone.rule}
             </p>
           </div>
@@ -196,7 +196,7 @@ export function DualClock() {
       </div>
 
       {now && (
-        <p className="mt-6 flex items-center gap-2 font-mono text-caption uppercase text-ink-muted tabular-figures">
+        <p className="mt-6 flex items-center gap-2 font-mono text-caption text-ink-muted tabular-figures">
           <Icon as={ArrowLeftRight} size="sm" />
           {describeGap(now)}
         </p>

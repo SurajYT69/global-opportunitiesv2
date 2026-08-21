@@ -479,7 +479,7 @@ export default function ForParents() {
                 >
                   {TOLL_FREE_DISPLAY}
                 </a>
-                <p className="mt-1 font-mono text-caption uppercase text-ink-muted tabular-figures">
+                <p className="mt-1 font-mono text-caption text-ink-muted tabular-figures">
                   9 AM – 9 PM IST · NO FEE · NO OBLIGATION
                 </p>
               </div>
@@ -496,7 +496,7 @@ export default function ForParents() {
                 >
                   {DIRECT_DISPLAY}
                 </a>
-                <p className="mt-1 font-mono text-caption uppercase text-ink-muted tabular-figures">
+                <p className="mt-1 font-mono text-caption text-ink-muted tabular-figures">
                   SAME NUMBER ON WHATSAPP
                 </p>
               </div>
@@ -506,7 +506,7 @@ export default function ForParents() {
                   <Icon as={MessageCircle} />
                   Send this summary to WhatsApp
                 </Button>
-                <p className="mt-3 max-w-serif font-mono text-caption uppercase text-ink-muted tabular-figures">
+                <p className="mt-3 max-w-serif font-mono text-caption text-ink-muted tabular-figures">
                   OPENS WHATSAPP · THE MESSAGE IS ALREADY WRITTEN · ASKS FOR THE
                   COST IN RUPEES, THE REFUSAL POLICY, AND YOUR COUNSELLOR&rsquo;S
                   NAME

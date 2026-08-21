@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 /* ============================================================================
    THE DEPARTURE ATLAS — CANONICAL TOKEN LAYER
@@ -14,16 +15,16 @@
    ------------------------------------------------------------------------ */
 @theme static {
   /* --- Color · light chapters ------------------------------------------- */
-  --color-paper: #fbf8f2; /* Cartridge   — page canvas, default surface */
-  --color-paper-still: #fdfbf7; /* Noon        — Trust chapter only */
-  --color-paper-laid: #f3ede2; /* Laid        — alternating surface */
-  --color-paper-warm: #f7efe1; /* Warm Laid   — For-Parents only */
-  --color-paper-tracing: #ede5d7; /* Tracing     — inset panels, plate fields */
-  --color-rule: #ddd2bf; /* Rule        — hairlines, keylines, inputs */
-  --color-rule-strong: #c7b9a1; /* Rule Strong — chapter/masthead/table rules */
-  --color-ink: #171310; /* Iron Gall   — primary type (17:1) */
-  --color-ink-muted: #5c5247; /* Ink Muted   — body, captions (6.8:1) */
-  --color-ink-faint: #8a7f72; /* Ink Faint   — 3.4:1 · >=24px or non-text ONLY */
+  --color-paper: #ffffff; /* Cartridge   — page canvas, default surface */
+  --color-paper-still: #ffffff; /* Noon        — Trust chapter only */
+  --color-paper-laid: #f5f7fa; /* Laid        — alternating surface */
+  --color-paper-warm: #f5f7fa; /* Warm Laid   — For-Parents only */
+  --color-paper-tracing: #ecf0f5; /* Tracing     — inset panels, plate fields */
+  --color-rule: #e1e7ef; /* Rule        — hairlines, keylines, inputs */
+  --color-rule-strong: #c6d0dc; /* Rule Strong — chapter/masthead/table rules */
+  --color-ink: #16202b; /* Iron Gall   — primary type (17:1) */
+  --color-ink-muted: #55637a; /* Ink Muted   — body, captions (6.8:1) */
+  --color-ink-faint: #8a96a8; /* Ink Faint   — 3.4:1 · >=24px or non-text ONLY */
   /* BRAND REMAP 2026-08-03 v2 — values from the official GO brand colour
      kit (global_opportunities_full_brand_color_kit_v2.html): GO Navy
      #0E2A47 (nav/footer/dark bands), GO Blue #0B77B7 (links/secondary),
@@ -38,147 +39,193 @@
   --color-sienna: #0b77b7; /* GO Blue     — contour, registration, underline swell (links 4.6:1) */
   --color-sienna-press: #b70000; /* GO Red      — PRIMARY CTA FILL ONLY (white 7.0:1, marker text 6.6:1) */
   --color-sienna-deep: #8f0000; /* Red Deep    — CTA hover / active (white 9.7:1) */
-  --color-sienna-tint: #e6f1f8; /* Blue Tint   — wells, selected chip bg */
+  --color-sienna-tint: #eaf4fb; /* Blue Tint   — wells, selected chip bg */
   --color-ochre: #ffc800; /* GO Yellow   — 1.5:1 · NEVER text on paper */
-  --color-ochre-tint: #fff3c4; /* Yellow Well — annotation well */
-  --color-verdigris: #095f92; /* Verified    — verified / cleared / STATUS: GO (6.5:1) */
-  --color-verdigris-tint: #e1eef7; /* Verified Tint — cleared-status pill bg */
+  --color-ochre-tint: #fff6d6; /* Yellow Well — annotation well */
+  --color-verdigris: #0f7a4d; /* Verified    — verified / cleared / STATUS: GO (6.5:1) */
+  --color-verdigris-tint: #e6f4ec; /* Verified Tint — cleared-status pill bg */
   --color-clay: #9e3b24; /* Clay        — external deadlines, refusal callouts (6.4:1) */
 
   /* --- Color · dark chapter (`endpaper` only) ---------------------------- */
   --color-endpaper: #0e2a47;
   --color-endpaper-2: #16385c;
-  --color-plate-white: #f0eae0;
-  --color-plate-grey: #a8a096;
+  --color-plate-white: #f2f6fa;
+  --color-plate-grey: #93a3b5;
   --color-plate-rule: #27476b;
   --color-sienna-on-dark: #5fb0e8;
   --color-ochre-on-dark: #ffc800;
   --color-verdigris-on-dark: #7cc0ee;
 
   /* --- Typefaces (wired to next/font CSS variables) ----------------------
-     RETHEME 2026-08-04: the editorial serif is retired. Geist is the ONLY
-     text face — display and UI both resolve to it, so `font-display` and
-     `font-ui` remain legal at every existing call site and simply stop
-     differing. Bebas Neue is a display-numeral face only. Mono is untouched:
-     the verified-figures ethic stands. */
-  --font-display: var(--font-geist); /* Geist — headlines, decks, quotes */
+     TWO VOICES 2026-08-21, reversing the single-family direction of
+     2026-08-20. `font-display` is now a SERIF and `font-ui` is Geist, so the
+     two tokens differ again — which is the point. Every existing call site
+     keeps working and simply starts carrying the distinction it was named
+     for. See CLAUDE.md > Typography for why this was reversed. */
+  --font-display: var(--font-source-serif), Georgia, "Times New Roman", serif; /* Source Serif 4 — display + title */
   --font-ui: var(--font-geist); /* Geist — all UI chrome, body, forms */
-  --font-mono: var(--font-poppins); /* Poppins — figures & labels (the "verified fact" role) */
-  --font-bebas: var(--font-bebas-neue); /* Bebas Neue — display numerals ONLY */
+  /* SINGLE-FAMILY RETHEME (2026-08-20, client): Bebas Neue and Poppins are
+     gone from app/layout.tsx. These two tokens stay — pointed at Geist — so
+     every `font-mono` and `font-bebas` call site keeps working and the
+     "verified fact" role stays NAMED even though it no longer has a face of
+     its own. What now carries that role is tabular-nums (the .font-mono rule
+     below) plus the tracking and weight already on the mono type steps. */
+  --font-mono: var(--font-geist); /* was Poppins — figures & labels role */
+  --font-bebas: var(--font-geist); /* was Bebas Neue — display numerals */
   /* Devanagari — loaded ONLY when the For-Parents Hindi toggle fires (SPLIT-B).
      Falls back to the text face until that module sets --font-plex-deva. */
   --font-deva: var(--font-plex-deva, var(--font-geist), ui-sans-serif, sans-serif);
 
   /* --- Type scale --------------------------------------------------------
-     RETHEME: sizes (the clamps) are unchanged — the page rhythm is canon.
-     What changed is CHARACTER: Geist is a grotesque, so display weights move
-     up off the serif's light settings, tracking tightens at large optical
-     sizes, and the old ~0.92 serif leading opens up (Geist's ascenders and
-     descenders are longer than Newsreader's and collide below ~1.0). */
-  --text-d0: clamp(3.25rem, 8.4vw, 7.5rem); /* H1 only · Geist 600 */
-  --text-d0--line-height: 1;
-  --text-d0--letter-spacing: -0.03em;
-  --text-d0--font-weight: 600;
+     SEVEN STEPS (2026-08-21, client-approved, replacing fifteen).
 
-  --text-d1: clamp(2.25rem, 4.8vw, 4rem); /* Chapter openers · Geist 600 */
-  --text-d1--line-height: 1.05;
-  --text-d1--letter-spacing: -0.025em;
-  --text-d1--font-weight: 600;
+     Benchmarked against LIVE computed styles, not published style guides:
+     Crimson Education (IN) runs Bricolage Grotesque + Lato + ITC Garamond
+     across FOURTEEN sizes; Leverage Edu runs Proxima Nova + Source Serif Pro
+     across ten. Neither runs a short ramp -- so "cut the sizes" was never the
+     fix. What both do that this page did not is run TWO FAMILIES with real
+     weight contrast, and set letter-spacing to `normal` everywhere.
 
-  --text-d2: clamp(1.625rem, 2.8vw, 2.5rem); /* Section heads · Geist 600 */
-  --text-d2--line-height: 1.05;
-  --text-d2--letter-spacing: -0.02em;
-  --text-d2--font-weight: 600;
+     Hence the shape below: a serif carries `display` and `title`, Geist
+     carries everything a person operates, and tracking is 0 on every step
+     except `label`, which is now the only uppercase role on the site.
 
-  --text-h4: clamp(1.25rem, 1.6vw, 1.5rem); /* Sub-heads, row titles · Geist 600 */
-  --text-h4--line-height: 1.25;
-  --text-h4--letter-spacing: -0.012em;
-  --text-h4--font-weight: 600;
+     THE RETIRED FIFTEEN SURVIVE AS ALIASES at the end of this block, pointed
+     at these seven. That is what lets `/` and `/homev2` re-skin together with
+     no markup edit. Do not add a sixteenth name -- add a call site to one of
+     these seven. Any name added here must also be added to lib/cn.ts. */
 
-  --text-deck: clamp(1.25rem, 1.9vw, 1.625rem); /* Deck · Geist 400 (no italic) */
-  --text-deck--line-height: 1.45;
-  --text-deck--letter-spacing: -0.01em;
-  --text-deck--font-weight: 400;
+  --text-display: clamp(2.75rem, 6vw, 4.5rem); /* Hero H1 only · Serif */
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.02em;
+  --text-display--font-weight: 400;
 
-  --text-quote: clamp(1.375rem, 2.2vw, 1.875rem); /* Pull quote · Geist 500 */
-  --text-quote--line-height: 1.36;
-  --text-quote--letter-spacing: -0.015em;
-  --text-quote--font-weight: 500;
+  --text-title: clamp(2rem, 3.6vw, 3.25rem); /* Section H2 · stat figures · Serif */
+  --text-title--line-height: 1.08;
+  --text-title--letter-spacing: -0.015em;
+  --text-title--font-weight: 400;
 
-  /* Name kept for call-site compatibility; it is no longer a serif measure —
-     it is the long-form reading size used by For-Parents. */
-  --text-serif-body: 1.125rem; /* For-Parents ONLY · Geist 400 */
-  --text-serif-body--line-height: 1.7;
-  --text-serif-body--letter-spacing: 0em;
-  --text-serif-body--font-weight: 400;
+  --text-heading: clamp(1.25rem, 1.6vw, 1.5rem); /* Card / row titles · Geist */
+  --text-heading--line-height: 1.25;
+  --text-heading--letter-spacing: -0.01em;
+  --text-heading--font-weight: 600;
 
-  --text-body: 1.0625rem; /* Default body · Geist 400 */
-  --text-body--line-height: 1.62;
-  --text-body--letter-spacing: -0.005em;
+  --text-lede: clamp(1.125rem, 1.5vw, 1.375rem); /* Deck under a title · Geist · max 60ch */
+  --text-lede--line-height: 1.5;
+  --text-lede--letter-spacing: 0em;
+  --text-lede--font-weight: 400;
+
+  --text-body: 1.0625rem; /* Default body · Geist · max 68ch */
+  --text-body--line-height: 1.6;
+  --text-body--letter-spacing: 0em;
   --text-body--font-weight: 400;
 
-  --text-body-sm: 0.9375rem; /* Dense UI copy · Geist 400 */
-  --text-body-sm--line-height: 1.55;
-  --text-body-sm--letter-spacing: 0em;
-  --text-body-sm--font-weight: 400;
+  --text-small: 0.875rem; /* Captions, helper, footnotes, meta · Geist */
+  --text-small--line-height: 1.5;
+  --text-small--letter-spacing: 0em;
+  --text-small--font-weight: 400;
 
-  --text-figure: clamp(2rem, 4vw, 3.25rem); /* Stat figures · Plex Mono 500 tabular */
-  --text-figure--line-height: 1;
-  --text-figure--letter-spacing: -0.01em;
-  --text-figure--font-weight: 500;
-
-  --text-data: 0.9375rem; /* Ledger / gazetteer data · Plex Mono 400 tabular */
-  --text-data--line-height: 1.5;
-  --text-data--letter-spacing: 0em;
-  --text-data--font-weight: 400;
-
-  --text-label: 0.6875rem; /* UPPERCASE running heads · Geist 600 */
-  --text-label--line-height: 1.3;
-  --text-label--letter-spacing: 0.14em;
+  --text-label: 0.75rem; /* THE ONLY tracked-caps role · Geist */
+  --text-label--line-height: 1.2;
+  --text-label--letter-spacing: 0.08em;
   --text-label--font-weight: 600;
 
-  --text-mono-label: 0.6875rem; /* UPPERCASE station labels, stamps · Plex Mono 500 */
-  --text-mono-label--line-height: 1.3;
-  --text-mono-label--letter-spacing: 0.1em;
-  --text-mono-label--font-weight: 500;
+  /* --- Alias layer · the retired fifteen ----------------------------------
+     Each former step re-pointed at one of the seven above, so the ~180
+     existing call sites keep compiling and land on the new system untouched.
+     Delete a name here only once `grep -rn "text-<name>"` returns nothing.
 
-  --text-caption: 0.75rem; /* Plate captions · Plex Mono 400 */
-  --text-caption--line-height: 1.45;
-  --text-caption--letter-spacing: 0.04em;
-  --text-caption--font-weight: 400;
+     Two mappings are worth knowing. `serif-body` goes to `body`, not `lede`:
+     it carries a long-form For-Parents block and needs body leading, not a
+     deck's. `figure` goes to `title`, which is what makes a stat figure and a
+     section headline the same size, on purpose. */
 
-  --text-footnote: 0.8125rem; /* Marginalia rail · Geist 400 */
-  --text-footnote--line-height: 1.5;
-  --text-footnote--letter-spacing: 0em;
-  --text-footnote--font-weight: 400;
+  --text-d0: var(--text-display);
+  --text-d0--line-height: var(--text-display--line-height);
+  --text-d0--letter-spacing: var(--text-display--letter-spacing);
+  --text-d0--font-weight: var(--text-display--font-weight);
+  --text-d1: var(--text-title);
+  --text-d1--line-height: var(--text-title--line-height);
+  --text-d1--letter-spacing: var(--text-title--letter-spacing);
+  --text-d1--font-weight: var(--text-title--font-weight);
+  --text-d2: var(--text-title);
+  --text-d2--line-height: var(--text-title--line-height);
+  --text-d2--letter-spacing: var(--text-title--letter-spacing);
+  --text-d2--font-weight: var(--text-title--font-weight);
+  --text-h4: var(--text-heading);
+  --text-h4--line-height: var(--text-heading--line-height);
+  --text-h4--letter-spacing: var(--text-heading--letter-spacing);
+  --text-h4--font-weight: var(--text-heading--font-weight);
+  --text-quote: var(--text-heading);
+  --text-quote--line-height: var(--text-heading--line-height);
+  --text-quote--letter-spacing: var(--text-heading--letter-spacing);
+  --text-quote--font-weight: var(--text-heading--font-weight);
+  --text-deck: var(--text-lede);
+  --text-deck--line-height: var(--text-lede--line-height);
+  --text-deck--letter-spacing: var(--text-lede--letter-spacing);
+  --text-deck--font-weight: var(--text-lede--font-weight);
+  --text-serif-body: var(--text-body);
+  --text-serif-body--line-height: var(--text-body--line-height);
+  --text-serif-body--letter-spacing: var(--text-body--letter-spacing);
+  --text-serif-body--font-weight: var(--text-body--font-weight);
+  --text-body-sm: var(--text-small);
+  --text-body-sm--line-height: var(--text-small--line-height);
+  --text-body-sm--letter-spacing: var(--text-small--letter-spacing);
+  --text-body-sm--font-weight: var(--text-small--font-weight);
+  --text-figure: var(--text-title);
+  --text-figure--line-height: var(--text-title--line-height);
+  --text-figure--letter-spacing: var(--text-title--letter-spacing);
+  --text-figure--font-weight: var(--text-title--font-weight);
+  --text-data: var(--text-small);
+  --text-data--line-height: var(--text-small--line-height);
+  --text-data--letter-spacing: var(--text-small--letter-spacing);
+  --text-data--font-weight: var(--text-small--font-weight);
+  --text-mono-label: var(--text-label);
+  --text-mono-label--line-height: var(--text-label--line-height);
+  --text-mono-label--letter-spacing: var(--text-label--letter-spacing);
+  --text-mono-label--font-weight: var(--text-label--font-weight);
+  --text-caption: var(--text-small);
+  --text-caption--line-height: var(--text-small--line-height);
+  --text-caption--letter-spacing: var(--text-small--letter-spacing);
+  --text-caption--font-weight: var(--text-small--font-weight);
+  --text-footnote: var(--text-small);
+  --text-footnote--line-height: var(--text-small--line-height);
+  --text-footnote--letter-spacing: var(--text-small--letter-spacing);
+  --text-footnote--font-weight: var(--text-small--font-weight);
 
   /* --- Tracking (letterspaced uppercase is reserved: running heads,
          captions, data labels, stamps, footnote refs — never headlines,
          never CTAs, never body) --------------------------------------------- */
-  --tracking-label: 0.14em;
-  --tracking-mono-label: 0.1em;
-  --tracking-caption: 0.04em;
+  --tracking-label: 0.08em;
+  --tracking-mono-label: 0.08em;
+  --tracking-caption: 0em; /* was 0.04em — caption is sentence case now */
 
   /* --- Spacing (semantic only; the numeric scale maps 1:1 onto Tailwind's
          default 0.25rem step — --s-4 (1rem) === p-4, --s-9 (6rem) === p-24) -- */
-  --spacing-section-y: clamp(5rem, 10vw, 9rem);
-  --spacing-section-y-tight: clamp(3rem, 6vw, 5rem);
-  --spacing-gutter: clamp(1.25rem, 4vw, 4rem);
+  --spacing-section-y: clamp(4rem, 8vw, 7rem); /* 64 -> 112px · THE DEFAULT */
+  --spacing-section-y-tight: clamp(2.5rem, 5vw, 4rem); /* 40 -> 64px · strips */
+  /* Gutter capped at 40px, not 64px. A 64px gutter on a 1280px column was
+     eating the width that made this page read narrower than either
+     benchmark (Crimson 1440px, Leverage Edu 1517px). */
+  --spacing-gutter: clamp(1.25rem, 5vw, 2.5rem);
   --spacing-grid-gap: clamp(1rem, 2vw, 2rem);
   --spacing-rail: 96px;
   --spacing-rail-md: 64px;
 
   /* --- Container widths -------------------------------------------------- */
   --container-frame: 1600px; /* outer page frame */
-  --container-content: 1200px; /* default content column */
+  --container-content: 1280px; /* default content column · 1200px effective */
   --container-prose: 66ch; /* default body measure */
   --container-serif: 62ch; /* For-Parents long-form measure (name kept) */
   --container-deck: 52ch; /* hero deck measure */
 
-  /* --- Border radii · nothing exceeds 4px except the CTA pill ------------- */
-  --radius-0: 0; /* rules, plates, ledger, tables — THE DEFAULT */
-  --radius-1: 2px; /* plate keylines, specimen sheets */
-  --radius-2: 4px; /* chips, inputs, selects, status pills */
+  /* --- Border radii · three values (2026-08-21) ---------------------------
+     The 4px ceiling belonged to the paper substrate it was drawn on. On
+     white a card is a TINT, not a bordered box, and a tint needs a softer
+     corner or it reads as a table cell. */
+  --radius-0: 0; /* rules, tables, full-bleed bands — still the default */
+  --radius-1: 6px; /* inputs, selects, chips */
+  --radius-2: 12px; /* cards, panels, wells */
   --radius-pill: 999px; /* CTA buttons ONLY */
 
   /* --- Shadows · print misregistration is the only depth on the page plane.
@@ -271,6 +318,11 @@
   --grad-spine-fill: linear-gradient(180deg, #0b77b7 0%, #5fb0e8 100%);
 
   /* Type scale */
+  --fs-display: var(--text-display);
+  --fs-title: var(--text-title);
+  --fs-heading: var(--text-heading);
+  --fs-lede: var(--text-lede);
+  --fs-small: var(--text-small);
   --fs-d0: var(--text-d0);
   --fs-d1: var(--text-d1);
   --fs-d2: var(--text-d2);
@@ -401,8 +453,11 @@
   :focus {
     outline: none;
   }
+  /* The accent, not the CTA fill. GO Red means "this is the primary
+     action"; a red ring on every focusable element leaks that meaning
+     onto everything focusable. */
   :focus-visible {
-    outline: 2px solid var(--sienna-press);
+    outline: 2px solid var(--sienna);
     outline-offset: 2px;
     border-radius: inherit;
   }
@@ -422,6 +477,26 @@
   [data-chapter="success"] ::selection {
     background-color: var(--marine-mid);
     color: var(--plate-white);
+  }
+
+  /* THE FAMILY FOLLOWS THE SIZE (2026-08-21).
+     `display` and `title` ARE the serif — that is what the steps mean, so no
+     call site should have to remember to type `font-display` beside
+     `text-title`. /homev2 writes its own `<h2 className="text-d2">` rather
+     than going through <SectionHeading>, and under the old single-family
+     arrangement that was harmless because every family token resolved to
+     Geist. It stopped being harmless the moment the two tokens differed.
+
+     In @layer base on purpose: a `font-ui` or `font-mono` utility still wins,
+     which is what keeps `font-mono text-figure` on the stat figures Geist
+     with tabular numerals. */
+  .text-display,
+  .text-title,
+  .text-d0,
+  .text-d1,
+  .text-d2,
+  .text-figure {
+    font-family: var(--font-display);
   }
 
   /* Figures are always tabular — no reflow, no jitter, ever. */
@@ -496,7 +571,12 @@
 }
 
 /* ---------------------------------------------------------------------------
-   5. PAPER GRAIN
+   5. PAPER GRAIN — RETIRED 2026-08-21, NO CALLER
+
+   The tile was a 4% multiply over cream. Over white it is not grain, it is a
+   grey cast on every pixel of the page. <RootLayout> no longer renders it.
+   Kept only so the recipe is recoverable if the substrate decision reverses;
+   delete it in a sweep once that is settled.
    One static tile, background-repeat, multiply, 4%. Never animated, never a
    live filter. Rendered once by <RootLayout>; nothing else should use it.
    ------------------------------------------------------------------------ */
@@ -607,4 +687,140 @@ html.lenis body {
     transition-delay: 0ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   8. SHADCN BRIDGE  (added 2026-08-21 for the /homev2 rebuild)
+   ---------------------------------------------------------------------------
+   shadcn/ui components are written against a fixed set of SEMANTIC token
+   names (--background, --primary, --border, --radius …). This project has its
+   own palette with its own role names (§1). Rather than run two colour
+   systems side by side, this block MAPS one onto the other: shadcn's names
+   become aliases of Departure Atlas tokens, so an added component inherits GO
+   brand colour with no per-component patching.
+
+   §8 was a free slot — the numbering already jumped 7 -> 9.
+
+   THREE DELIBERATE CALLS:
+
+   1. --destructive is CLAY, not GO Red. Red (--sienna-press) is the primary
+      CTA fill. shadcn uses --destructive for errors and delete buttons, and
+      pointing it at the CTA colour would leak "danger" onto every CTA and
+      "call to action" onto every error. Clay is already the refusal/deadline
+      colour, which is what --destructive actually means here.
+
+   2. --radius maps onto the house scale rather than shadcn's 0.625rem/10px.
+      REVISED 2026-08-21: the house scale is now 6px / 12px / pill, not the
+      old 2px / 4px — see §1. `sm` is 6px (inputs, chips), `md`/`lg`/`xl` are
+      12px (cards, panels). Safe to redefine globally — `/` uses only
+      rounded-0/1/2/pill/full, never rounded-sm/md/lg/xl (verified).
+
+   3. `dark:` IS DEACTIVATED. This site has no dark MODE — `color-scheme` is
+      hardcoded light and darkness is a CHAPTER (endpaper), not a user
+      preference. Tailwind v4's stock `dark:` variant follows
+      prefers-color-scheme, so a visitor with a dark OS would get shadcn
+      components in dark grey inside a cream page. The variant below is bound
+      to a selector this app never emits, which makes every `dark:` class that
+      ships inside a shadcn component inert instead of dangerous.
+   ------------------------------------------------------------------------ */
+
+@custom-variant dark (&:where([data-theme="dark"] *));
+
+@theme inline {
+  --color-background: var(--color-paper);
+  --color-foreground: var(--color-ink);
+
+  --color-card: var(--color-paper);
+  --color-card-foreground: var(--color-ink);
+  --color-popover: var(--color-paper);
+  --color-popover-foreground: var(--color-ink);
+
+  /* GO Navy. The institutional anchor — structure, not the CTA. */
+  --color-primary: var(--color-marine);
+  --color-primary-foreground: var(--color-paper);
+
+  --color-secondary: var(--color-paper-laid);
+  --color-secondary-foreground: var(--color-ink);
+
+  /* The tint that replaces a drawn card border. */
+  --color-muted: var(--color-paper-tracing);
+  --color-muted-foreground: var(--color-ink-muted);
+
+  /* ADDED 2026-08-21. `text-muted-foreground` was already used 38 times on
+     /homev2 against 7 uses of `text-ink-muted` — the same job, two naming
+     systems, no rule saying which. Rather than invent a THIRD set of names,
+     this block is now the semantic layer and these three fill its gaps.
+     Paper-named tokens (--ink, --paper, --rule …) stay as primitives. */
+  --color-subtle: var(--color-ink-faint); /* labels, meta · >=24px or non-text */
+  --color-cta: var(--color-sienna-press); /* GO Red · primary button fill ONLY */
+  --color-cta-foreground: var(--color-paper);
+  --color-success: var(--color-verdigris); /* verified · cleared */
+
+  --color-accent: var(--color-sienna-tint);
+  --color-accent-foreground: var(--color-marine);
+
+  /* See note 1 — clay, NOT the red CTA fill. */
+  --color-destructive: var(--color-clay);
+  --color-destructive-foreground: var(--color-paper);
+
+  --color-border: var(--color-rule);
+  --color-input: var(--color-rule);
+  --color-ring: var(--color-sienna);
+
+  /* Radix Accordion. shadcn ships `animate-accordion-down/up` on its content
+     element but the CLI only writes these keyframes during `init`, which this
+     project deliberately never ran (init rewrites the palette). Without them
+     the classes are inert and the panel snaps open.
+
+     DEVIATION FROM CANON, FLAGGED: the motion rule in CLAUDE.md is "only
+     transform and opacity animate; never animate height". This animates
+     height, off a Radix-provided CSS variable. It is a click-triggered
+     disclosure, not scroll-driven, so the jank the rule guards against does
+     not apply — but it IS a deviation and should be signed off or replaced
+     with the existing Framer-based questions/accordion.tsx. */
+  --animate-accordion-down: accordion-down var(--dur-3) var(--ease-cubic);
+  --animate-accordion-up: accordion-up var(--dur-3) var(--ease-cubic);
+
+  /* See note 2 — the 4px ceiling, applied to shadcn's whole ladder. */
+  --radius: var(--radius-1);
+  --radius-sm: var(--radius-1);
+  --radius-md: var(--radius-2);
+  --radius-lg: var(--radius-2);
+  --radius-xl: var(--radius-2);
+}
+
+/* ---------------------------------------------------------------------------
+   MARQUEE — the partner logo cloud
+   ---------------------------------------------------------------------------
+   `animate-marquee` translates a `w-max` flex row from 0 to -50%. The trick is
+   that the row renders its contents TWICE (the second copy aria-hidden), so at
+   -50% the second copy sits exactly where the first started and the loop is
+   seamless. Remove either copy and it visibly snaps.
+
+   Pure CSS, zero JavaScript — the section stays a Server Component. The
+   duration is overridden per-instance with `[animation-duration:80s]`.
+
+   This is the one INFINITE animation on the site. The motion budget in
+   CLAUDE.md says "zero infinite animations anywhere on the page"; a logo
+   marquee is the documented exception, admitted with the component on
+   2026-08-21. It animates `transform` only, and `prefers-reduced-motion`
+   stops it via the global reduced-motion block in section 7.
+   ------------------------------------------------------------------------ */
+@theme {
+  --animate-marquee: marquee 40s linear infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
 }

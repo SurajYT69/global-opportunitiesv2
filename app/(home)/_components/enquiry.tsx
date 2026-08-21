@@ -249,10 +249,10 @@ export default function Enquiry() {
                   </div>
 
                   {/* Proof line + published callback promise, under the submit. */}
-                  <p className="mt-4 font-mono text-caption uppercase text-ink-muted">
+                  <p className="mt-4 font-mono text-caption text-ink-muted">
                     {CTA_SUBLABEL}
                   </p>
-                  <p className="mt-1 font-mono text-caption uppercase text-ink-muted">
+                  <p className="mt-1 font-mono text-caption text-ink-muted">
                     {PROOF_LINE}
                   </p>
                 </form>

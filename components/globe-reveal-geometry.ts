@@ -5,7 +5,7 @@
    the wordmark:
 
      · components/GlobeReveal.tsx   the SSR markup + GSAP's render(p)   (client)
-     · app/homev2/page.tsx          the first-paint gate's <style>      (server)
+     · app/(home)/page.tsx          the first-paint gate's <style>      (server)
 
    They described it independently once and drifted. The SSR markup centred the
    globe on the SECTION; render(0) centres it on its glyph slot in the wordmark,
@@ -16,7 +16,7 @@
    different bounds and both declarations follow. No decimal literal belongs in
    this file, and none belongs in the two consumers either.
 
-   NO "use client" HERE, DELIBERATELY. app/homev2/page.tsx is a Server
+   NO "use client" HERE, DELIBERATELY. app/(home)/page.tsx is a Server
    Component; importing these from GlobeReveal.tsx would drag that module's
    whole graph — gsap, @gsap/react — across the boundary to read two numbers.
    ------------------------------------------------------------------------ */
@@ -92,3 +92,29 @@ export const FILM_RY = ofLockup(GLOBE.h / (2 * LOCKUP.w));
 export const FILM_CENTRE_AT = `calc(50% + ${ofLockup(
   GLOBE_OFFSET_X_RATIO,
 )}) calc(50% + ${ofLockup(GLOBE_OFFSET_Y_RATIO)})`;
+
+/* ===========================================================================
+   INTRO TIMING — SHARED, AND DELIBERATELY SO
+   ---------------------------------------------------------------------------
+   These two lived as private constants in components/GlobeReveal.tsx AND as a
+   hand-copied pair in app/(home)/_components/sticky-nav.tsx, whose own comment
+   called the duplication "the one thing here that can silently drift". The
+   /homev2 masthead would have made it a third copy, so they moved here — the
+   module that already exists to keep the hero's build-time numbers in one
+   place.
+
+   Every consumer of the wordmark hold reads these. If the intro's length or
+   its sessionStorage key changes, it changes once, here.
+   ======================================================================== */
+
+/** sessionStorage key for the once-per-session gate.
+    LATCHING IS OFF (2026-08-04, client direction): GlobeReveal only ever
+    CLEARS this key, so `seen` is permanently false and the intro plays on
+    every load. The reads are kept because they are the whole handshake —
+    re-latch it in GlobeReveal and the hold starts working again with no other
+    edit. Reduced motion is the live skip path. */
+export const INTRO_KEY = "go-hero-intro-seen";
+
+/** Full length of the hero intro, ms. The masthead holds its wordmark for
+    this long so the two land together. */
+export const INTRO_MS = 3000;

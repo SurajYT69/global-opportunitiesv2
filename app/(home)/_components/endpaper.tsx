@@ -79,7 +79,7 @@ export default function Endpaper() {
                 className="object-cover"
               />
             </div>
-            <figcaption className="mt-3 font-mono text-caption uppercase text-plate-grey tabular-figures">
+            <figcaption className="mt-3 font-mono text-caption text-plate-grey tabular-figures">
               THE NIGHT CROSSING · SEAT 34A, SOMEWHERE OVER THE CASPIAN
             </figcaption>
           </figure>
@@ -111,7 +111,7 @@ export default function Endpaper() {
                 <span className="font-ui text-h4 text-plate-white">
                   {institution.name}
                 </span>
-                <span className="font-mono text-caption uppercase text-plate-grey tabular-figures">
+                <span className="font-mono text-caption text-plate-grey tabular-figures">
                   {institution.place} · testimonial on record
                 </span>
               </li>
@@ -146,7 +146,7 @@ export default function Endpaper() {
             ))}
           </ul>
 
-          <p className="mt-12 flex max-w-prose items-start gap-2 font-mono text-caption uppercase text-plate-grey tabular-figures">
+          <p className="mt-12 flex max-w-prose items-start gap-2 font-mono text-caption text-plate-grey tabular-figures">
             <Icon as={Info} size="sm" className="mt-px" />
             <span>
               No visa success rate is published on this page. No admission is

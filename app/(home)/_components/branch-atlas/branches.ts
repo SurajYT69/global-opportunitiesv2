@@ -389,10 +389,22 @@ export const BRANCH_COUNT = STATIONS.reduce(
   0,
 );
 
+/**
+ * The 15 city NAMES, normalised and sorted. Delhi South and Delhi West are one
+ * city; every other station is its own.
+ *
+ * Exported because deriving this inline is a trap: a plain
+ * `new Set(STATIONS.map(s => s.city))` returns SIXTEEN, because the two Delhi
+ * stations carry distinct `city` strings. The /homev2 footer shipped
+ * "16 cities" next to a section saying "15 cities" for exactly that reason.
+ * Use this, or CITY_COUNT — never a fresh Set.
+ */
+export const CITY_NAMES: string[] = [
+  ...new Set(STATIONS.map((station) => station.city.replace(/^Delhi.*/, "Delhi"))),
+].sort();
+
 /** 15 — Delhi South and Delhi West share a city. */
-export const CITY_COUNT = new Set(
-  STATIONS.map((station) => station.city.replace(/^Delhi.*/, "Delhi")),
-).size;
+export const CITY_COUNT = CITY_NAMES.length;
 
 /** 8 states and union territories. */
 export const STATE_COUNT = new Set(STATIONS.map((station) => station.state))

@@ -340,7 +340,7 @@ export function AtlasClient() {
                       letterSpacing: "0.1em",
                     }}
                     className={cn(
-                      "fill-ink font-mono uppercase transition-opacity duration-200 ease-quad group-hover:opacity-100",
+                      "fill-ink font-mono transition-opacity duration-200 ease-quad group-hover:opacity-100",
                       lit ? "opacity-100" : "opacity-0",
                     )}
                   >
@@ -384,16 +384,16 @@ export function AtlasClient() {
                     {station.city}
                   </span>
                   {station.hq && (
-                    <span className="font-mono text-caption uppercase text-sienna-press">
+                    <span className="font-mono text-caption text-sienna-press">
                       HQ
                     </span>
                   )}
                   {station.branches.length > 1 && (
-                    <span className="font-mono text-caption uppercase text-ink-muted tabular-figures">
+                    <span className="font-mono text-caption text-ink-muted tabular-figures">
                       {`${station.branches.length} BRANCHES`}
                     </span>
                   )}
-                  <span className="ml-auto pr-1 text-right font-mono text-caption uppercase text-ink-muted">
+                  <span className="ml-auto pr-1 text-right font-mono text-caption text-ink-muted">
                     {station.state}
                   </span>
                   {/* The row IS the drawer's trigger; this says so. `self-center`

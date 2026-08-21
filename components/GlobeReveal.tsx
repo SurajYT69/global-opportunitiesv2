@@ -21,7 +21,7 @@ import { useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 /* Geometry of the traced artwork lives in its own module because the
-   first-paint gate in app/homev2/page.tsx — a Server Component — has to build
+   first-paint gate in app/(home)/page.tsx — a Server Component — has to build
    the same numbers into CSS. See that file's header for why they must not be
    written twice. */
 import {
@@ -30,12 +30,13 @@ import {
   LOCKUP,
   LOCKUP_W,
   MARK_W,
+  INTRO_KEY,
+  INTRO_MS,
 } from "@/components/globe-reveal-geometry";
 
 gsap.registerPlugin(useGSAP);
 
 const TF = "translate(0,1024) scale(0.1,-0.1)";
-const INTRO_KEY = "go-hero-intro-seen";
 
 /* --- INTRO TIMING ---------------------------------------------------------
    Phases are authored in WALL-CLOCK MILLISECONDS and converted to the master
@@ -49,7 +50,8 @@ const INTRO_KEY = "go-hero-intro-seen";
    `easeInOut3` MUST stay identical to the `ease` on the tween below. Change
    one without the other and every phase silently re-times.
    ---------------------------------------------------------------------- */
-const INTRO_MS = 3000;
+/* INTRO_MS now lives in globe-reveal-geometry.ts — the masthead needs the
+   same number and used to keep a hand-copy of it. Imported above. */
 
 /** Phase windows, in ms from the intro's first frame. */
 const PHASE = {
@@ -114,7 +116,7 @@ export default function GlobeReveal({
 
          The key is CLEARED rather than simply left unread, for two reasons:
          a session that already latched it before this change would otherwise
-         never see the intro again, and sticky-nav-v2 reads the same key to
+         never see the intro again, and the masthead reads the same key to
          decide whether to hold the masthead wordmark. Leaving a stale "1"
          there would replay the globe while the corner logo popped in
          immediately. Clearing it keeps that handshake honest without coupling
@@ -159,7 +161,7 @@ export default function GlobeReveal({
         /* DERIVED from w, not read as offsetHeight. offsetHeight is rounded to
            a whole pixel (360 where the box is really 359.643), which made sy
            disagree with sx by ~0.1% and put render(0) 0.046px above the rest
-           state the CSS in app/homev2/page.tsx paints. Sub-pixel, but it is
+           state the CSS in app/(home)/page.tsx paints. Sub-pixel, but it is
            the one number that stopped first paint and render(0) being bit-for-
            bit identical. The div's height comes from the SVG's own aspect
            ratio, so this is exact rather than an approximation — and it is the
@@ -566,7 +568,7 @@ export default function GlobeReveal({
         data-intro-copy
         /* `pointer-events-none` pairs with `opacity-0`: an opacity:0 element is
            still clickable and still tabbable. render() restores it to `auto`
-           as the copy fades in, and the CSS in app/homev2/page.tsx restores it
+           as the copy fades in, and the CSS in app/(home)/page.tsx restores it
            for the JS-off and reduced-motion paths that never run render(). */
         className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center opacity-0"
       >

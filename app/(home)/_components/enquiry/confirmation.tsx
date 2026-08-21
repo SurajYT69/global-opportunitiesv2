@@ -138,7 +138,7 @@ export function Confirmation({ values }: ConfirmationProps) {
         </p>
       </div>
 
-      <p className="font-mono text-caption uppercase text-ink-muted">
+      <p className="font-mono text-caption text-ink-muted">
         {PROOF_LINE}
       </p>
     </div>

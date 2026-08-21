@@ -59,11 +59,11 @@ export function Outcomes() {
               <span className="font-ui text-label uppercase text-plate-white">
                 {outcome.name}
               </span>
-              <span className="font-mono text-caption uppercase text-plate-grey tabular-figures">
+              <span className="font-mono text-caption text-plate-grey tabular-figures">
                 {outcome.programme} · {outcome.place} · counsellor:{" "}
                 {outcome.counsellor}
               </span>
-              <span className="flex items-start gap-1.5 font-mono text-caption uppercase text-plate-grey tabular-figures">
+              <span className="flex items-start gap-1.5 font-mono text-caption text-plate-grey tabular-figures">
                 <Icon as={BadgeCheck} size="sm" className="mt-px" />
                 {/* The link and the stamp stay inside one inline run so the
                     line still wraps as prose rather than as flex items. */}
