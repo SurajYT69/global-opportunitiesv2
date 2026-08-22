@@ -130,7 +130,9 @@ export function TestPreparations() {
                     ))}
                 </div>
 
-                <div className="relative mt-6 overflow-hidden rounded-2 bg-endpaper px-6 py-5 text-white">
+                {/* 36px matches the footer CTA band — the two full-column dark
+                    plates round together. See the note there. */}
+                <div className="relative mt-6 overflow-hidden rounded-[36px] bg-endpaper px-6 py-5 text-white">
                     <div
                         aria-hidden
                         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.12)_1px,transparent_0)] bg-size-[22px_22px] opacity-40"

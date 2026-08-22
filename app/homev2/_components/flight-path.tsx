@@ -5,27 +5,17 @@ import gsap from "gsap";
 import { createTimeline, svg, utils, type Timeline } from "animejs";
 import { TRAIL_GLYPH, zigzag } from "@/lib/flightPath";
 
-/** Scrubbed timeline: the duration is only a unit scale, it is never played. */
-const SPAN = 1000;
-
 /**
- * How far the plane flies AHEAD of its own contrail, in the same units.
+ * Scrubbed timeline: the duration is only a unit scale, it is never played.
+ * BOTH tracks run it, so the plane sits exactly on the draw-front.
  *
- * With one duration for both tracks the glyph sits exactly on the draw-front,
- * so it reads as stuck to the end of the dots rather than flying out in front
- * of them. Running the plane over a shorter span makes it lead: at any seek
- * its local progress is t/(SPAN-LEAD), which outruns the trail's t/SPAN.
- *
- * SIZE THIS SMALL. At 90 the plane ran 9% of the page in front of its own
- * draw-front, which over a 10,000px document is nearly a thousand pixels of
- * empty air — the trail stops in one section and the plane is in the next one,
- * and it reads as two unrelated objects rather than one flying thing. 22 keeps
- * the glyph just clear of the last dot, which is all "ahead" needs to mean.
- *
- * Side effect: the plane reaches the end of the path at 98% of the page and
- * holds while the last of the trail catches up.
+ * The plane used to run a shorter span so it would LEAD the trail. Any lead at
+ * all puts hundreds of pixels of empty air between the last dot and the glyph
+ * on a 10,000px page, and it reads as two unrelated objects. The glyph is
+ * centred on the origin and the mask's round linecap reveals ~20px past the
+ * front, so with no lead the dots run up under the plane's tail.
  */
-const LEAD = 22;
+const SPAN = 1000;
 
 /**
  * A small plane that flies a zig-zag down the page as you scroll, drawing a
@@ -111,6 +101,8 @@ export function FlightPath() {
   const tl = useRef<Timeline | null>(null);
   /** 0..1 down the document. Survives a rebuild so a resize does not jump. */
   const progress = useRef(0);
+  /** h / endY — see build(). 1 when the path runs the whole page. */
+  const pathScale = useRef(1);
 
   useEffect(() => {
     const host = root.current;
@@ -133,7 +125,28 @@ export function FlightPath() {
       // viewBox 1:1 with CSS pixels: uniform scale, so the plane glyph, stroke
       // widths and dash pattern stay undistorted at any viewport or page length.
       svgEl.setAttribute("viewBox", `0 0 ${w} ${h}`);
-      const d = zigzag(w, h);
+      // The flight LANDS on the closing CTA plate rather than flying to the
+      // bottom of the document: the path stops at whatever carries
+      // [data-flight-end], and zigzagPoints centres that last vertex. The
+      // viewBox stays the full page box, so page coordinates are unchanged.
+      const marker = document.querySelector<HTMLElement>("[data-flight-end]");
+      // Half a plate deep, not its top edge: the plate carries a z-index above
+      // this layer, so the last stretch of the flight slides UNDER it and the
+      // plane tucks out of sight behind the card rather than parking on it.
+      const endY = marker
+        ? marker.getBoundingClientRect().top +
+          window.scrollY +
+          marker.offsetHeight * 0.5
+        : h;
+      // Scroll progress is 0..1 over the SCROLLABLE range, so on a full-height
+      // path the plane sits p*viewport below the viewport top and drifts down
+      // the screen as you read. A path that stops short of the page bottom
+      // breaks that: the plane runs above the top edge and is never on screen.
+      // Scaling progress by h/endY restores the old on-screen motion exactly
+      // and just makes the flight ARRIVE early, parking on the plate while the
+      // footer scrolls past.
+      pathScale.current = h / endY;
+      const d = zigzag(w, endY);
       for (const p of arcs) p.setAttribute("d", d);
 
       // Both the motion path and the drawable cache path geometry, so the
@@ -158,9 +171,12 @@ export function FlightPath() {
         .add(maskLine, { draw: ["0 0", "0 1"], ease: "linear", duration: SPAN }, 0)
         .add(
           "#gp-plane",
-          { translateX, translateY, rotate, ease: "linear", duration: SPAN - LEAD },
+          { translateX, translateY, rotate, ease: "linear", duration: SPAN },
           0,
         );
+      // pathScale only exists now, so re-read rather than trusting the value
+      // taken before this build.
+      progress.current = readProgress();
       tl.current.seek(SPAN * progress.current);
     };
 
@@ -168,7 +184,8 @@ export function FlightPath() {
     const readProgress = () => {
       const max = document.body.offsetHeight - window.innerHeight;
       if (max <= 0) return 0;
-      return Math.min(1, Math.max(0, window.scrollY / max));
+      const raw = window.scrollY / max;
+      return Math.min(1, Math.max(0, raw * pathScale.current));
     };
 
     /** Cheap guard: seeking an unchanged timeline every frame is wasted work. */
@@ -181,7 +198,6 @@ export function FlightPath() {
       tl.current?.seek(SPAN * p);
     };
 
-    progress.current = readProgress();
     build();
     // With reduced motion there is no timeline to scrub — build() parks the
     // plane at the end of the path and returns.

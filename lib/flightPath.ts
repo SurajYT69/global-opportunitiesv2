@@ -101,6 +101,10 @@ export function zigzagPoints(w: number, h: number): Pt[] {
   for (let i = 1; i <= turns; i++) {
     pts.push({ x: i % 2 === 1 ? right : left, y: i * step });
   }
+  // The last traverse lands mid-column rather than at an edge: the trail ends
+  // over the centre of the closing CTA plate, which is where the flight is
+  // meant to arrive, instead of running off the side of the page.
+  pts[pts.length - 1] = { x: w / 2, y: h };
   return pts;
 }
 

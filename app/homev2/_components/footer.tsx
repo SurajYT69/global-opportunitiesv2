@@ -218,7 +218,14 @@ export default function Footer() {
             inside the <Link>: a Footnote renders its own <a>, and an anchor
             inside an anchor is split by the parser, which is the invalid
             nesting that threw React #418 and killed the hero intro. */}
-        <div className="relative overflow-hidden rounded-2 bg-endpaper px-6 py-8 text-plate-white lg:px-10">
+        {/* 36px, not the house `rounded-2` (12px): client asked for a softer
+            corner on 2026-08-22. It applies to the two full-column dark
+            plates only (this and the test-preparations banner), where 12px
+            reads as a square edge; every other card keeps the house scale. */}
+        <div
+          data-flight-end
+          className="relative z-2 overflow-hidden rounded-[36px] bg-endpaper px-6 py-8 text-plate-white lg:px-10"
+        >
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.12)_1px,transparent_0)] bg-size-[22px_22px] opacity-40"

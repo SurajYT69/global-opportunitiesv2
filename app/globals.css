@@ -691,7 +691,12 @@ html.lenis body {
 .flightpath {
   position: absolute;
   inset: 0;
-  z-index: -1;
+  /* 2026-08-22: was -1, which put the layer under every section's own ground,
+     so the plane vanished behind the tinted bands, the dark CTA plate and the
+     footer. Client asked for it to fly over them. Positive z-index is the only
+     step above an in-flow sibling's background, so it now paints over card and
+     copy too — that is the trade, and pointer-events stay off. */
+  z-index: 1;
   overflow: hidden;
   pointer-events: none;
   /* GO Blue. NOT --sienna-press: that is GO Red, and red is the primary

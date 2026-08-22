@@ -10,6 +10,15 @@ import {
 } from "@/components/shadcn/card";
 import { ANCHOR_DESTINATIONS } from "@/app/(home)/_components/gazetteer/data";
 
+/** slug -> ISO code, which is the flag filename. Only the four anchors have
+    one; anything else renders the plate with no badge. */
+const FLAGS: Record<string, string> = {
+  "united-kingdom": "gb",
+  "united-states": "us",
+  canada: "ca",
+  australia: "au",
+};
+
 /* ===========================================================================
    DESTINATIONS — the four anchors
    ---------------------------------------------------------------------------
@@ -28,9 +37,12 @@ import { ANCHOR_DESTINATIONS } from "@/app/(home)/_components/gazetteer/data";
    branch is kept because the data type allows null and a future edit will hit
    it.
 
-   Banned imagery still applies to anything we author: no flags, no landmarks,
-   no globes, no aircraft. The card photographs are client-supplied plates of
-   places, and a card whose image is missing falls back to a tinted field
+   FLAGS (2026-08-22). The imagery ban was lifted on 2026-08-21, and the
+   client asked for a flag on each card. `public/flags/*.svg` are the
+   public-domain vectors from flagcdn.com, rendered `unoptimized` because the
+   image optimizer refuses SVG and a vector has nothing to optimize — same
+   treatment as the wordmark. The card photographs are client-supplied plates
+   of places, and a card whose image is missing falls back to a tinted field
    rather than a broken box.
    ======================================================================== */
 
@@ -80,6 +92,25 @@ export default function Destinations() {
                       fill
                       sizes="(min-width:1280px) 300px, (min-width:640px) 50vw, 100vw"
                       className="object-cover"
+                    />
+                  ) : null}
+                  {/* Scrim, top-weighted: these plates are photographs we do
+                      not control, so the flag badge needs a ground of its own
+                      rather than luck with whatever is behind it. */}
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 bg-gradient-to-b from-endpaper/45 via-endpaper/5 to-transparent"
+                  />
+                  {/* Decorative: the country is the card title two lines
+                      below, so alt="" rather than a second announcement. */}
+                  {FLAGS[d.slug] ? (
+                    <Image
+                      src={`/flags/${FLAGS[d.slug]}.svg`}
+                      alt=""
+                      width={54}
+                      height={36}
+                      unoptimized
+                      className="absolute left-3 top-3 h-9 w-[54px] rounded-[4px] object-cover ring-1 ring-plate-white/70"
                     />
                   ) : null}
                 </div>
