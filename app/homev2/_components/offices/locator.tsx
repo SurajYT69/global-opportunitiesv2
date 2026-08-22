@@ -1,19 +1,18 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { INDIA_OUTLINE_PATH } from "@/app/(home)/_components/branch-atlas/india-outline";
 import { BranchDrawer } from "@/app/(home)/_components/branch-atlas/branch-drawer";
 import type { Station } from "@/app/(home)/_components/branch-atlas/branches";
 import { cn } from "@/lib/cn";
 import {
   CLUSTERS,
+  COASTLINE_FIXUPS,
   GUTTER,
   PLACED,
   VIEWBOX,
   labelSide,
-  snapInside,
   type Cluster,
-  type Point,
 } from "./geo";
 
 /* ===========================================================================
@@ -57,9 +56,11 @@ const STUB = 13;
 const FONT = { key: 15, city: 15, badge: 11, count: 12 } as const;
 
 export function Locator() {
-  const outlineRef = useRef<SVGPathElement>(null);
-  /** Coastline corrections, keyed by cluster id. Empty until measured. */
-  const [fixups, setFixups] = useState<Record<string, { x: number; y: number }>>({});
+  /* Coastline corrections, keyed by cluster id. BAKED, not measured: sampling
+     the outline at runtime cost 3.7s of blocked main thread and broke the hero
+     intro. See COASTLINE_FIXUPS in geo.ts before changing any of the geometry
+     it was derived from. */
+  const fixups = COASTLINE_FIXUPS;
   const [activeId, setActiveId] = useState<string | null>(null);
   const [hoverId, setHoverId] = useState<string | null>(null);
   const [drawerStation, setDrawerStation] = useState<Station | null>(null);
@@ -75,58 +76,13 @@ export function Locator() {
 
   const focusCluster = focusId ? clusterOf.get(focusId) : undefined;
 
-  /* Sample the mainland once after mount and pull any marker the plate's
-     simplified coastline has left in the sea back onto land. Runs in an effect
-     because getPointAtLength needs a laid-out <path>; the first paint uses the
-     raw projected positions, so server and client render identically and there
-     is no hydration mismatch. See the coastline-correction note in geo.ts. */
-  useEffect(() => {
-    const path = outlineRef.current;
-    if (!path) return;
 
-    const d = path.getAttribute("d");
-    if (!d) return;
-
-    // The register is one path with ten subpaths: the mainland plus the island
-    // groups. Only the longest matters here — snapping a marker to Lakshadweep
-    // would be worse than leaving it at sea.
-    let mainland: Point[] = [];
-    let longest = 0;
-    const owner = path.ownerSVGElement;
-    if (!owner) return;
-    for (const sub of d.split(/(?=[Mm])/)) {
-      if (sub.trim().length < 4) continue;
-      const probe = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      probe.setAttribute("d", sub);
-      owner.appendChild(probe);
-      const total = probe.getTotalLength();
-      if (total > longest) {
-        longest = total;
-        const steps = 1200;
-        const pts: Point[] = [];
-        for (let i = 0; i < steps; i++) {
-          const q = probe.getPointAtLength((total * i) / steps);
-          pts.push([q.x, q.y]);
-        }
-        mainland = pts;
-      }
-      probe.remove();
-    }
-    if (mainland.length === 0) return;
-
-    const next: Record<string, { x: number; y: number }> = {};
-    for (const cluster of CLUSTERS) {
-      const inset = (cluster.hq ? DOT.hq : DOT.normal) + 3;
-      const snapped = snapInside(mainland, cluster.x, cluster.y, inset);
-      if (snapped.corrected > 0.01) {
-        next[cluster.id] = { x: snapped.x, y: snapped.y };
-      }
-    }
-    setFixups(next);
-  }, []);
-
+  // 2.2fr, not 1.5fr (2026-08-22). Centring the plate widened its viewBox by
+  // ~15%, and at a fixed column width that is a 15% smaller drawing. The row
+  // gives the map the space back; the index rows are short and still fit.
+  // Change these two together or the plate shrinks again.
   return (
-    <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:gap-10">
+    <div className="grid gap-8 lg:grid-cols-[2.2fr_1fr] lg:gap-10">
       {/* --- the plate --------------------------------------------------- */}
       <div className="min-w-0">
         <svg
@@ -136,7 +92,6 @@ export function Locator() {
           aria-label="Map of Global Opportunities offices across India"
         >
           <path
-            ref={outlineRef}
             d={INDIA_OUTLINE_PATH}
             fill="none"
             stroke="var(--ink-faint)"

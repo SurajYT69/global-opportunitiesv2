@@ -185,16 +185,20 @@ export const PLATE = { w: 600, h: 720 };
 export const GUTTER = { left: -110, right: 636 };
 
 /**
- * The viewBox reaches the LEFT gutter but only just past the plate on the
- * right, because every one of the sixteen offices projects to x < 260 and so
- * every label uses the left rail. Reserving a symmetric right gutter cost 168
- * units of empty viewBox and shrank the drawn plate by a third for nothing.
+ * SYMMETRIC MARGINS (2026-08-22, client instruction: "the India map should be
+ * centred"). The left gutter carries every leader label — all sixteen offices
+ * project to x < 260, so nothing labels right — and the viewBox used to stop
+ * 12 units past the plate on the right. That is correct use of space and it
+ * reads as a map shoved to the right of its column, which is what the client
+ * saw. Matching the right margin to the left one costs ~13% of drawn size and
+ * puts the landmass on the column's centre line.
  *
- * `labelSide` still returns "right" past x = 300, and GUTTER.right sits just
- * inside the viewBox edge, so an eastern office would still label legibly
- * rather than clipping. Widen this if one is ever opened east of Kolkata.
+ * `labelSide` still returns "right" past x = 300 and GUTTER.right now sits
+ * well inside the viewBox, so an eastern office would label legibly rather
+ * than clipping.
  */
-export const VIEWBOX = `${GUTTER.left - 10} -12 ${PLATE.w - GUTTER.left + 22} ${PLATE.h + 24}`;
+const MARGIN = 10 - GUTTER.left;
+export const VIEWBOX = `${-MARGIN} -12 ${PLATE.w + 2 * MARGIN} ${PLATE.h + 24}`;
 
 /** Left rail for the western half, right rail for the eastern half. */
 export function labelSide(x: number): "left" | "right" {
@@ -296,3 +300,30 @@ export function snapInside(
   const cy = edge.y + ny * inset;
   return { x: cx, y: cy, corrected: Math.hypot(cx - x, cy - y) };
 }
+
+/* --- baked coastline corrections -------------------------------------------
+   THIS USED TO BE COMPUTED IN THE BROWSER ON EVERY LOAD, AND IT COST 3.7
+   SECONDS OF BLOCKED MAIN THREAD (measured 2026-08-22, production build).
+
+   The locator sampled the mainland subpath with 1200 `getPointAtLength` calls
+   to find any marker the simplified coastline had left in the sea. Chrome
+   walks the path from the start on every one of those calls, and this outline
+   is ~9.6KB of `d` — 3.1ms per call, 3.7s in one task. It landed inside the
+   hero's 3s intro, so GSAP's tween time-jumped straight to the end and the
+   globe reveal never rendered: the hero looked broken on /homev2 and was fine
+   on `/`, which does not mount this component.
+
+   Nothing about the correction is runtime data. The outline, the projection
+   and the register are all constants, so the answer is the same on every load
+   and it is baked here instead.
+
+   REGENERATE if INDIA_OUTLINE_PATH, the projection in this file, or a
+   station's coordinates change: temporarily restore the sampling effect (git
+   history has it, in locator.tsx), log `next` before setFixups, and paste the
+   result here. Only clusters that actually move need an entry.
+   ------------------------------------------------------------------------ */
+export const COASTLINE_FIXUPS: Record<string, { x: number; y: number }> = {
+  amritsar: { x: 162.37, y: 140.36 },
+  mumbai: { x: 128.84, y: 431.4 },
+  chennai: { x: 251.56, y: 575.66 },
+};
